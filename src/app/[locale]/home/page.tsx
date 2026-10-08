@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { InventoryItem, ItemOutcome } from '@/domain/types';
 import { calculateFreshness } from '@/domain/freshness';
+import { KhabarIcon } from '@/components/ui/KhabarIcon';
 
-// Default starter items for an Asansol household ledger
+// Default starter items for an Indian household kitchen ledger
 const SEED_ITEMS: InventoryItem[] = [
   {
     id: 'seed_milk',
@@ -19,6 +20,11 @@ const SEED_ITEMS: InventoryItem[] = [
     expiryDate: new Date(Date.now() + 10 * 3600000).toISOString(), // ~10h left (expiring)
     expirySource: 'user_provided',
     storage: 'fridge',
+    calories: 62,
+    consumptionType: 'eat_directly',
+    healthAdvisories: [
+      { condition: 'Lactose Intolerance', warning: 'Contains dairy lactose.', severity: 'avoid' },
+    ],
     fssaiStatus: 'verified',
     fssaiLicenseNo: '10014022002598',
     isFlagged: false,
@@ -40,9 +46,11 @@ const SEED_ITEMS: InventoryItem[] = [
     expiryDate: new Date(Date.now() + 18 * 3600000).toISOString(), // ~18h left (consume soon)
     expirySource: 'auto_estimated',
     storage: 'fridge',
+    calories: 145,
+    consumptionType: 'eat_directly',
     fssaiStatus: 'exempt',
     isFlagged: false,
-    notes: 'Prepared for evening dinner. In airtight steel container.',
+    notes: 'Prepared for dinner. In airtight steel dabba.',
     status: 'active',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -59,9 +67,14 @@ const SEED_ITEMS: InventoryItem[] = [
     expiryDate: new Date(Date.now() + 48 * 3600000).toISOString(), // ~48h left (fresh)
     expirySource: 'auto_estimated',
     storage: 'fridge',
+    calories: 23,
+    consumptionType: 'needs_cooking',
+    healthAdvisories: [
+      { condition: 'Kidney Stones', warning: 'High in oxalates.', severity: 'caution' },
+    ],
     fssaiStatus: 'exempt',
     isFlagged: false,
-    notes: 'Bought from Burnpur local haat.',
+    notes: 'Bought from local market.',
     status: 'active',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -78,9 +91,11 @@ const SEED_ITEMS: InventoryItem[] = [
     expiryDate: new Date(Date.now() + 24 * 3600000).toISOString(),
     expirySource: 'auto_estimated',
     storage: 'fridge',
+    calories: 240,
+    consumptionType: 'needs_cooking',
     fssaiStatus: 'exempt',
     isFlagged: false,
-    notes: '[Private Track Only] Freshly butchered.',
+    notes: '[Private Track Only] Freshly butchered cuts.',
     status: 'active',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -97,9 +112,14 @@ const SEED_ITEMS: InventoryItem[] = [
     expiryDate: new Date(Date.now() + 1800 * 3600000).toISOString(),
     expirySource: 'auto_estimated',
     storage: 'room',
+    calories: 130,
+    consumptionType: 'needs_cooking',
+    healthAdvisories: [
+      { condition: 'Type 2 Diabetes', warning: 'High GI carbs.', severity: 'caution' },
+    ],
     fssaiStatus: 'verified',
     isFlagged: false,
-    notes: 'Dry pantry storage drum.',
+    notes: 'Dry pantry storage container.',
     status: 'active',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -116,7 +136,7 @@ export default function KitchenLedgerPage() {
         }
         localStorage.setItem('kc-inventory', JSON.stringify(SEED_ITEMS));
       } catch {
-        // storage quota or incognito fallback
+        // storage quota fallback
       }
     }
     return SEED_ITEMS;
@@ -124,8 +144,8 @@ export default function KitchenLedgerPage() {
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [bandFilter, setBandFilter] = useState<string>('all');
-  const [density, setDensity] = useState<'standard' | 'compact' | 'cards'>('standard');
-  
+  const [density, setDensity] = useState<'standard' | 'cards'>('cards');
+
   // Item closure modal state
   const [closingItem, setClosingItem] = useState<InventoryItem | null>(null);
   const [selectedOutcome, setSelectedOutcome] = useState<ItemOutcome>('consumed');
@@ -136,7 +156,7 @@ export default function KitchenLedgerPage() {
     try {
       localStorage.setItem('kc-inventory', JSON.stringify(updated));
     } catch {
-      // storage quota or incognito fallback
+      // fallback
     }
   };
 
@@ -163,12 +183,12 @@ export default function KitchenLedgerPage() {
 
     saveItems(updated);
     setClosingItem(null);
-    showToast(`✓ Item marked as ${selectedOutcome}. Ledger updated.`);
+    showToast(`✓ "${closingItem.name}" marked as ${selectedOutcome}. Ledger updated.`);
   };
 
   const handleResetSeeds = () => {
     saveItems(SEED_ITEMS);
-    showToast('✓ Ledger reset to sample Asansol household items.');
+    showToast('✓ Ledger reset to sample kitchen items.');
   };
 
   // Active items and computed metadata
@@ -183,7 +203,7 @@ export default function KitchenLedgerPage() {
     return { ...item, freshness: f };
   });
 
-  // "Use This First" shelf: items expiring soonest (< 48h or in red/amber band)
+  // "Use This First" shelf: items expiring soonest (< 48h)
   const useThisFirstItems = enrichedActiveItems
     .filter((item) => item.freshness.band === 'expiring' || item.freshness.band === 'consume_soon')
     .sort((a, b) => a.freshness.hoursRemaining - b.freshness.hoursRemaining);
@@ -202,25 +222,28 @@ export default function KitchenLedgerPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
       {/* Top Banner / Masthead */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 mb-8 border-b border-[var(--kc-moss)] gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[var(--kc-card-border)] gap-4">
         <div>
-          <span className="font-annotation text-[var(--kc-basil)] text-lg">Active Kitchen Inventory · Ledger 101</span>
-          <h1 className="text-3xl font-bold tracking-tight text-[var(--kc-charcoal)] mt-0.5">
+          <span className="font-annotation text-[var(--kc-basil)] text-xl">Active Kitchen Shelf · Zero Waste Hub</span>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--kc-ink)] mt-0.5">
             My Kitchen Freshness Board
           </h1>
+          <p className="text-xs sm:text-sm text-[var(--kc-muted)] mt-1">
+            {activeItems.length} active items tracked · {useThisFirstItems.length} require priority consumption
+          </p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
           <Link
-            href="/en/inventory/check"
-            className="px-4 py-2 text-xs font-mono border border-[var(--kc-moss)] bg-[var(--kc-cream)] text-[var(--kc-charcoal)] hover:bg-[var(--kc-parchment)] transition-colors flex items-center gap-1.5"
+            href="/en/shopping-list"
+            className="px-4 py-2.5 text-xs font-mono rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-card)] text-[var(--kc-ink)] hover:border-[var(--kc-basil)] transition-colors flex items-center gap-1.5"
           >
-            <span>🔍 Before You Buy</span>
+            <span>🛒 Before You Buy</span>
           </Link>
           <Link
             href="/en/inventory/add"
-            className="px-5 py-2 text-xs font-bold uppercase tracking-wider bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil)]/90 transition-colors flex items-center gap-1.5"
+            className="px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil-hover)] transition-colors flex items-center gap-1.5 shadow-sm"
           >
             <span>+ Log Food Item</span>
           </Link>
@@ -228,81 +251,95 @@ export default function KitchenLedgerPage() {
       </div>
 
       {toast && (
-        <div className="mb-6 p-3 border border-[var(--kc-basil)] bg-green-50 text-xs font-mono text-[var(--kc-basil)] flex items-center justify-between animate-fade-in">
+        <div className="p-3.5 rounded-xl border border-[var(--kc-basil)] bg-[var(--kc-mint)] text-xs font-mono text-[var(--kc-basil)] font-bold flex items-center justify-between">
           <span>{toast}</span>
           <span className="text-[10px] uppercase font-mono">Ledger Synced</span>
         </div>
       )}
 
-      {/* "USE THIS FIRST" PRIORITY SHELF (FR-TRACK-4) */}
+      {/* "USE THIS FIRST" PRIORITY SHELF */}
       {useThisFirstItems.length > 0 && (
-        <section className="mb-10">
-          <div className="border border-[var(--kc-chilli)] bg-amber-50/70 p-5">
-            <div className="flex items-center justify-between border-b border-[var(--kc-chilli)]/40 pb-3 mb-4">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[var(--kc-chilli)] animate-pulse" />
-                <h2 className="text-sm font-mono font-bold uppercase tracking-wider text-[var(--kc-charcoal)]">
-                  Use This First · High Priority Shelf
-                </h2>
-              </div>
-              <span className="font-annotation text-[var(--kc-chilli)] text-sm">
-                Rescue before expiry
-              </span>
+        <section className="rounded-2xl border border-[var(--kc-chilli)]/50 bg-amber-50/50 dark:bg-amber-950/20 p-5 sm:p-6 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 mb-4 border-b border-[var(--kc-chilli)]/30 gap-2">
+            <div className="flex items-center gap-2.5">
+              <span className="w-3 h-3 rounded-full bg-[var(--kc-chilli)] animate-pulse" />
+              <h2 className="text-sm font-mono font-bold uppercase tracking-wider text-[var(--kc-ink)]">
+                Use This First · High Priority Shelf
+              </h2>
             </div>
+            <Link
+              href="/en/recipes"
+              className="text-xs font-mono font-bold text-[var(--kc-basil)] hover:underline flex items-center gap-1"
+            >
+              <span>🍲 Find Rescue Recipes →</span>
+            </Link>
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {useThisFirstItems.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-[var(--kc-cream)] border border-[var(--kc-moss)] p-4 flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex justify-between items-start mb-2">
-                      <span className="text-xs font-mono px-2 py-0.5 border border-[var(--kc-moss)] bg-[var(--kc-parchment)]">
-                        {item.freshness.bandBadgeLabel}
-                      </span>
-                      <span className="text-xs font-mono font-bold text-[var(--kc-chilli)]">
-                        ⌛ {item.freshness.hoursRemaining}h left
-                      </span>
-                    </div>
-                    <h3 className="text-base font-bold text-[var(--kc-charcoal)] mb-1">
-                      {item.name}
-                    </h3>
-                    <p className="text-xs text-[var(--kc-moss)] font-mono mb-3">
-                      Portion: {item.quantityValue} {item.quantityUnit} · Stored in {item.storage}
-                    </p>
-                  </div>
-
-                  <div className="pt-3 border-t border-[var(--kc-moss)]/40 flex items-center justify-between">
-                    <span className="text-[11px] font-mono text-[var(--kc-moss)]">
-                      Freshness: {item.freshness.score}%
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {useThisFirstItems.map((item) => (
+              <div
+                key={item.id}
+                className="bg-[var(--kc-card)] border border-[var(--kc-card-border)] p-4 rounded-xl shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow"
+              >
+                <div>
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="text-[11px] font-mono px-2 py-0.5 rounded-full border border-[var(--kc-card-border)] bg-[var(--kc-bg)] text-[var(--kc-ink)]">
+                      {item.freshness.bandBadgeLabel}
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => setClosingItem(item)}
-                      className="px-3 py-1 text-xs font-bold uppercase tracking-wider bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil)]/90 transition-colors"
-                    >
-                      Action →
-                    </button>
+                    <span className="text-xs font-mono font-bold text-[var(--kc-chilli)]">
+                      ⌛ {item.freshness.hoursRemaining}h left
+                    </span>
                   </div>
+                  <h3 className="text-base font-bold text-[var(--kc-ink)] mb-1">
+                    {item.name}
+                  </h3>
+                  <div className="flex flex-wrap gap-2 text-xs font-mono text-[var(--kc-muted)] mb-2">
+                    <span>{item.quantityValue} {item.quantityUnit}</span>
+                    <span>·</span>
+                    <span className="capitalize">{item.storage}</span>
+                    {item.calories ? (
+                      <>
+                        <span>·</span>
+                        <span className="text-[var(--kc-basil)] font-semibold">{item.calories} kcal</span>
+                      </>
+                    ) : null}
+                  </div>
+                  {item.consumptionType && (
+                    <span className="inline-block text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--kc-bg)] text-[var(--kc-muted)] mb-2">
+                      {item.consumptionType === 'eat_directly' ? '🟢 Ready to Eat' : '🍳 Needs Cooking'}
+                    </span>
+                  )}
                 </div>
-              ))}
-            </div>
+
+                <div className="pt-3 border-t border-[var(--kc-hairline)] flex items-center justify-between">
+                  <span className="text-[11px] font-mono text-[var(--kc-muted)]">
+                    Freshness: <strong className="text-[var(--kc-basil)]">{item.freshness.score}%</strong>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setClosingItem(item)}
+                    className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil-hover)] transition-colors cursor-pointer shadow-sm"
+                  >
+                    Mark Used →
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
       )}
 
       {/* Filter and Density Control Toolbar */}
-      <div className="almanac-card bg-[var(--kc-cream)] border border-[var(--kc-moss)] p-4 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+      <div className="almanac-card bg-[var(--kc-card)] border border-[var(--kc-card-border)] p-4 sm:p-5 rounded-2xl shadow-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-center">
           {/* Search */}
-          <div className="md:col-span-1">
+          <div>
             <input
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search kitchen shelf..."
-              className="w-full px-3 py-1.5 text-xs border border-[var(--kc-moss)] bg-[var(--kc-parchment)] text-[var(--kc-charcoal)] focus:outline-none focus:border-[var(--kc-basil)]"
+              placeholder="Search shelf items..."
+              className="w-full px-3.5 py-2 text-xs rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-bg)] text-[var(--kc-ink)] focus:outline-none focus:border-[var(--kc-basil)]"
             />
           </div>
 
@@ -311,16 +348,17 @@ export default function KitchenLedgerPage() {
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full px-3 py-1.5 text-xs border border-[var(--kc-moss)] bg-[var(--kc-parchment)] text-[var(--kc-charcoal)] focus:outline-none focus:border-[var(--kc-basil)]"
+              className="w-full px-3.5 py-2 text-xs rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-bg)] text-[var(--kc-ink)] focus:outline-none focus:border-[var(--kc-basil)]"
             >
               <option value="all">All Categories</option>
-              <option value="vegetables">Vegetables</option>
-              <option value="cooked_food">Cooked Food</option>
-              <option value="dairy">Dairy</option>
-              <option value="meat_fish_egg">Meat / Fish / Egg</option>
-              <option value="grains_pulses">Grains & Pulses</option>
-              <option value="packaged">Packaged</option>
-              <option value="bread_bakery">Bakery</option>
+              <option value="vegetables">🥬 Vegetables</option>
+              <option value="fruits">🍎 Fruits</option>
+              <option value="dairy">🥛 Dairy</option>
+              <option value="cooked_food">🍲 Cooked Food</option>
+              <option value="grains_pulses">🌾 Grains & Pulses</option>
+              <option value="bread_bakery">🍞 Bakery</option>
+              <option value="packaged">📦 Packaged</option>
+              <option value="meat_fish_egg">🥩 Meat / Fish / Egg</option>
             </select>
           </div>
 
@@ -329,36 +367,40 @@ export default function KitchenLedgerPage() {
             <select
               value={bandFilter}
               onChange={(e) => setBandFilter(e.target.value)}
-              className="w-full px-3 py-1.5 text-xs border border-[var(--kc-moss)] bg-[var(--kc-parchment)] text-[var(--kc-charcoal)] focus:outline-none focus:border-[var(--kc-basil)]"
+              className="w-full px-3.5 py-2 text-xs rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-bg)] text-[var(--kc-ink)] focus:outline-none focus:border-[var(--kc-basil)]"
             >
               <option value="all">All Freshness Bands</option>
               <option value="fresh">🟢 Fresh</option>
               <option value="consume_soon">🟡 Consume Soon</option>
-              <option value="expiring">🔴 Expiring</option>
+              <option value="expiring">🔴 Expiring (&lt;48h)</option>
               <option value="expired">⬛ Expired</option>
             </select>
           </div>
 
-          {/* Density Switch */}
-          <div className="flex justify-end items-center gap-1">
-            <span className="text-[11px] font-mono text-[var(--kc-moss)] mr-1">VIEW:</span>
-            <button
-              type="button"
-              onClick={() => setDensity('standard')}
-              className={`px-2 py-1 text-xs font-mono transition-colors ${
-                density === 'standard' ? 'bg-[var(--kc-basil)] text-white font-bold' : 'border border-[var(--kc-moss)] bg-[var(--kc-parchment)]'
-              }`}
-            >
-              Table
-            </button>
+          {/* View Toggle */}
+          <div className="flex justify-end items-center gap-1.5">
+            <span className="text-[10px] font-mono text-[var(--kc-muted)]">VIEW:</span>
             <button
               type="button"
               onClick={() => setDensity('cards')}
-              className={`px-2 py-1 text-xs font-mono transition-colors ${
-                density === 'cards' ? 'bg-[var(--kc-basil)] text-white font-bold' : 'border border-[var(--kc-moss)] bg-[var(--kc-parchment)]'
+              className={`px-3 py-1.5 text-xs font-mono rounded-lg transition-all cursor-pointer ${
+                density === 'cards'
+                  ? 'bg-[var(--kc-basil)] text-white font-bold shadow-sm'
+                  : 'border border-[var(--kc-card-border)] bg-[var(--kc-bg)] text-[var(--kc-ink)]'
               }`}
             >
               Cards
+            </button>
+            <button
+              type="button"
+              onClick={() => setDensity('standard')}
+              className={`px-3 py-1.5 text-xs font-mono rounded-lg transition-all cursor-pointer ${
+                density === 'standard'
+                  ? 'bg-[var(--kc-basil)] text-white font-bold shadow-sm'
+                  : 'border border-[var(--kc-card-border)] bg-[var(--kc-bg)] text-[var(--kc-ink)]'
+              }`}
+            >
+              Table
             </button>
           </div>
         </div>
@@ -366,68 +408,89 @@ export default function KitchenLedgerPage() {
 
       {/* Main Ruled Ledger View */}
       {filteredItems.length === 0 ? (
-        <div className="almanac-card bg-[var(--kc-cream)] border border-[var(--kc-moss)] p-12 text-center">
-          <h3 className="text-base font-bold text-[var(--kc-charcoal)] mb-2">
+        <div className="almanac-card bg-[var(--kc-card)] border border-[var(--kc-card-border)] p-12 text-center rounded-2xl">
+          <h3 className="text-base font-bold text-[var(--kc-ink)] mb-2">
             No items matching your shelf filter
           </h3>
-          <p className="text-xs text-[var(--kc-moss)] mb-6 font-sans">
-            Clear search or log a new ingredient to refresh your kitchen ledger.
+          <p className="text-xs text-[var(--kc-muted)] mb-6">
+            Clear your search filter or log a new kitchen ingredient.
           </p>
           <div className="flex justify-center gap-3">
             <button
               type="button"
               onClick={handleResetSeeds}
-              className="px-4 py-2 text-xs font-mono border border-[var(--kc-moss)] bg-[var(--kc-parchment)] text-[var(--kc-charcoal)] hover:bg-[var(--kc-cream)]"
+              className="px-4 py-2 text-xs font-mono rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-bg)] text-[var(--kc-ink)] hover:bg-[var(--kc-card)] cursor-pointer"
             >
-              Load Sample Asansol Items
+              Load Sample Pantry
             </button>
             <Link
               href="/en/inventory/add"
-              className="px-5 py-2 text-xs font-bold uppercase tracking-wider bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil)]/90 transition-colors"
+              className="px-5 py-2 text-xs font-bold uppercase tracking-wider rounded-xl bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil-hover)] transition-colors cursor-pointer"
             >
-              + Add Item
+              + Log Food Item
             </Link>
           </div>
         </div>
       ) : density === 'cards' ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map((item) => (
             <div
               key={item.id}
-              className="almanac-card bg-[var(--kc-cream)] border border-[var(--kc-moss)] p-5 flex flex-col justify-between"
+              className="almanac-card bg-[var(--kc-card)] border border-[var(--kc-card-border)] p-5 rounded-2xl shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow"
             >
               <div>
-                <div className="flex justify-between items-center border-b border-[var(--kc-moss)]/40 pb-2 mb-3">
-                  <span className="text-[11px] font-mono uppercase text-[var(--kc-moss)]">
+                <div className="flex justify-between items-center border-b border-[var(--kc-hairline)] pb-2.5 mb-3">
+                  <span className="text-[11px] font-mono uppercase text-[var(--kc-muted)]">
                     {item.category.replace(/_/g, ' ')}
                   </span>
-                  <span className="text-xs font-mono font-bold">
+                  <span className="text-xs font-mono font-bold text-[var(--kc-basil)]">
                     {item.freshness.bandBadgeLabel}
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-[var(--kc-charcoal)] mb-1">
+                <h3 className="text-base sm:text-lg font-bold text-[var(--kc-ink)] mb-1">
                   {item.name}
                 </h3>
-                <p className="text-xs font-mono text-[var(--kc-moss)] mb-2">
+                <p className="text-xs font-mono text-[var(--kc-muted)] mb-2">
                   Portion: {item.quantityValue} {item.quantityUnit} · Stored: {item.storage}
                 </p>
+
+                {/* Calories & Preparation Mode */}
+                <div className="flex flex-wrap gap-2 text-xs font-mono text-[var(--kc-ink)] mb-3">
+                  {item.calories ? (
+                    <span className="px-2 py-0.5 rounded bg-[var(--kc-bg)] border border-[var(--kc-hairline)] font-semibold text-[var(--kc-basil)]">
+                      ⚡ {item.calories} kcal
+                    </span>
+                  ) : null}
+                  {item.consumptionType && (
+                    <span className="px-2 py-0.5 rounded bg-[var(--kc-bg)] border border-[var(--kc-hairline)] text-[var(--kc-muted)]">
+                      {item.consumptionType === 'eat_directly' ? '🟢 Eat Directly' : '🍳 Needs Cooking'}
+                    </span>
+                  )}
+                </div>
+
+                {item.healthAdvisories && item.healthAdvisories.length > 0 && (
+                  <div className="text-[11px] text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/20 p-2 rounded-lg border border-amber-200 dark:border-amber-900 mb-3 leading-tight">
+                    ⚠️ {item.healthAdvisories[0].condition}: {item.healthAdvisories[0].warning}
+                  </div>
+                )}
+
                 {item.notes && (
-                  <p className="text-xs text-[var(--kc-charcoal)] italic mb-4 font-sans">
+                  <p className="text-xs text-[var(--kc-muted)] italic mb-3">
                     &ldquo;{item.notes}&rdquo;
                   </p>
                 )}
               </div>
 
-              <div className="pt-3 border-t border-[var(--kc-moss)] flex items-center justify-between">
-                <span className="text-xs font-mono text-[var(--kc-moss)]">
+              <div className="pt-3 border-t border-[var(--kc-hairline)] flex items-center justify-between">
+                <span className="text-xs font-mono text-[var(--kc-muted)]">
                   {item.freshness.hoursRemaining}h remaining
                 </span>
                 <button
                   type="button"
                   onClick={() => setClosingItem(item)}
-                  className="px-3 py-1 text-xs font-bold uppercase tracking-wider bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil)]/90 transition-colors"
+                  className="px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil-hover)] transition-colors cursor-pointer shadow-sm"
                 >
-                  Manage →
+                  Action →
                 </button>
               </div>
             </div>
@@ -435,57 +498,59 @@ export default function KitchenLedgerPage() {
         </div>
       ) : (
         /* Standard Ruled Ledger Table */
-        <div className="almanac-card bg-[var(--kc-cream)] border border-[var(--kc-moss)] overflow-x-auto">
+        <div className="almanac-card bg-[var(--kc-card)] border border-[var(--kc-card-border)] rounded-2xl overflow-x-auto shadow-sm">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-[var(--kc-moss)] bg-[var(--kc-parchment)] font-mono text-[var(--kc-moss)]">
-                <th className="p-3">ITEM DESCRIPTION</th>
-                <th className="p-3">CATEGORY</th>
-                <th className="p-3">PORTION</th>
-                <th className="p-3">STORAGE</th>
-                <th className="p-3">FRESHNESS BAND</th>
-                <th className="p-3 text-right">TIME LEFT</th>
-                <th className="p-3 text-right">ACTION</th>
+              <tr className="border-b border-[var(--kc-hairline)] bg-[var(--kc-bg)] font-mono text-[var(--kc-muted)]">
+                <th className="p-3.5">ITEM DESCRIPTION</th>
+                <th className="p-3.5">CATEGORY</th>
+                <th className="p-3.5">ENERGY</th>
+                <th className="p-3.5">PORTION</th>
+                <th className="p-3.5">STORAGE</th>
+                <th className="p-3.5">STATUS</th>
+                <th className="p-3.5 text-right">TIME LEFT</th>
+                <th className="p-3.5 text-right">ACTION</th>
               </tr>
             </thead>
             <tbody>
               {filteredItems.map((item) => (
                 <tr
                   key={item.id}
-                  className="border-b border-[var(--kc-moss)]/40 hover:bg-[var(--kc-parchment)]/60 transition-colors"
+                  className="border-b border-[var(--kc-hairline)] hover:bg-[var(--kc-bg)] transition-colors"
                 >
-                  <td className="p-3">
-                    <span className="font-bold text-sm text-[var(--kc-charcoal)] block">
+                  <td className="p-3.5">
+                    <span className="font-bold text-sm text-[var(--kc-ink)] block">
                       {item.name}
                     </span>
-                    {item.notes && (
-                      <span className="text-[11px] text-[var(--kc-moss)] block italic font-sans">
-                        {item.notes}
-                      </span>
-                    )}
+                    <span className="text-[11px] text-[var(--kc-muted)]">
+                      {item.consumptionType === 'eat_directly' ? '🟢 Ready to eat' : '🍳 Cook required'}
+                    </span>
                   </td>
-                  <td className="p-3 font-mono uppercase text-[var(--kc-moss)]">
+                  <td className="p-3.5 font-mono uppercase text-[var(--kc-muted)]">
                     {item.category.replace(/_/g, ' ')}
                   </td>
-                  <td className="p-3 font-mono font-bold text-[var(--kc-charcoal)]">
+                  <td className="p-3.5 font-mono text-[var(--kc-basil)] font-semibold">
+                    {item.calories ? `${item.calories} kcal` : '—'}
+                  </td>
+                  <td className="p-3.5 font-mono font-bold text-[var(--kc-ink)]">
                     {item.quantityValue} {item.quantityUnit}
                   </td>
-                  <td className="p-3 font-mono uppercase text-[var(--kc-moss)]">
+                  <td className="p-3.5 font-mono uppercase text-[var(--kc-muted)]">
                     {item.storage}
                   </td>
-                  <td className="p-3">
-                    <span className="inline-block px-2 py-0.5 font-mono border border-[var(--kc-moss)] bg-[var(--kc-parchment)]">
+                  <td className="p-3.5">
+                    <span className="inline-block px-2 py-0.5 font-mono rounded-full border border-[var(--kc-card-border)] bg-[var(--kc-bg)] text-[var(--kc-ink)]">
                       {item.freshness.bandBadgeLabel}
                     </span>
                   </td>
-                  <td className="p-3 text-right font-mono font-bold text-[var(--kc-charcoal)]">
+                  <td className="p-3.5 text-right font-mono font-bold text-[var(--kc-ink)]">
                     {item.freshness.hoursRemaining}h
                   </td>
-                  <td className="p-3 text-right">
+                  <td className="p-3.5 text-right">
                     <button
                       type="button"
                       onClick={() => setClosingItem(item)}
-                      className="px-3 py-1 text-xs font-bold uppercase tracking-wider bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil)]/90 transition-colors"
+                      className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil-hover)] transition-colors cursor-pointer"
                     >
                       Action
                     </button>
@@ -497,33 +562,33 @@ export default function KitchenLedgerPage() {
         </div>
       )}
 
-      {/* Item Outcome / Action Ladder Modal (FR-TRACK-10, FR-TRACK-11) */}
+      {/* Item Outcome / Action Modal */}
       {closingItem && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-          <div className="almanac-card bg-[var(--kc-cream)] border border-[var(--kc-moss)] p-8 max-w-lg w-full">
-            <div className="border-b border-[var(--kc-moss)] pb-3 mb-6 flex justify-between items-center">
+          <div className="almanac-card bg-[var(--kc-card)] border border-[var(--kc-card-border)] p-6 sm:p-8 rounded-2xl shadow-xl max-w-lg w-full space-y-4">
+            <div className="border-b border-[var(--kc-hairline)] pb-3 flex justify-between items-center">
               <div>
-                <span className="font-annotation text-[var(--kc-basil)] text-sm">Action Ladder · FR-TRACK-10</span>
-                <h3 className="text-xl font-bold text-[var(--kc-charcoal)]">
-                  Manage: {closingItem.name}
+                <span className="font-annotation text-[var(--kc-basil)] text-sm">Action Ladder · Household Reduction</span>
+                <h3 className="text-xl font-bold text-[var(--kc-ink)]">
+                  Log Outcome: {closingItem.name}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setClosingItem(null)}
-                className="text-sm font-mono text-[var(--kc-moss)] hover:text-[var(--kc-charcoal)]"
+                className="text-sm font-mono text-[var(--kc-muted)] hover:text-[var(--kc-ink)] cursor-pointer p-1"
               >
                 ✕ Close
               </button>
             </div>
 
-            <p className="text-xs text-[var(--kc-charcoal)] mb-4 font-sans leading-relaxed">
-              Record the outcome for this portion. Completing items updates your personal household waste avoidance ledger.
+            <p className="text-xs text-[var(--kc-muted)] leading-relaxed">
+              Record what happened to this food. Completing items updates your personal rupee savings and domestic waste avoidance metrics.
             </p>
 
-            <form onSubmit={handleCloseItemSubmit} className="space-y-4">
+            <form onSubmit={handleCloseItemSubmit} className="space-y-3">
               <div className="space-y-2">
-                <label className="flex items-center gap-3 p-3 border border-[var(--kc-moss)] bg-[var(--kc-parchment)] cursor-pointer hover:border-[var(--kc-basil)]">
+                <label className="flex items-center gap-3 p-3 rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-bg)] cursor-pointer hover:border-[var(--kc-basil)]">
                   <input
                     type="radio"
                     name="outcome"
@@ -533,12 +598,12 @@ export default function KitchenLedgerPage() {
                     className="accent-[var(--kc-basil)]"
                   />
                   <div>
-                    <span className="text-xs font-bold text-[var(--kc-charcoal)] block">1. Eaten / Consumed</span>
-                    <span className="text-[11px] text-[var(--kc-moss)] block">Successfully used in household meal</span>
+                    <span className="text-xs font-bold text-[var(--kc-ink)] block">1. Eaten / Consumed Directly</span>
+                    <span className="text-[11px] text-[var(--kc-muted)] block">Enjoyed as fresh snack or beverage</span>
                   </div>
                 </label>
 
-                <label className="flex items-center gap-3 p-3 border border-[var(--kc-moss)] bg-[var(--kc-parchment)] cursor-pointer hover:border-[var(--kc-basil)]">
+                <label className="flex items-center gap-3 p-3 rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-bg)] cursor-pointer hover:border-[var(--kc-basil)]">
                   <input
                     type="radio"
                     name="outcome"
@@ -548,27 +613,12 @@ export default function KitchenLedgerPage() {
                     className="accent-[var(--kc-basil)]"
                   />
                   <div>
-                    <span className="text-xs font-bold text-[var(--kc-charcoal)] block">2. Cooked into Recipe</span>
-                    <span className="text-[11px] text-[var(--kc-moss)] block">Prepared into another meal or frozen stew</span>
+                    <span className="text-xs font-bold text-[var(--kc-ink)] block">2. Cooked into Recipe / Meal</span>
+                    <span className="text-[11px] text-[var(--kc-muted)] block">Transformed into a household meal</span>
                   </div>
                 </label>
 
-                <label className="flex items-center gap-3 p-3 border border-[var(--kc-moss)] bg-[var(--kc-parchment)] cursor-pointer hover:border-[var(--kc-basil)]">
-                  <input
-                    type="radio"
-                    name="outcome"
-                    value="shared"
-                    checked={selectedOutcome === 'shared'}
-                    onChange={() => setSelectedOutcome('shared')}
-                    className="accent-[var(--kc-basil)]"
-                  />
-                  <div>
-                    <span className="text-xs font-bold text-[var(--kc-charcoal)] block">3. Shared Surplus</span>
-                    <span className="text-[11px] text-[var(--kc-moss)] block">Handed over to neighbour or community group</span>
-                  </div>
-                </label>
-
-                <label className="flex items-center gap-3 p-3 border border-[var(--kc-moss)] bg-[var(--kc-parchment)] cursor-pointer hover:border-[var(--kc-basil)]">
+                <label className="flex items-center gap-3 p-3 rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-bg)] cursor-pointer hover:border-[var(--kc-basil)]">
                   <input
                     type="radio"
                     name="outcome"
@@ -578,12 +628,12 @@ export default function KitchenLedgerPage() {
                     className="accent-[var(--kc-basil)]"
                   />
                   <div>
-                    <span className="text-xs font-bold text-[var(--kc-charcoal)] block">4. Composted Organically</span>
-                    <span className="text-[11px] text-[var(--kc-moss)] block">Diverted to home pit or garden soil</span>
+                    <span className="text-xs font-bold text-[var(--kc-ink)] block">3. Composted Organically</span>
+                    <span className="text-[11px] text-[var(--kc-muted)] block">Turned into home garden compost soil</span>
                   </div>
                 </label>
 
-                <label className="flex items-center gap-3 p-3 border border-[var(--kc-moss)] bg-[var(--kc-parchment)] cursor-pointer hover:border-[var(--kc-basil)]">
+                <label className="flex items-center gap-3 p-3 rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-bg)] cursor-pointer hover:border-[var(--kc-basil)]">
                   <input
                     type="radio"
                     name="outcome"
@@ -593,23 +643,23 @@ export default function KitchenLedgerPage() {
                     className="accent-[var(--kc-basil)]"
                   />
                   <div>
-                    <span className="text-xs font-bold text-[var(--kc-charcoal)] block">5. Discarded as Spoilage</span>
-                    <span className="text-[11px] text-[var(--kc-moss)] block">Unavoidable waste (tracked for reduction)</span>
+                    <span className="text-xs font-bold text-[var(--kc-ink)] block">4. Discarded as Spoilage</span>
+                    <span className="text-[11px] text-[var(--kc-muted)] block">Unavoidable waste (logged for analytics)</span>
                   </div>
                 </label>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-[var(--kc-moss)]">
+              <div className="flex justify-end gap-3 pt-4 border-t border-[var(--kc-hairline)]">
                 <button
                   type="button"
                   onClick={() => setClosingItem(null)}
-                  className="px-4 py-2 text-xs font-mono border border-[var(--kc-moss)] bg-[var(--kc-parchment)] hover:bg-[var(--kc-cream)] text-[var(--kc-charcoal)]"
+                  className="px-4 py-2 text-xs font-mono rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-bg)] text-[var(--kc-ink)] hover:bg-[var(--kc-card)] cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2 text-xs font-bold uppercase tracking-wider bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil)]/90 transition-colors"
+                  className="px-6 py-2 text-xs font-bold uppercase tracking-wider rounded-xl bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil-hover)] transition-colors cursor-pointer shadow-sm"
                 >
                   Save Outcome →
                 </button>

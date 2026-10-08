@@ -42,6 +42,22 @@ export interface InventoryItem {
   isFlagged: boolean;
   photoUrl?: string;
   notes?: string;
+  calories?: number;
+  consumptionType?: 'eat_directly' | 'needs_cooking';
+  nutrients?: {
+    proteinG?: number;
+    carbsG?: number;
+    fatG?: number;
+    fiberG?: number;
+    sugarsG?: number;
+    sodiumMg?: number;
+    vitamins?: string[];
+  };
+  healthAdvisories?: Array<{
+    condition: string;
+    warning: string;
+    severity: 'caution' | 'avoid';
+  }>;
   status: 'active' | 'closed';
   outcome?: ItemOutcome;
   closedAt?: string;

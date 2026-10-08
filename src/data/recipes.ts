@@ -7,6 +7,12 @@ export interface RecipeIngredient {
   isOptional?: boolean;
 }
 
+export interface DiseaseAdvisory {
+  condition: string;
+  warning: string;
+  severity: 'caution' | 'avoid';
+}
+
 export interface Recipe {
   slug: string;
   title: string;
@@ -22,6 +28,9 @@ export interface Recipe {
     carbsG: number;
     fatG: number;
   };
+  fiberG: number;
+  vitamins: string[];
+  healthAdvisories: DiseaseAdvisory[];
   allergens: string[];
   ingredients: RecipeIngredient[];
   instructions: string[];
@@ -40,6 +49,20 @@ export const RECIPES_CATALOG: Recipe[] = [
     servings: 4,
     caloriesPerServing: 320,
     macros: { proteinG: 12, carbsG: 54, fatG: 6 },
+    fiberG: 5.5,
+    vitamins: ['Vitamin A', 'Vitamin C', 'Folate', 'Iron'],
+    healthAdvisories: [
+      {
+        condition: 'Type 2 Diabetes',
+        warning: 'High glycemic carbohydrates from white rice. Those with diabetes should control portion size or increase lentil-to-rice ratio.',
+        severity: 'caution',
+      },
+      {
+        condition: 'Digestive Recovery / Convalescence',
+        warning: 'Roasted moong dal is gentle and easily digestible; excellent for recovery from digestive distress.',
+        severity: 'caution',
+      },
+    ],
     allergens: [],
     shelfRescuePriority: 'high',
     ingredients: [
@@ -69,6 +92,20 @@ export const RECIPES_CATALOG: Recipe[] = [
     servings: 3,
     caloriesPerServing: 380,
     macros: { proteinG: 16, carbsG: 18, fatG: 28 },
+    fiberG: 2.8,
+    vitamins: ['Calcium', 'Vitamin A', 'Phosphorus', 'Lycopene'],
+    healthAdvisories: [
+      {
+        condition: 'Lactose Intolerance',
+        warning: 'Contains whole milk dairy and fresh paneer. Individuals with lactose intolerance should avoid or substitute with firm tofu.',
+        severity: 'avoid',
+      },
+      {
+        condition: 'High Cholesterol & Heart Disease',
+        warning: 'Rich in saturated milk fats (28g total fat). Individuals monitoring LDL cholesterol should substitute cream with toned curd.',
+        severity: 'caution',
+      },
+    ],
     allergens: ['dairy'],
     shelfRescuePriority: 'high',
     ingredients: [
@@ -97,6 +134,20 @@ export const RECIPES_CATALOG: Recipe[] = [
     servings: 2,
     caloriesPerServing: 140,
     macros: { proteinG: 3, carbsG: 12, fatG: 9 },
+    fiberG: 4.2,
+    vitamins: ['Nasunin (Antioxidant)', 'Manganese', 'Potassium'],
+    healthAdvisories: [
+      {
+        condition: 'Acid Reflux / GERD',
+        warning: 'Nightshade vegetable shallow-fried in mustard oil may trigger acid reflux or heartburn in sensitive stomachs.',
+        severity: 'caution',
+      },
+      {
+        condition: 'Type 2 Diabetes',
+        warning: 'Eggplant has a very low glycemic index with high fiber; safe and supportive for blood glucose control.',
+        severity: 'caution',
+      },
+    ],
     allergens: [],
     shelfRescuePriority: 'high',
     ingredients: [
@@ -123,6 +174,20 @@ export const RECIPES_CATALOG: Recipe[] = [
     servings: 2,
     caloriesPerServing: 260,
     macros: { proteinG: 18, carbsG: 8, fatG: 17 },
+    fiberG: 3.5,
+    vitamins: ['Vitamin K', 'Iron', 'Vitamin A', 'Calcium', 'Folate'],
+    healthAdvisories: [
+      {
+        condition: 'Calcium Oxalate Kidney Stones',
+        warning: 'Spinach is high in dietary oxalates. Those with a history of oxalate kidney stones should moderate intake.',
+        severity: 'caution',
+      },
+      {
+        condition: 'Type 2 Diabetes',
+        warning: 'Exceptionally low carbohydrate (8g) with 18g protein; outstanding meal choice for glycemic management.',
+        severity: 'caution',
+      },
+    ],
     allergens: ['dairy'],
     shelfRescuePriority: 'high',
     ingredients: [
@@ -149,6 +214,20 @@ export const RECIPES_CATALOG: Recipe[] = [
     servings: 2,
     caloriesPerServing: 290,
     macros: { proteinG: 15, carbsG: 22, fatG: 16 },
+    fiberG: 2.1,
+    vitamins: ['Vitamin B12', 'Choline', 'Vitamin D', 'Riboflavin'],
+    healthAdvisories: [
+      {
+        condition: 'Egg Allergy',
+        warning: 'Contains whole poultry eggs. Not suitable for individuals with egg white or yolk allergies.',
+        severity: 'avoid',
+      },
+      {
+        condition: 'Hyperlipidemia / High Cholesterol',
+        warning: 'Whole egg yolks contain dietary cholesterol. May discard yolks and use egg whites only.',
+        severity: 'caution',
+      },
+    ],
     allergens: ['egg'],
     shelfRescuePriority: 'high',
     ingredients: [
@@ -175,6 +254,20 @@ export const RECIPES_CATALOG: Recipe[] = [
     servings: 2,
     caloriesPerServing: 210,
     macros: { proteinG: 4, carbsG: 42, fatG: 4 },
+    fiberG: 3.2,
+    vitamins: ['Iron', 'Vitamin C', 'B-Vitamins'],
+    healthAdvisories: [
+      {
+        condition: 'Type 2 Diabetes',
+        warning: 'Flattened rice produces a moderate-to-high glycemic spike. Increase pea/carrot vegetable ratio and roasted peanuts to slow glucose absorption.',
+        severity: 'caution',
+      },
+      {
+        condition: 'Peanut Allergy',
+        warning: 'Contains optional peanuts. Strictly omit peanuts for anyone with tree nut/groundnut hypersensitivity.',
+        severity: 'avoid',
+      },
+    ],
     allergens: ['peanuts'],
     shelfRescuePriority: 'medium',
     ingredients: [

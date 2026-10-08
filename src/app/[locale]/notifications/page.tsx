@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { generateFreshnessAlerts, FreshnessAlert, AlertUrgency } from '@/domain/freshnessAlerts';
+import { generateFreshnessAlerts, AlertUrgency } from '@/domain/freshnessAlerts';
 import { InventoryItem } from '@/domain/types';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
 
@@ -11,7 +11,8 @@ export default function NotificationsPage() {
   const [filter, setFilter] = useState<AlertUrgency | 'all'>('all');
   const [dismissedIds, setDismissedIds] = useState<string[]>([]);
   const [readIds, setReadIds] = useState<string[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>('default');
+  const [pushStatusMessage, setPushStatusMessage] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -25,10 +26,10 @@ export default function NotificationsPage() {
       if (storedRead) setReadIds(JSON.parse(storedRead));
     } catch {
       // fallback
-    } finally {
-      setIsLoaded(false);
-      // use setTimeout to satisfy any effect scheduling
-      setTimeout(() => setIsLoaded(true), 0);
+    }
+
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      setNotificationPermission(Notification.permission);
     }
   }, []);
 
@@ -71,39 +72,102 @@ export default function NotificationsPage() {
     }
   };
 
+  // Play synthetic gentle botanical alert chime using Web Audio API (₹0 cost)
+  const playAlertChime = () => {
+    try {
+      const audioCtx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+      osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+
+      gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.45);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.45);
+    } catch {
+      // audio disabled
+    }
+  };
+
+  // Request browser push notification permission (Requirement 8)
+  const handleEnableNotifications = async () => {
+    if (!('Notification' in window)) {
+      setPushStatusMessage('Browser notifications are not supported on this browser.');
+      return;
+    }
+
+    try {
+      const permission = await Notification.requestPermission();
+      setNotificationPermission(permission);
+      if (permission === 'granted') {
+        playAlertChime();
+        new Notification('Khabar Chakra: Expiry Alerts Enabled 🔔', {
+          body: 'You will now receive proactive alerts before pantry items perish!',
+          icon: '/branding/app-logo.png',
+        });
+        setPushStatusMessage('✓ System push notifications successfully enabled!');
+      } else {
+        setPushStatusMessage('Notifications permission was declined.');
+      }
+    } catch {
+      setPushStatusMessage('Failed to request notifications permission.');
+    }
+  };
+
+  // Trigger test alert notification
+  const handleTestAlert = () => {
+    playAlertChime();
+    if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+      new Notification('⚠️ Food Expiry Notice: Amul Milk & Spinach', {
+        body: 'Expires in less than 24 hours. Cook Paneer Bhurji or Palak Khichuri to avoid waste!',
+        icon: '/branding/app-logo.png',
+      });
+      setPushStatusMessage('✓ Sent live test push notification to your device!');
+    } else {
+      setPushStatusMessage('🔔 Chime played! Enable system permissions above to receive OS desktop/mobile push popups.');
+    }
+  };
+
   const criticalCount = activeAlerts.filter((a) => a.urgency === 'critical').length;
   const warningCount = activeAlerts.filter((a) => a.urgency === 'warning').length;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
       {/* Header */}
-      <div className="border-b border-[var(--kc-moss)] pb-6 mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="border-b border-[var(--kc-card-border)] pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="font-annotation text-[var(--kc-basil)] text-lg">Freshness Telegraph · Kitchen Dispatch</span>
-          <h1 className="text-3xl font-bold tracking-tight text-[var(--kc-charcoal)] mt-1 flex items-center gap-3">
-            <span>Freshness & Conservation Alerts</span>
+          <span className="font-annotation text-[var(--kc-basil)] text-xl">Freshness Telegraph · Kitchen Dispatch</span>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--kc-ink)] mt-1 flex flex-wrap items-center gap-3">
+            <span>Freshness & Expiry Alerts</span>
             {criticalCount > 0 && (
-              <span className="text-xs font-mono px-2 py-0.5 bg-[var(--kc-chilli)] text-white font-bold rounded-sm animate-pulse">
+              <span className="text-xs font-mono px-2.5 py-0.5 bg-[var(--kc-chilli)] text-white font-bold rounded-full animate-pulse">
                 {criticalCount} CRITICAL
               </span>
             )}
           </h1>
-          <p className="text-sm text-[var(--kc-moss)] mt-1 font-sans">
-            Real-time urgency dispatch evaluating active pantry items against culinary perishability thresholds.
+          <p className="text-xs sm:text-sm text-[var(--kc-muted)] mt-1">
+            Real-time urgency dispatch evaluating your home inventory against perishability windows.
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Link
             href="/en/home"
-            className="text-xs font-mono text-[var(--kc-moss)] hover:underline border border-[var(--kc-moss)] px-3 py-1.5 bg-[var(--kc-parchment)]"
+            className="text-xs font-mono font-semibold text-[var(--kc-basil)] hover:underline flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[var(--kc-card-border)] bg-[var(--kc-card)]"
           >
-            ← Kitchen Shelf
+            <KhabarIcon name="fridge" size={14} />
+            <span>Kitchen Shelf</span>
           </Link>
           {activeAlerts.length > 0 && (
             <button
               type="button"
               onClick={handleClearAll}
-              className="text-xs font-mono text-[var(--kc-charcoal)] hover:bg-[var(--kc-cream)] border border-[var(--kc-moss)] px-3 py-1.5"
+              className="text-xs font-mono font-semibold text-[var(--kc-muted)] hover:text-[var(--kc-ink)] px-3 py-2 rounded-lg border border-[var(--kc-card-border)] bg-[var(--kc-card)] cursor-pointer"
             >
               Dismiss All
             </button>
@@ -111,147 +175,143 @@ export default function NotificationsPage() {
         </div>
       </div>
 
+      {/* Push & Notification Permission Banner (Requirement 8) */}
+      <div className="almanac-card bg-[var(--kc-card)] border border-[var(--kc-card-border)] p-4 sm:p-5 rounded-2xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-start sm:items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-[var(--kc-mint)] flex items-center justify-center shrink-0 text-xl">
+            🔔
+          </div>
+          <div>
+            <h2 className="text-sm font-bold text-[var(--kc-ink)]">
+              Instant Expiry Push Notifications
+            </h2>
+            <p className="text-xs text-[var(--kc-muted)]">
+              {notificationPermission === 'granted'
+                ? 'Active: You will receive native device alerts when food has 24–48 hours remaining.'
+                : 'Get notified in your browser or phone before food goes bad in your fridge.'}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {notificationPermission !== 'granted' ? (
+            <button
+              type="button"
+              onClick={handleEnableNotifications}
+              className="px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil-hover)] shadow-sm transition-colors cursor-pointer"
+            >
+              Enable Notifications
+            </button>
+          ) : (
+            <span className="text-xs font-mono font-bold text-[var(--kc-basil)] bg-[var(--kc-mint)] px-3 py-1 rounded-full">
+              ✓ Push Enabled
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={handleTestAlert}
+            className="px-3 py-2 text-xs font-mono rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-bg)] text-[var(--kc-ink)] hover:border-[var(--kc-basil)] cursor-pointer"
+          >
+            Test Alert Sound
+          </button>
+        </div>
+      </div>
+
+      {pushStatusMessage && (
+        <div className="p-3 bg-[var(--kc-mint)] border border-[var(--kc-basil)] text-xs font-mono text-[var(--kc-basil)] rounded-xl font-bold">
+          {pushStatusMessage}
+        </div>
+      )}
+
       {/* Filter Tabs */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+      <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap gap-2" role="tablist">
           <button
             type="button"
             onClick={() => setFilter('all')}
-            className={`px-3 py-1.5 text-xs font-mono uppercase tracking-wider ${
+            className={`px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
               filter === 'all'
-                ? 'bg-[var(--kc-basil)] text-white font-bold'
-                : 'border border-[var(--kc-moss)] bg-[var(--kc-parchment)] text-[var(--kc-charcoal)]'
+                ? 'bg-[var(--kc-basil)] text-white font-bold shadow-sm'
+                : 'border border-[var(--kc-card-border)] bg-[var(--kc-card)] text-[var(--kc-ink)] hover:border-[var(--kc-basil)]'
             }`}
           >
-            All Active ({activeAlerts.length})
+            All Alerts ({activeAlerts.length})
           </button>
           <button
             type="button"
             onClick={() => setFilter('critical')}
-            className={`px-3 py-1.5 text-xs font-mono uppercase tracking-wider ${
+            className={`px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
               filter === 'critical'
-                ? 'bg-[var(--kc-chilli)] text-white font-bold'
-                : 'border border-[var(--kc-moss)] bg-[var(--kc-parchment)] text-[var(--kc-charcoal)]'
+                ? 'bg-[var(--kc-chilli)] text-white font-bold shadow-sm'
+                : 'border border-[var(--kc-card-border)] bg-[var(--kc-card)] text-[var(--kc-ink)] hover:border-[var(--kc-chilli)]'
             }`}
           >
-            🔴 Critical &lt;24h ({criticalCount})
+            🔴 Critical ({criticalCount})
           </button>
           <button
             type="button"
             onClick={() => setFilter('warning')}
-            className={`px-3 py-1.5 text-xs font-mono uppercase tracking-wider ${
+            className={`px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
               filter === 'warning'
-                ? 'bg-[var(--kc-mango)] text-[var(--kc-charcoal)] font-bold'
-                : 'border border-[var(--kc-moss)] bg-[var(--kc-parchment)] text-[var(--kc-charcoal)]'
+                ? 'bg-[var(--kc-mango)] text-[#0A281E] font-bold shadow-sm'
+                : 'border border-[var(--kc-card-border)] bg-[var(--kc-card)] text-[var(--kc-ink)] hover:border-[var(--kc-mango)]'
             }`}
           >
-            🟡 Consume Soon ({warningCount})
+            🟡 Expiring Soon ({warningCount})
           </button>
-          <button
-            type="button"
-            onClick={() => setFilter('expired')}
-            className={`px-3 py-1.5 text-xs font-mono uppercase tracking-wider ${
-              filter === 'expired'
-                ? 'bg-[var(--kc-charcoal)] text-white font-bold'
-                : 'border border-[var(--kc-moss)] bg-[var(--kc-parchment)] text-[var(--kc-charcoal)]'
-            }`}
-          >
-            ⬛ Expired
-          </button>
-        </div>
-
-        <div className="text-xs font-mono text-[var(--kc-moss)]">
-          Autonomous cycle: Daily 06:00 IST
         </div>
       </div>
 
-      {/* Alerts List */}
-      {isLoaded && filteredAlerts.length === 0 ? (
-        <div className="almanac-card bg-[var(--kc-cream)] border border-[var(--kc-moss)] p-12 text-center">
-          <div className="w-12 h-12 mx-auto mb-4 text-[var(--kc-basil)] flex items-center justify-center">
-            <KhabarIcon name="success" size={40} />
-          </div>
-          <h2 className="text-lg font-bold text-[var(--kc-charcoal)] mb-1">Pantry In Order · No Pending Alerts</h2>
-          <p className="text-xs text-[var(--kc-moss)] max-w-md mx-auto mb-6">
-            All items in your kitchen ledger are comfortably within their safe storage windows. We will alert you when any deadline approaches.
+      {/* Alerts Feed */}
+      {filteredAlerts.length === 0 ? (
+        <div className="almanac-card bg-[var(--kc-card)] border border-[var(--kc-card-border)] p-12 text-center rounded-2xl">
+          <div className="text-4xl mb-3">🌿</div>
+          <h2 className="text-base font-bold text-[var(--kc-ink)] mb-1">
+            Kitchen Shelf in Optimal State
+          </h2>
+          <p className="text-xs text-[var(--kc-muted)] max-w-md mx-auto">
+            No items are expiring within critical alert thresholds. All active ingredients are safe in storage.
           </p>
-          <Link
-            href="/en/inventory/add"
-            className="inline-block px-4 py-2 text-xs font-mono uppercase font-bold tracking-wider bg-[var(--kc-basil)] text-white hover:opacity-90"
-          >
-            + Add New Ingestion Entry
-          </Link>
         </div>
       ) : (
         <div className="space-y-4">
           {filteredAlerts.map((alert) => {
             const isRead = readIds.includes(alert.id);
-            const borderCol =
-              alert.urgency === 'critical'
-                ? 'border-[var(--kc-chilli)]'
-                : alert.urgency === 'warning'
-                ? 'border-[var(--kc-mango)]'
-                : 'border-[var(--kc-charcoal)]';
-
-            const bgCol =
-              alert.urgency === 'critical'
-                ? 'bg-red-50/50'
-                : alert.urgency === 'warning'
-                ? 'bg-amber-50/50'
-                : 'bg-stone-50';
+            const isCritical = alert.urgency === 'critical';
 
             return (
               <div
                 key={alert.id}
-                className={`almanac-card border-l-4 border ${borderCol} ${bgCol} p-6 transition-all ${
-                  isRead ? 'opacity-80' : ''
-                }`}
                 onClick={() => handleMarkAsRead(alert.id)}
+                className={`almanac-card p-5 sm:p-6 rounded-2xl border transition-all ${
+                  isRead ? 'opacity-70 bg-[var(--kc-card)]' : 'bg-[var(--kc-card)] shadow-sm'
+                } ${
+                  isCritical
+                    ? 'border-red-300 dark:border-red-900/60'
+                    : 'border-[var(--kc-card-border)]'
+                }`}
               >
-                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                  <div className="flex items-start gap-3">
-                    <div className="pt-0.5">
-                      {alert.urgency === 'critical' ? (
-                        <KhabarIcon name="warning" size={24} className="text-[var(--kc-chilli)]" />
-                      ) : alert.urgency === 'warning' ? (
-                        <KhabarIcon name="expiring" size={24} className="text-[var(--kc-mango)]" />
-                      ) : (
-                        <KhabarIcon name="expired" size={24} className="text-[var(--kc-charcoal)]" />
-                      )}
-                    </div>
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-3">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-xl">
+                      {isCritical ? '🚨' : '⚠️'}
+                    </span>
                     <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-mono text-[10px] uppercase font-bold px-2 py-0.5 border border-[var(--kc-moss)] bg-white text-[var(--kc-charcoal)]">
-                          {alert.category.replace('_', ' ')}
-                        </span>
-                        {alert.urgency === 'critical' && (
-                          <span className="font-mono text-[10px] font-bold text-[var(--kc-chilli)]">
-                            URGENT DEADLINE
-                          </span>
-                        )}
-                        {!isRead && (
-                          <span className="w-2 h-2 rounded-full bg-[var(--kc-basil)]" title="Unread" />
-                        )}
-                      </div>
-                      <h3 className="text-base font-bold text-[var(--kc-charcoal)]">
+                      <h3 className="text-sm font-bold text-[var(--kc-ink)]">
                         {alert.headline}
                       </h3>
-                      <p className="text-xs text-[var(--kc-moss)] mt-1 font-sans leading-relaxed">
-                        {alert.message}
-                      </p>
-                      <div className="mt-3 p-2 bg-white/70 border border-[var(--kc-moss)]/40 text-[11px] font-mono text-[var(--kc-charcoal)]">
-                        <strong>Recommended Protocol:</strong> {alert.actionRecommendation}
-                      </div>
+                      <span className="text-[10px] font-mono text-[var(--kc-muted)]">
+                        {new Date(alert.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} · {alert.urgency.toUpperCase()}
+                      </span>
                     </div>
                   </div>
 
-                  {/* Actions */}
-                  <div className="flex sm:flex-col items-center sm:items-end gap-2 shrink-0">
+                  <div className="flex items-center gap-2">
                     <Link
-                      href={alert.actionHref}
-                      className="px-3 py-1.5 text-xs font-mono uppercase tracking-wider font-bold bg-[var(--kc-basil)] text-white hover:opacity-90 rounded-sm text-center"
+                      href={alert.actionHref || '/en/recipes'}
+                      className="px-3 py-1.5 text-xs font-mono font-bold rounded-lg bg-[var(--kc-mint)] text-[var(--kc-basil)] border border-[var(--kc-basil)] hover:bg-[var(--kc-basil)] hover:text-white transition-colors cursor-pointer"
                     >
-                      {alert.actionLabel}
+                      🍲 {alert.actionLabel || 'Rescue with Recipe'}
                     </Link>
                     <button
                       type="button"
@@ -259,28 +319,28 @@ export default function NotificationsPage() {
                         e.stopPropagation();
                         handleDismiss(alert.id);
                       }}
-                      className="px-2 py-1 text-[11px] font-mono text-[var(--kc-moss)] hover:text-[var(--kc-charcoal)] hover:underline"
+                      className="px-2.5 py-1.5 text-xs font-mono text-[var(--kc-muted)] hover:text-[var(--kc-ink)] rounded-lg border border-[var(--kc-card-border)] hover:bg-[var(--kc-bg)] cursor-pointer"
                     >
                       Dismiss
                     </button>
                   </div>
                 </div>
+
+                <p className="text-xs text-[var(--kc-ink)] leading-relaxed mb-3">
+                  {alert.message}
+                </p>
+
+                {alert.actionRecommendation && (
+                  <div className="p-2.5 rounded-xl bg-[var(--kc-bg)] border border-[var(--kc-hairline)] text-xs text-[var(--kc-muted)] flex items-center gap-2">
+                    <span className="text-sm font-bold text-[var(--kc-basil)]">💡</span>
+                    <span>Action: {alert.actionRecommendation}</span>
+                  </div>
+                )}
               </div>
             );
           })}
         </div>
       )}
-
-      {/* Conservation Almanac Note */}
-      <div className="mt-12 p-6 border border-[var(--kc-moss)] bg-[var(--kc-parchment)]">
-        <h4 className="font-bold text-xs uppercase font-mono text-[var(--kc-charcoal)] mb-2 flex items-center gap-2">
-          <KhabarIcon name="info" size={16} />
-          Household Conservation Notice
-        </h4>
-        <p className="text-xs text-[var(--kc-moss)] leading-relaxed font-sans">
-          Freshness predictions are generated using conservative cold-chain estimates and FSSAI shelf guidance. Always use your sensory judgement (smell, appearance, texture) before consuming food. The recipient or cook always decides whether food is safe to consume.
-        </p>
-      </div>
     </div>
   );
 }

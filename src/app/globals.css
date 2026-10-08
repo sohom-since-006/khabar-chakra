@@ -17,6 +17,11 @@
   --kc-blueberry: #2457A6;
   --kc-mint: #E8F4EC;
   --kc-glow: rgba(11, 110, 60, 0.12);
+  /* Semantic compatibility tokens */
+  --kc-charcoal: #0A281E;
+  --kc-moss: #4B685C;
+  --kc-cream: #FFFFFF;
+  --kc-parchment: #F7FAF7;
 }
 
 .dark {
@@ -35,6 +40,11 @@
   --kc-blueberry: #5B8EE6;
   --kc-mint: #123023;
   --kc-glow: rgba(34, 178, 130, 0.28);
+  /* Semantic compatibility tokens */
+  --kc-charcoal: #F2FBF6;
+  --kc-moss: #9BB8AB;
+  --kc-cream: #0E2219;
+  --kc-parchment: #07150F;
 }
 
 body {

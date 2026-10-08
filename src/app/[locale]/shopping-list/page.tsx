@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
 import { AppSidebar } from '@/components/layout/AppSidebar';
@@ -28,7 +28,7 @@ export default function BeforeYouBuyPage({
   params: Promise<{ locale: string }>;
 }) {
   const [locale, setLocale] = useState('en');
-  React.useEffect(() => {
+  useEffect(() => {
     params.then((p) => setLocale(p.locale));
   }, [params]);
 
@@ -40,6 +40,31 @@ export default function BeforeYouBuyPage({
   ]);
   const [newItemName, setNewItemName] = useState('');
   const [newItemQty, setNewItemQty] = useState('1 kg');
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('kc_shopping_list');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setShoppingList(parsed);
+        }
+      }
+    } catch {
+      // LocalStorage unavailable
+    }
+  }, []);
+
+  // Save to localStorage on change
+  const saveList = (newList: ShoppingItem[]) => {
+    setShoppingList(newList);
+    try {
+      localStorage.setItem('kc_shopping_list', JSON.stringify(newList));
+    } catch {
+      // Ignore
+    }
+  };
 
   // Real-time stock matching
   const matchingStock = query.trim()
@@ -53,7 +78,7 @@ export default function BeforeYouBuyPage({
     e.preventDefault();
     if (!newItemName.trim()) return;
 
-    setShoppingList([
+    saveList([
       ...shoppingList,
       {
         id: Date.now().toString(),
@@ -66,8 +91,22 @@ export default function BeforeYouBuyPage({
     setNewItemName('');
   };
 
+  const addQuickStaple = (name: string, qty: string, cat: string) => {
+    if (shoppingList.some((i) => i.name.toLowerCase() === name.toLowerCase())) return;
+    saveList([
+      ...shoppingList,
+      {
+        id: Date.now().toString(),
+        name,
+        quantity: qty,
+        category: cat,
+        checked: false,
+      },
+    ]);
+  };
+
   const toggleCheck = (id: string) => {
-    setShoppingList(
+    saveList(
       shoppingList.map((item) =>
         item.id === id ? { ...item, checked: !item.checked } : item
       )
@@ -75,7 +114,11 @@ export default function BeforeYouBuyPage({
   };
 
   const removeItem = (id: string) => {
-    setShoppingList(shoppingList.filter((item) => item.id !== id));
+    saveList(shoppingList.filter((item) => item.id !== id));
+  };
+
+  const clearCompleted = () => {
+    saveList(shoppingList.filter((item) => !item.checked));
   };
 
   return (
@@ -176,7 +219,7 @@ export default function BeforeYouBuyPage({
                   <button
                     type="button"
                     onClick={() => {
-                      setShoppingList([
+                      saveList([
                         ...shoppingList,
                         {
                           id: Date.now().toString(),
@@ -200,7 +243,7 @@ export default function BeforeYouBuyPage({
 
         {/* Smart Household Shopping Checklist */}
         <section className="p-6 rounded-2xl bg-[var(--kc-card)] border border-[var(--kc-card-border)] shadow-sm space-y-5">
-          <div className="flex items-center justify-between border-b border-[var(--kc-hairline)] pb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-[var(--kc-hairline)] pb-3 gap-3">
             <div>
               <h3 className="text-lg font-bold text-[var(--kc-ink)] font-montserrat">
                 Today&apos;s Verified Shopping List
@@ -209,9 +252,48 @@ export default function BeforeYouBuyPage({
                 Items cross-checked against your home pantry before leaving the house.
               </p>
             </div>
-            <span className="text-xs font-bold text-[var(--kc-basil)]">
-              {shoppingList.filter((i) => i.checked).length}/{shoppingList.length} Collected
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-bold text-[var(--kc-basil)]">
+                {shoppingList.filter((i) => i.checked).length}/{shoppingList.length} Collected
+              </span>
+              {shoppingList.some((i) => i.checked) && (
+                <button
+                  type="button"
+                  onClick={clearCompleted}
+                  className="text-xs px-2.5 py-1 rounded-lg border border-[var(--kc-card-border)] bg-[var(--kc-mint)] text-[var(--kc-basil)] hover:opacity-80 font-semibold transition-all"
+                >
+                  Clear Completed
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Quick Staple Add Chips */}
+          <div className="space-y-1.5">
+            <span className="text-[11px] font-mono text-[var(--kc-muted)] uppercase tracking-wider block">
+              Quick Staples (1-Click Add):
             </span>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { name: 'Cow Milk', qty: '1 L', cat: 'Dairy' },
+                { name: 'Eggs (Dozen)', qty: '12 pcs', cat: 'Dairy & Poultry' },
+                { name: 'Tomatoes', qty: '1 kg', cat: 'Vegetables' },
+                { name: 'Onions', qty: '2 kg', cat: 'Vegetables' },
+                { name: 'Mustard Oil', qty: '1 L', cat: 'Pantry' },
+                { name: 'Basmati Rice', qty: '2 kg', cat: 'Grains' },
+                { name: 'Atta / Flour', qty: '5 kg', cat: 'Grains' },
+              ].map((staple) => (
+                <button
+                  key={staple.name}
+                  type="button"
+                  onClick={() => addQuickStaple(staple.name, staple.qty, staple.cat)}
+                  className="text-xs px-2.5 py-1 rounded-full border border-[var(--kc-card-border)] bg-neutral-50 dark:bg-[#11241A] text-[var(--kc-ink)] hover:border-[var(--kc-basil)] hover:text-[var(--kc-basil)] transition-colors flex items-center gap-1"
+                >
+                  <span>+</span>
+                  <span>{staple.name}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Quick Add Form */}
