@@ -5,8 +5,8 @@
 ---
 
 ## Overall Status
-- **Current Phase:** Phase 6 (Polish & Launch)
-- **Active Task:** T6.0 Specification & Planning
+- **Current Phase:** Phases 1–6 Complete & Launch Ready
+- **Active Task:** All milestones verified (40/40 unit tests pass, Turbopack build succeeds)
 
 ---
 
@@ -62,7 +62,8 @@
 ---
 
 ## Phase 6: Polish & Launch
-- [ ] **T6.0 Spec**: Write `docs/phase-6/PHASE-6-SPEC.md`.
-- [ ] **T6.1 Internationalisation**: Bengali (`bn`) and Hindi (`hi`) translation keys and fonts.
-- [ ] **T6.2 PWA & Offline Support**: Service worker, offline shell, read-only cache.
-- [ ] **T6.3 Final Quality Gates & Runbook**: Performance budgets, security checklist, deployment guide.
+- [x] **T6.0 Spec**: `docs/phase-6/PHASE-6-SPEC.md` written and validated.
+- [x] **T6.1 Internationalisation**: Message dictionaries for English (`en`), Bengali (`bn`), and Hindi (`hi` without Hindi in logo per D18) in `messages/`, dynamic locale loader in `src/i18n/request.ts`.
+- [x] **T6.2 PWA & Offline Support**: Web App Manifest (`src/app/manifest.ts`) with theme color `#0B6E3C` and standalone display; offline shell service worker in `public/sw.js`.
+- [x] **T6.3 Final Quality Gates & Verification**: 40/40 unit tests passing, clean design linting, zero TypeScript errors, clean Turbopack production compilation.
+
