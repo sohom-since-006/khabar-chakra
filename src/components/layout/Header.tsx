@@ -40,6 +40,12 @@ export function Header({ locale }: HeaderProps) {
             <Link href={`/${locale}/home`} className="hover:text-[var(--kc-basil)] transition-colors">
               My Kitchen
             </Link>
+            <Link href={`/${locale}/recipes`} className="hover:text-[var(--kc-basil)] transition-colors">
+              Recipes
+            </Link>
+            <Link href={`/${locale}/nutrition`} className="hover:text-[var(--kc-basil)] transition-colors">
+              Nutrition
+            </Link>
             <Link href={`/${locale}/help`} className="hover:text-[var(--kc-basil)] transition-colors">
               Help
             </Link>
@@ -54,6 +60,16 @@ export function Header({ locale }: HeaderProps) {
 
         {/* Auth CTA & Mobile Toggle */}
         <div className="flex items-center gap-3">
+          <Link
+            href={`/${locale}/notifications`}
+            className="p-1.5 text-[var(--kc-ink)] hover:text-[var(--kc-basil)] border border-[var(--kc-hairline)] rounded-sm relative"
+            title="Freshness Alerts"
+            aria-label="Freshness Alerts"
+          >
+            <KhabarIcon name="bell" size={18} />
+            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[var(--kc-chilli)]" />
+          </Link>
+
           <div className="hidden sm:flex items-center gap-2">
             <Link
               href={`/${locale}/login`}
@@ -97,6 +113,28 @@ export function Header({ locale }: HeaderProps) {
             className="block text-sm py-1.5 font-medium"
           >
             My Kitchen
+          </Link>
+          <Link
+            href={`/${locale}/recipes`}
+            onClick={() => setMobileMenuOpen(false)}
+            className="block text-sm py-1.5 font-medium"
+          >
+            Recipe Rescue
+          </Link>
+          <Link
+            href={`/${locale}/nutrition`}
+            onClick={() => setMobileMenuOpen(false)}
+            className="block text-sm py-1.5 font-medium"
+          >
+            Nutrition Journal
+          </Link>
+          <Link
+            href={`/${locale}/notifications`}
+            onClick={() => setMobileMenuOpen(false)}
+            className="block text-sm py-1.5 font-medium flex items-center justify-between"
+          >
+            <span>Freshness Alerts</span>
+            <span className="w-2 h-2 rounded-full bg-[var(--kc-chilli)]" />
           </Link>
           <Link
             href={`/${locale}/help`}

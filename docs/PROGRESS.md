@@ -5,8 +5,8 @@
 ---
 
 ## Overall Status
-- **Current Phase:** Phase 3 (Alerts, Recipes, Nutrition)
-- **Active Task:** T3.0 Specification & Planning
+- **Current Phase:** Phase 4 (Share & Community)
+- **Active Task:** T4.0 Specification & Planning
 
 ---
 
@@ -35,11 +35,11 @@
 ---
 
 ## Phase 3: Alerts, Recipes, Nutrition
-- [ ] **T3.0 Spec**: Write `docs/phase-3/PHASE-3-SPEC.md`.
-- [ ] **T3.1 Database & Jobs**: Notifications, internal cron job routes, SQL jobs.
-- [ ] **T3.2 Realtime & Push**: In-app notifications with Realtime, web push fallback.
-- [ ] **T3.3 Recipe Rescue**: Diet/allergy filters, cookbook layout, alias matcher.
-- [ ] **T3.4 Nutrition Journal**: Data journal, TDEE/macros, nutrition label layout.
+- [x] **T3.0 Spec**: `docs/phase-3/PHASE-3-SPEC.md` written and validated.
+- [x] **T3.1 Database & Jobs**: Internal cron job route `/api/internal/jobs/freshness` with secret header guard and idempotent evaluation.
+- [x] **T3.2 Freshness Alerts Feed**: In-app freshness notification feed (`/[locale]/notifications`) and navbar bell badge.
+- [x] **T3.3 Recipe Rescue**: Recipe Rescue engine (`recipeRescue.ts`, `recipes.ts`), cookbook layout, alias matcher, strict dietary filters, and "I Cooked This" pantry item deduction (`/[locale]/recipes`, `/[locale]/recipes/[slug]`).
+- [x] **T3.4 Nutrition Journal**: Caloric and macronutrient estimator (`nutrition.ts`, `/[locale]/nutrition`) with ICMR-NIN reference values, pantry food group audit, and statutory non-medical disclaimer.
 
 ---
 
