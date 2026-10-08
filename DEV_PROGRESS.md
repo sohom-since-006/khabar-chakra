@@ -110,6 +110,7 @@ Remote control has been enabled in `C:\Users\sohom\.gemini\config\config.json`:
 | 2026-10-08 | Installed `@upstash/ratelimit` & `@upstash/redis`, built `src/lib/ratelimit.ts`, and protected `/api/contact`, `/api/internal/jobs/freshness`, and `/api/listings/[id]/reveal-contact` | `src/lib/ratelimit.ts`, `src/app/api/**` | Complete & Verified |
 | 2026-10-08 | Integrated MapTiler street tiles + Leaflet raster layer into `AvailableFoodMap.tsx` respecting static pin security (D1, D24) and Kitchen Almanac theme | `src/components/map/AvailableFoodMap.tsx`, `package.json`, `src/app/globals.css` | Complete & Verified |
 | 2026-10-08 | Built Cloudflare Turnstile token verifier (`src/lib/turnstile.ts`) and client widget (`TurnstileWidget.tsx`), embedded on `/contact` with dev mode fallback | `src/lib/turnstile.ts`, `src/components/ui/TurnstileWidget.tsx`, `src/app/[locale]/contact/page.tsx` | Complete & Verified |
+| 2026-10-08 | Moved `app_logo.png` to `public/branding/app-logo.png` & canonical logo; generated full PWA icon cascade & favicons; wired official logo into `Header`, `Footer`, and Landing Page masthead | `public/branding/**`, `public/icons/**`, `src/components/layout/**`, `src/app/[locale]/page.tsx` | Complete & Verified |
 
 ---
 

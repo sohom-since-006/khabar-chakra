@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { AlmanacStillLife } from '@/components/landing/AlmanacStillLife';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
@@ -23,12 +24,24 @@ export default async function LandingPage({ params }: LandingPageProps) {
               <span className="almanac-num">EST. 2026 · ASANSOL</span>
               <span className="almanac-stamp">SURPLUS ALMANAC</span>
             </div>
-            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight mt-2 text-[var(--kc-ink)]">
-              {t('masthead')}
-            </h1>
-            <p className="text-base sm:text-lg text-[var(--kc-muted)] mt-1 font-serif italic">
-              {tc('siteNameBengali')} · A community food-lifecycle gazette for homes, caterers & NGOs
-            </p>
+            <div className="flex items-center gap-4 mt-2">
+              <Image
+                src="/branding/app-logo.png"
+                alt="Khabar Chakra Official Mark"
+                width={64}
+                height={64}
+                className="rounded-sm object-contain border border-[var(--kc-hairline)] bg-white p-1 hidden sm:block"
+                priority
+              />
+              <div>
+                <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-[var(--kc-ink)]">
+                  {t('masthead')}
+                </h1>
+                <p className="text-base sm:text-lg text-[var(--kc-muted)] mt-1 font-serif italic">
+                  {tc('siteNameBengali')} · A community food-lifecycle gazette for homes, caterers & NGOs
+                </p>
+              </div>
+            </div>
           </div>
           <div className="text-right hidden sm:block">
             <div className="font-mono text-xs text-[var(--kc-muted)]">{t('issueNo')}</div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface FooterProps {
   locale: string;
@@ -12,6 +13,18 @@ export function Footer({ locale }: FooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-[var(--kc-hairline)] text-sm">
           {/* Col 1: Platform */}
           <div className="space-y-3">
+            <div className="flex items-center gap-2.5 mb-1">
+              <Image
+                src="/branding/app-logo.png"
+                alt="Khabar Chakra Logo"
+                width={32}
+                height={32}
+                className="rounded-sm object-contain"
+              />
+              <span className="font-bold tracking-tight text-sm text-[var(--kc-ink)]">
+                Khabar Chakra
+              </span>
+            </div>
             <div className="font-mono text-xs uppercase tracking-wider text-[var(--kc-muted)]">
               01 · PLATFORM
             </div>

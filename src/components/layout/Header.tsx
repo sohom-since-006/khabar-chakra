@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
 
 interface HeaderProps {
@@ -23,10 +24,15 @@ export function Header({ locale }: HeaderProps) {
       {/* Main Masthead Navigation */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <Link href={`/${locale}`} className="flex items-center gap-2 text-[var(--kc-ink)] hover:opacity-90">
-            <span className="w-8 h-8 rounded-sm bg-[var(--kc-basil)] text-white flex items-center justify-center font-bold text-sm">
-              খচ
-            </span>
+          <Link href={`/${locale}`} className="flex items-center gap-2.5 text-[var(--kc-ink)] hover:opacity-90">
+            <Image
+              src="/branding/app-logo.png"
+              alt="Khabar Chakra"
+              width={38}
+              height={38}
+              className="rounded-sm object-contain"
+              priority
+            />
             <div className="leading-tight">
               <span className="font-bold tracking-tight text-lg block">Khabar Chakra</span>
               <span className="text-[10px] text-[var(--kc-muted)] block -mt-0.5">খাবার চক্র · Kitchen Almanac</span>
