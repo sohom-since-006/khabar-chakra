@@ -137,6 +137,20 @@ export function Header({ locale }: HeaderProps) {
             <span className="w-2 h-2 rounded-full bg-[var(--kc-chilli)]" />
           </Link>
           <Link
+            href={`/${locale}/share/new`}
+            onClick={() => setMobileMenuOpen(false)}
+            className="block text-sm py-1.5 font-medium text-[var(--kc-basil)] font-semibold"
+          >
+            + Post Surplus Food
+          </Link>
+          <Link
+            href={`/${locale}/emergency`}
+            onClick={() => setMobileMenuOpen(false)}
+            className="block text-sm py-1.5 font-medium text-[var(--kc-chilli)] font-semibold"
+          >
+            ★ Emergency NGO Relief
+          </Link>
+          <Link
             href={`/${locale}/help`}
             onClick={() => setMobileMenuOpen(false)}
             className="block text-sm py-1.5 font-medium"
