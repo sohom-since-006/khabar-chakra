@@ -1,23 +1,7 @@
-// Khabar Chakra — Offline Shell Service Worker (v1.0)
-const CACHE_NAME = 'khabar-chakra-shell-v1';
-const PRECACHE_URLS = [
-  '/',
-  '/en',
-  '/en/home',
-  '/en/available',
-  '/en/recipes',
-  '/en/waste',
-  '/en/impact',
-];
+// Khabar Chakra — Service Worker (v2.0)
+const CACHE_NAME = 'khabar-chakra-shell-v2';
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(PRECACHE_URLS).catch((err) => {
-        console.warn('Pre-cache partial failure:', err);
-      });
-    })
-  );
+self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
@@ -39,16 +23,26 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
+  const url = new URL(event.request.url);
+  // Do not intercept non-http, API, auth, or static assets
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
+  if (url.pathname.startsWith('/api/') || url.pathname.includes('/auth/')) return;
+
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
+    fetch(event.request).catch(async () => {
+      const cachedResponse = await caches.match(event.request);
+      if (cachedResponse) return cachedResponse;
+
+      if (event.request.mode === 'navigate') {
+        const homeFallback = await caches.match('/en/home') || await caches.match('/en');
+        if (homeFallback) return homeFallback;
       }
-      return fetch(event.request).catch(() => {
-        // Fallback for document navigation when network is down
-        if (event.request.mode === 'navigate') {
-          return caches.match('/en/home');
-        }
+
+      // Safe fallback that never resolves to undefined
+      return new Response('Network unavailable. Please reconnect to continue.', {
+        status: 503,
+        statusText: 'Service Unavailable',
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' },
       });
     })
   );

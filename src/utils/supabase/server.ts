@@ -10,8 +10,8 @@ const supabaseKey =
 export const createClient = async (cookieStore?: Awaited<ReturnType<typeof cookies>>) => {
   const store = cookieStore || (await cookies());
   return createServerClient(
-    supabaseUrl!,
-    supabaseKey!,
+    supabaseUrl || 'https://placeholder.supabase.co',
+    supabaseKey || 'placeholder-anon-key',
     {
       cookies: {
         getAll() {

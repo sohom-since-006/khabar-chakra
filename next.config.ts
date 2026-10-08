@@ -14,7 +14,7 @@ const securityHeaders = [
   },
   {
     key: "X-Frame-Options",
-    value: "DENY",
+    value: "SAMEORIGIN",
   },
   {
     key: "X-Content-Type-Options",
@@ -34,14 +34,15 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com",
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob: https://*.supabase.co https://*.maptiler.com https://*.openstreetmap.org https://images.openfoodfacts.org",
+      "img-src 'self' data: blob: https://*.supabase.co https://*.maptiler.com https://*.openstreetmap.org https://images.openfoodfacts.org https://lh3.googleusercontent.com",
       "font-src 'self' data:",
-      "connect-src 'self' https://*.supabase.co https://*.maptiler.com https://*.openstreetmap.org https://world.openfoodfacts.org https://clean-mutt-212386.upstash.io https://challenges.cloudflare.com",
+      "connect-src 'self' https://*.supabase.co https://*.maptiler.com https://*.openstreetmap.org https://world.openfoodfacts.org https://clean-mutt-212386.upstash.io https://challenges.cloudflare.com https://accounts.google.com https://*.googleapis.com",
+      "worker-src 'self' blob:",
       "frame-src https://challenges.cloudflare.com",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
-      "frame-ancestors 'none'",
+      "frame-ancestors 'self' https://vercel.live",
     ].join("; "),
   },
 ];
@@ -49,6 +50,14 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+    ],
+  },
   async headers() {
     return [
       {

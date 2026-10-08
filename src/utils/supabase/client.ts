@@ -7,6 +7,6 @@ const supabaseKey =
 
 export const createClient = () =>
   createBrowserClient(
-    supabaseUrl!,
-    supabaseKey!
+    supabaseUrl || 'https://placeholder.supabase.co',
+    supabaseKey || 'placeholder-anon-key'
   );
