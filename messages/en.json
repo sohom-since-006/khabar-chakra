@@ -1,0 +1,122 @@
+{
+  "common": {
+    "siteName": "Khabar Chakra",
+    "siteNameBengali": "খাবার চক্র",
+    "tagline": "A community food-lifecycle platform: track freshness, share surplus, handle waste responsibly.",
+    "madeBy": "Made by The S-QUAD",
+    "nav": {
+      "home": "My Kitchen",
+      "available": "Available Food",
+      "addFood": "Add Food",
+      "help": "Help Centre",
+      "faq": "FAQ",
+      "contact": "Contact",
+      "team": "Team",
+      "login": "Log in",
+      "signup": "Sign up",
+      "profile": "Profile",
+      "settings": "Settings",
+      "logout": "Log out"
+    },
+    "actions": {
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "submit": "Submit",
+      "loading": "Loading...",
+      "back": "Back"
+    }
+  },
+  "landing": {
+    "masthead": "The Kitchen Almanac",
+    "issueNo": "Vol. 1 · Asansol Edition",
+    "heroTitle": "Never let good food go to waste.",
+    "heroSubtitle": "Track freshness in your kitchen. Share surplus before the clock runs out. Rescue meals and redirect organic waste with dignity.",
+    "ctaExplore": "Explore Available Food",
+    "ctaJoin": "Open Your Kitchen Ledger",
+    "chaptersTitle": "Contents & Chapters",
+    "chapter1": {
+      "num": "01",
+      "title": "Freshness & Tracking",
+      "desc": "Track expiry windows, prevent kitchen waste, and receive alerts before shelf-life expires."
+    },
+    "chapter2": {
+      "num": "02",
+      "title": "Community Surplus Sharing",
+      "desc": "Homes, caterers, and events list fresh surplus within a strict 48-hour availability window."
+    },
+    "chapter3": {
+      "num": "03",
+      "title": "Verified Organisation Network",
+      "desc": "Trusted NGOs and community partners coordinate handovers through verified pickup codes."
+    },
+    "chapter4": {
+      "num": "04",
+      "title": "Responsible Waste Cycles",
+      "desc": "Compost, animal feed, and recycling drop-off guides when food can no longer be consumed."
+    }
+  },
+  "auth": {
+    "signupTitle": "Register Kitchen Ledger",
+    "signupSubtitle": "Create an account to track food and share surplus.",
+    "loginTitle": "Welcome Back",
+    "loginSubtitle": "Sign in to access your kitchen ledger and listings.",
+    "fullName": "Full Name",
+    "email": "Email Address",
+    "password": "Password",
+    "accountType": "Account Type",
+    "member": "Household / Individual",
+    "caterer": "Caterer / Food Business",
+    "ngo": "Verified NGO / Food Bank",
+    "ageConfirmation": "I confirm that I am 18 years of age or older.",
+    "termsConfirmation": "I accept the Terms of Service and Privacy Policy.",
+    "signupButton": "Create Account",
+    "loginButton": "Sign In",
+    "noAccount": "Don't have an account yet?",
+    "haveAccount": "Already registered?",
+    "forgotPassword": "Forgot password?",
+    "verifyEmailTitle": "Verify Your Email",
+    "verifyEmailDesc": "A verification link has been sent to your email. Please click the link to activate your account.",
+    "resendVerification": "Resend Link"
+  },
+  "contact": {
+    "title": "Correspondence & Inbox",
+    "subtitle": "Send a dispatch to the Khabar Chakra administration team.",
+    "name": "Your Name",
+    "email": "Return Address (Email)",
+    "topic": "Topic",
+    "general": "General Inquiry",
+    "verification": "Organisation Verification",
+    "safety": "Food Safety Concern",
+    "grievance": "Privacy / Grievance",
+    "message": "Message Content",
+    "send": "Post Dispatch",
+    "techSupportNotice": "Technical Support: Coming soon (handled via administrative inbox).",
+    "success": "Your message has been delivered to the admin inbox."
+  },
+  "team": {
+    "title": "The S-QUAD Colophon",
+    "subtitle": "The student team behind Khabar Chakra.",
+    "role": "Creators & Maintainers",
+    "note": "Khabar Chakra is a public-good, free project built for community resilience."
+  },
+  "help": {
+    "title": "Help Centre & Manual",
+    "subtitle": "Guides, policies, and instructions for donors and recipients."
+  },
+  "faq": {
+    "title": "Frequently Answered Inquiries",
+    "subtitle": "Clear answers on food safety, pickup codes, and community rules.",
+    "search": "Search questions..."
+  },
+  "settings": {
+    "title": "Ledger Preferences",
+    "appearance": "Appearance & Theme",
+    "light": "Market Fresh (Light)",
+    "dark": "Moss Night (Dark)",
+    "system": "System Default",
+    "reduceMotion": "Reduce Animations",
+    "language": "Interface Language",
+    "dangerZone": "Account Termination",
+    "deleteAccount": "Delete Kitchen Ledger"
+  }
+}

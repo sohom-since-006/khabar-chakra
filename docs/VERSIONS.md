@@ -11,6 +11,9 @@ Created: 2026-10-08
 | `typescript` | ^5.0 | TypeScript strict mode. |
 | `@supabase/supabase-js` | ^2.49.1 | Supabase JavaScript client. |
 | `@supabase/ssr` | ^0.6.1 | Supabase SSR package with cookie methods. |
+| `next-intl` | ^4.14.9 | i18n routing and message extraction. |
+| `three` | ^0.186.1 | Three.js WebGL rendering for AlmanacStillLife. |
+| `vitest` | ^5.0.3 | Unit test runner. |
 
 ## Notes on Next.js 16
 - Request interception middleware uses `src/proxy.ts`.

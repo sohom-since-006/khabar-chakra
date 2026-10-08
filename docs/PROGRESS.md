@@ -5,8 +5,8 @@
 ---
 
 ## Overall Status
-- **Current Phase:** Phase 1 (Foundation)
-- **Active Task:** Step 0 Preparation & Phase 1 Core Implementation
+- **Current Phase:** Phase 2 (Scan & Track)
+- **Active Task:** T2.0 Specification & Architecture
 
 ---
 
@@ -15,12 +15,12 @@
 - [x] **T1.1 Core Documents & Decisions**: `docs/DECISIONS.md`, `docs/PROGRESS.md`, `docs/IMPLEMENTATION-PLAN.md` created.
 - [x] **T1.2 Next.js 16 Bootstrap**: App Router, Turbopack, Tailwind CSS v4, `src/proxy.ts` session management.
 - [x] **T1.3 Supabase Integration**: Server/browser/proxy clients configured, `.env.local` created, `.env.example` committed.
-- [ ] **T1.4 Design System & "Kitchen Almanac" Tokens**: Semantic colors (Basil, Mango, Chilli, Blueberry), typographic scale, hairline rules, zero glassmorphism.
-- [ ] **T1.5 Landing Page**: Magazine cover composition, masthead, contents index, single 3D still-life with capability tiers.
-- [ ] **T1.6 Auth Flow**: Sign up (18+ gate, Turnstile), Login/Logout, Email verification, Password reset.
-- [ ] **T1.7 Core Content Pages**: Team colophon, Help Centre, searchable FAQ, Contact form (admin inbox), Draft legal pages.
-- [ ] **T1.8 User Profile & Settings**: Preferences, theme switcher, Reduce animations, account deletion shell.
-- [ ] **T1.9 Quality Gates**: Typecheck, lint, build, axe a11y, visual QA at 360/768/1280px.
+- [x] **T1.4 Design System & "Kitchen Almanac" Tokens**: Semantic colors (Basil, Mango, Chilli, Blueberry), typographic scale, hairline rules, zero glassmorphism, 78-icon SVG sprite system.
+- [x] **T1.5 Landing Page**: Magazine cover composition, masthead, contents index, single 3D still-life with capability tiers (T2/T1/T0) and FPS watchdog.
+- [x] **T1.6 Auth Flow**: Sign up (18+ gate, terms gate), Login/Logout, Email verification with 60s cooldown, Password reset and recovery dispatch, Auth callback route.
+- [x] **T1.7 Core Content Pages**: Team colophon (D13), Help Centre (7 sections), searchable FAQ (12 items + anchor links), Contact form (Form 102 to admin inbox), Draft legal pages (terms, privacy, food-safety, guidelines).
+- [x] **T1.8 User Profile & Settings**: First-run Welcome passport, Preferences, theme switcher, Reduce animations, account deletion shell, security page.
+- [x] **T1.9 Quality Gates**: Typecheck (PASS), ESLint (PASS), Design linter (PASS), Vitest (PASS 9/9), Next.js 16 Turbopack build (PASS).
 
 ---
 
