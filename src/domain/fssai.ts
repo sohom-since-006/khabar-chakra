@@ -26,7 +26,7 @@ export function validateFSSAI(params: {
       isFlagged: true,
       status: 'missing',
       guidanceNotice:
-        'FSSAI mark not detected on packaged good. Item may not adhere to Indian statutory labelling rules. Verify packaging before consuming; cannot be listed for surplus sharing.',
+        'FSSAI mark not detected on packaged good. Item may not adhere to Indian statutory labelling rules. Verify packaging before consuming.',
     };
   }
 

@@ -68,57 +68,5 @@ describe('Phase 1 Foundation · Validation & Security Gates', () => {
     expect(isSafeRedirect('javascript:alert(1)')).toBe(false);
   });
 
-  // 3. Contact Form Schema (TC-SITE-001)
-  const contactSchema = z.object({
-    name: z.string().trim().min(2).max(80),
-    email: z.string().trim().email().max(254),
-    topic: z.enum([
-      'food_info',
-      'donation',
-      'technical_support',
-      'partnership',
-      'food_distribution',
-      'privacy_request',
-      'other',
-    ]),
-    subject: z.string().trim().min(3).max(120),
-    message: z.string().trim().min(10).max(2000),
-  });
 
-  it('validates a standard contact inquiry (TC-SITE-001)', () => {
-    const valid = contactSchema.safeParse({
-      name: 'Ananya Das',
-      email: 'ananya@example.com',
-      topic: 'food_distribution',
-      subject: 'Volunteer coordination in Asansol',
-      message: 'Hello S-QUAD team, our NGO operates 4 community kitchens and would like to register for verification.',
-    });
-    expect(valid.success).toBe(true);
-  });
-
-  it('rejects contact message shorter than 10 chars', () => {
-    const invalid = contactSchema.safeParse({
-      name: 'Ananya',
-      email: 'ananya@example.com',
-      topic: 'other',
-      subject: 'Hi',
-      message: 'Too short',
-    });
-    expect(invalid.success).toBe(false);
-  });
-
-  // 4. Decision D8: Raw Meat/Fish/Egg sharing prohibition
-  function isFoodListable(category: string, isCooked: boolean): boolean {
-    if (category === 'meat_fish_egg') {
-      return isCooked; // Only cooked meals containing them are listable; raw is strictly forbidden
-    }
-    return true;
-  }
-
-  it('strictly forbids raw meat, fish, and eggs from public listing (Decision D8)', () => {
-    expect(isFoodListable('meat_fish_egg', false)).toBe(false);
-    expect(isFoodListable('meat_fish_egg', true)).toBe(true);
-    expect(isFoodListable('vegetables', false)).toBe(true);
-    expect(isFoodListable('cooked_food', true)).toBe(true);
-  });
 });

@@ -397,8 +397,8 @@ import { nunito, caveat } from '@/lib/fonts';
 import '../globals.css';
 
 export const metadata: Metadata = {
-  title: { default: 'Khabar Chakra — Save • Share • Sustain', template: '%s · Khabar Chakra' },
-  description: 'Track food freshness, share surplus food nearby, and sort waste the right way.',
+  title: { default: 'Khabar Chakra — Track • Cook • Save', template: '%s · Khabar Chakra' },
+  description: 'Track food freshness, prioritize domestic ingredients, and prevent food waste.',
 };
 
 export default async function LocaleLayout({
@@ -603,7 +603,7 @@ alter default privileges for role postgres in schema public revoke all on sequen
 
 create type public.account_type as enum ('member', 'business', 'ngo');
 create type public.contact_topic as enum
-  ('food_info', 'donation', 'tech_support', 'partnership', 'food_distribution', 'privacy_request', 'other');
+  ('kitchen_intelligence', 'inventory_tracking', 'recipe_rescue', 'technical_support', 'privacy_request', 'other');
 create type public.inbox_status as enum ('new', 'read', 'replied', 'archived', 'spam');
 ```
 
@@ -796,7 +796,7 @@ create table public.faq_items (
   slug text not null unique,
   question_i18n jsonb not null check (jsonb_typeof(question_i18n -> 'en') = 'string'),
   answer_i18n jsonb not null check (jsonb_typeof(answer_i18n -> 'en') = 'string'),
-  audience text not null default 'all' check (audience in ('all', 'donor', 'ngo', 'event_host', 'household')),
+  audience text not null default 'all' check (audience in ('all', 'household')),
   sort_order integer not null default 0,
   is_published boolean not null default true,
   updated_at timestamptz not null default now()
@@ -809,7 +809,7 @@ create table public.help_articles (
   id uuid primary key default gen_random_uuid(),
   slug text not null unique,
   section text not null check (section in
-    ('getting_started', 'donors', 'event_hosts', 'ngos', 'food_safety', 'waste', 'troubleshooting')),
+    ('getting_started', 'inventory', 'smart_freshness', 'recipe_rescue', 'waste', 'troubleshooting')),
   title_i18n jsonb not null check (jsonb_typeof(title_i18n -> 'en') = 'string'),
   body_i18n jsonb not null check (jsonb_typeof(body_i18n -> 'en') = 'string'),
   sort_order integer not null default 0,

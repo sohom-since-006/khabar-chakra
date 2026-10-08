@@ -25,8 +25,8 @@ You have **full autonomy** to read the repo, write files, run scripts, install *
 
 ## 1. PROJECT CONTEXT (read, don't ask)
 
-- **App:** community food-lifecycle platform. Tagline: *Save • Share • Sustain*.
-- **Lifecycle:** Buy → Track → Store → Consume → Cook → Share → Donate → Reuse → Recycle → Dispose responsibly.
+- **App:** household food-lifecycle & domestic waste prevention platform. Tagline: *Track • Cook • Save*.
+- **Lifecycle:** Buy → Track → Store → Triage → Cook → Consume → Compost → Recycle → Avoid Waste.
 - **Region/identity:** West Bengal first (Asansol), designed for all India. Identity must be **subtle and modern**, not ornamental. No flags, no religious symbols.
 - **Palette:** the project design system is called **"Market Fresh"**. Before choosing any colour, **read `docs/DESIGN SYSTEM*` and `src/styles/`** and extract the real tokens. Use those hex values. Only if a token is missing, use the fallback palette in §4.
 - **Public assets:** `public/` holds icons, 3D models and illustrations.

@@ -167,7 +167,7 @@ export default function ProfilePage() {
                   className="w-full px-3 py-2 text-sm border border-[var(--kc-moss)] bg-[var(--kc-parchment)] text-[var(--kc-charcoal)] focus:outline-none focus:border-[var(--kc-basil)]"
                 />
                 <span className="text-[11px] text-[var(--kc-moss)] mt-1 block">
-                  Helps calibrate inventory portion calculations and surplus estimators.
+                  Helps calibrate inventory portion calculations and waste risk estimators.
                 </span>
               </div>
 

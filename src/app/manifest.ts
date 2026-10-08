@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Khabar Chakra (খাবার চক্র) · Kitchen Almanac',
     short_name: 'Khabar Chakra',
-    description: 'Community food-lifecycle platform: track freshness, share surplus, handle waste responsibly.',
+    description: 'Domestic kitchen food-lifecycle platform: track freshness, prevent duplicates, handle waste responsibly.',
     start_url: '/en',
     display: 'standalone',
     background_color: '#FAFDF6',

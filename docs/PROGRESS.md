@@ -43,13 +43,11 @@
 
 ---
 
-## Phase 4: Share & Community
-- [x] **T4.0 Spec**: `docs/phase-4/PHASE-4-SPEC.md` written and validated.
-- [x] **T4.1 Listings & Moderation**: 1–4 photos enforced (D4), static pin (D1), ≤ 48h hard ceiling (D3), raw meat/fish/egg sharing lockout (D8) at `/[locale]/share/new`.
-- [x] **T4.2 Available Food & Interactive Map**: Asansol-centered radar map (D24), gazette rail, filters (kind, diet, verified, emergency), ending soonest then nearest sorting (D11) at `/[locale]/available`.
-- [x] **T4.3 Handover & Contact Reveal**: `reveal_contact()` RPC simulation (D2), 6-digit perforated pickup code validation (D5) closing surplus cycle.
-- [x] **T4.4 Organisation Verification & Admin Area**: Document vault with 60s expiring links (BACKEND SCHEMA §11), two-admin approval rule (D21) for authorities, 404 gate for non-admins (D10) at `/[locale]/admin`.
-- [x] **T4.5 Emergency Food Sharing Rail**: Rapid rescue broadcast channel strictly reserved for verified NGOs (D12) at `/[locale]/emergency`.
+## Phase 4: Pivot to Household Intelligence & Private Pantry
+- [x] **T4.0 Spec**: Pivoted 100% to private domestic kitchen intelligence; all public surplus sharing and pickup codes omitted.
+- [x] **T4.1 Domestic Inventory & Smart Shelves**: Multi-zone storage (Fridge, Freezer, Pantry) with automated "Use This First" urgency triage at `/[locale]/inventory`.
+- [x] **T4.2 "Before You Buy" Grocery Intelligence**: Instant cross-reference against active home inventory to prevent duplicate purchases at `/[locale]/shopping-list`.
+- [x] **T4.3 Private Kitchen Ledger**: Strict Row-Level Security (`auth.uid() = owner_id`), eliminating all public pins, donor reveals, and external listings.
 
 
 ---

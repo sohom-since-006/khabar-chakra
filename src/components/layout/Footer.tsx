@@ -29,10 +29,10 @@ export function Footer({ locale }: FooterProps) {
               01 · PLATFORM
             </div>
             <p className="text-xs text-[var(--kc-muted)] leading-relaxed">
-              Khabar Chakra (খাবার চক্র) is a community food-lifecycle platform. We track freshness, share surplus before it expires, and handle waste responsibly.
+              Khabar Chakra (খাবার চক্র) is a domestic kitchen food-lifecycle intelligence platform: smart pantry & fridge tracking, dynamic freshness scoring, recipe rescue, and zero domestic waste analytics.
             </p>
             <div className="text-xs font-mono text-[var(--kc-muted)]">
-              Region: West Bengal (Asansol Focus)
+              Domestic Kitchens · Personal Zero Waste
             </div>
           </div>
 
@@ -43,18 +43,28 @@ export function Footer({ locale }: FooterProps) {
             </div>
             <ul className="space-y-1.5 text-xs">
               <li>
-                <Link href={`/${locale}/available`} className="hover:text-[var(--kc-basil)]">
-                  Available Food Feed
-                </Link>
-              </li>
-              <li>
                 <Link href={`/${locale}/home`} className="hover:text-[var(--kc-basil)]">
-                  My Kitchen Ledger
+                  My Kitchen Inventory
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/help`} className="hover:text-[var(--kc-basil)]">
-                  Help Centre & Guides
+                <Link href={`/${locale}/inventory`} className="hover:text-[var(--kc-basil)]">
+                  &ldquo;Use This First&rdquo; Priority Shelf
+                </Link>
+              </li>
+              <li>
+                <Link href={`/${locale}/recipes`} className="hover:text-[var(--kc-basil)]">
+                  Recipe Rescue Engine
+                </Link>
+              </li>
+              <li>
+                <Link href={`/${locale}/shopping-list`} className="hover:text-[var(--kc-basil)]">
+                  &ldquo;Before You Buy&rdquo; Assistant
+                </Link>
+              </li>
+              <li>
+                <Link href={`/${locale}/waste`} className="hover:text-[var(--kc-basil)]">
+                  Waste & ₹ Savings Analytics
                 </Link>
               </li>
               <li>
@@ -72,26 +82,23 @@ export function Footer({ locale }: FooterProps) {
             </div>
             <ul className="space-y-1.5 text-xs">
               <li>
-                <Link href={`/${locale}/legal/food-safety`} className="hover:text-[var(--kc-basil)] flex items-center gap-1.5">
-                  <span>Food Safety Disclaimer</span>
-                  <span className="text-[10px] text-[var(--kc-chilli)] font-mono">[DRAFT]</span>
+                <Link href={`/${locale}/legal/food-safety`} className="hover:text-[var(--kc-basil)]">
+                  Food Safety Disclaimer & Standards
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/legal/terms`} className="hover:text-[var(--kc-basil)] flex items-center gap-1.5">
-                  <span>Terms of Service (18+)</span>
-                  <span className="text-[10px] text-[var(--kc-chilli)] font-mono">[DRAFT]</span>
+                <Link href={`/${locale}/legal/terms`} className="hover:text-[var(--kc-basil)]">
+                  Terms of Service (18+)
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/legal/privacy`} className="hover:text-[var(--kc-basil)] flex items-center gap-1.5">
-                  <span>Privacy Policy</span>
-                  <span className="text-[10px] text-[var(--kc-chilli)] font-mono">[DRAFT]</span>
+                <Link href={`/${locale}/legal/privacy`} className="hover:text-[var(--kc-basil)]">
+                  Privacy Policy & RLS Security
                 </Link>
               </li>
               <li>
                 <Link href={`/${locale}/legal/guidelines`} className="hover:text-[var(--kc-basil)]">
-                  Community & FSSAI Guidelines
+                  Domestic Zero-Waste Guidelines
                 </Link>
               </li>
             </ul>
@@ -111,15 +118,15 @@ export function Footer({ locale }: FooterProps) {
               </Link>
             </div>
             <div className="pt-2 text-[11px] text-[var(--kc-muted)] italic">
-              Technical support: Coming soon
+              Technical support: Active via GitHub & Contact
             </div>
           </div>
         </div>
 
-        {/* Bottom Colophon Bar — Mandated by Decision D13 */}
+        {/* Bottom Colophon Bar */}
         <div className="pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-[var(--kc-muted)] gap-3 font-mono">
           <div>
-            © {new Date().getFullYear()} Khabar Chakra · Open Community Project
+            © {new Date().getFullYear()} Khabar Chakra · Domestic Food Intelligence
           </div>
           <div>
             <Link

@@ -58,7 +58,7 @@ export const WASTE_TAXONOMY: WasteCategoryGuide[] = [
     bengaliTitle: 'পশু খাদ্য ও গোশালা',
     badgeColor: 'var(--kc-mango)',
     iconName: 'consume',
-    description: 'Clean, unseasoned surplus grains, chapati, and safe vegetables for community cattle or gaushalas.',
+    description: 'Clean, unseasoned leftover grains, chapati, and safe vegetables for community cattle or gaushalas.',
     permittedItems: [
       'Unsalted boiled rice or plain dal',
       'Dry rotis and plain bread',

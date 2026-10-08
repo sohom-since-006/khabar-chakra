@@ -5,7 +5,7 @@
 > **Binding Invariants Enforced:**
 > - ₹0 cost ceiling (client-side classification, Open Food Facts free API, no paid APIs).
 > - Zero certifying of food safety ("Recipient decides").
-> - Strict Meat/Fish/Egg sharing ban (D8): raw meat, fish, and eggs trackable in inventory, NEVER listable/shareable/donatable/swappable.
+> - Private Household Data (D1): Inventory is strictly private to the authenticated user via RLS (auth.uid() = owner_id); zero public listings.
 > - "The Kitchen Almanac" art direction (ruled ledgers, status badges, hairline rules, Nunito + Caveat annotations, 78-icon SVG sprite).
 
 ---

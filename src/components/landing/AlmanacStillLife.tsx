@@ -162,7 +162,7 @@ export function AlmanacStillLife() {
           🥭
         </div>
         <div className="font-mono text-xs uppercase text-[var(--kc-muted)]">STILL LIFE NO. 01</div>
-        <div className="font-semibold text-sm text-[var(--kc-ink)] mt-1">Market Fresh Surplus Specimen</div>
+        <div className="font-semibold text-sm text-[var(--kc-ink)] mt-1">Market Fresh Ingredient Specimen</div>
         <div className="font-annotation text-xs mt-1 text-[var(--kc-muted)]">&ldquo;Grown with care, rescued before dusk&rdquo;</div>
       </div>
     );

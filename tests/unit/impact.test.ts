@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { calculateImpact, IMPACT_FACTORS } from '../../src/domain/impact';
-import { classifyWasteItem, WASTE_TAXONOMY } from '../../src/domain/waste';
+import { classifyWasteItem } from '../../src/domain/waste';
 
 describe('Waste and Impact Accounting Domain Logic (Phase 5)', () => {
   it('correctly classifies kitchen waste items into the 5 streams (AC-WASTE-02)', () => {
@@ -14,7 +14,7 @@ describe('Waste and Impact Accounting Domain Logic (Phase 5)', () => {
   it('accurately and idempotently calculates kg diverted and environmental savings (AC-IMPACT-01)', () => {
     const items = [
       { quantityValue: 2, quantityUnit: 'kg', outcome: 'cooked' },
-      { quantityValue: 1, quantityUnit: 'kg', outcome: 'shared' },
+      { quantityValue: 1, quantityUnit: 'kg', outcome: 'consumed' },
       { quantityValue: 500, quantityUnit: 'g', outcome: 'composted' }, // 0.5 kg
       { quantityValue: 1, quantityUnit: 'kg', outcome: 'discarded' }, // discarded
     ];
@@ -28,10 +28,10 @@ describe('Waste and Impact Accounting Domain Logic (Phase 5)', () => {
     expect(report.waterPreservedLitres).toBe(Math.round(3.5 * IMPACT_FACTORS.WATER_LITRES_PER_KG));
   });
 
-  it('preserves transparent source citations for all impact coefficients (AC-IMPACT-02)', () => {
+  it('preserves transparent source citations and official links for all impact coefficients (AC-IMPACT-02)', () => {
     const report = calculateImpact([]);
-    expect(report.citations.co2eCitation).toContain('TODO(source)');
-    expect(report.citations.rupeeValueCitation).toContain('TODO(source)');
-    expect(report.citations.waterCitation).toContain('TODO(source)');
+    expect(report.citations.co2eCitation).toContain('unep.org');
+    expect(report.citations.rupeeValueCitation).toContain('mospi.gov.in');
+    expect(report.citations.waterCitation).toContain('fao.org');
   });
 });

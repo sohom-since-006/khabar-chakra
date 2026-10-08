@@ -7,7 +7,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const publicRoutes = [
     '',
     '/en',
-    '/en/available',
+    '/en/home',
+    '/en/inventory',
+    '/en/inventory/add',
+    '/en/recipes',
+    '/en/shopping-list',
+    '/en/nutrition',
+    '/en/waste',
     '/en/help',
     '/en/faq',
     '/en/contact',
@@ -22,6 +28,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${baseUrl}${route}`,
     lastModified: now,
     changeFrequency: 'weekly',
-    priority: route === '' || route === '/en' ? 1.0 : 0.7,
+    priority: route === '' || route === '/en' ? 1.0 : 0.8,
   }));
 }

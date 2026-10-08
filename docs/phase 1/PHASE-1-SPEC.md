@@ -100,9 +100,9 @@
 | 09.7 | Given any tier, then the background is hidden from screen readers and never sits behind text without an opaque card. | TC-A11Y-005 |
 
 ### US-P1-10 Help Centre
-| 10.1 | Given I open Help, then I see seven sections: Getting started, For donors, For event hosts and caterers, For organisations, Food safety, Waste guide, Troubleshooting; sections for later features say "This feature is coming soon" and link to the FAQ. | TC-HELP-006 |
+| 10.1 | Given I open Help, then I see sections: Getting started, Kitchen inventory, Smart freshness, Recipe rescue, Waste guide, Troubleshooting. | TC-HELP-006 |
 |---|---|---|
-| 10.2 | Given I open the Food safety section, then it states "Khabar Chakra never certifies food. You decide whether the food is safe to accept." and explains that a verified badge only means documents were reviewed. | TC-BADGE-007 |
+| 10.2 | Given I open the Food safety section, then it states "Khabar Chakra provides algorithmic estimates and shelf-life recommendations based on ICMR-NIN standards. You inspect freshness before eating." | TC-BADGE-007 |
 
 ### US-P1-11 FAQ
 | 11.1 | Given I open the FAQ, then categories, a search box and "Expand all / Collapse all" are shown; items are grouped by category. | TC-HELP-004 |
@@ -114,7 +114,7 @@
 | 11.6 | Given JavaScript is slow or off, then all answers are present in the page's HTML. | TC-HELP-005 |
 
 ### US-P1-12 Contact
-| 12.1 | Given I fill name (2–80), email, topic (food info, donation, technical support, partnership, food distribution, privacy request, other), subject (3–120) and message (10–2000), and pass Turnstile, then I see "Thanks! We've received your message." and the message appears in the admin inbox table. | TC-SITE-001 |
+| 12.1 | Given I fill name (2–80), email, topic (kitchen intelligence, inventory tracking, recipe rescue, technical support, privacy request, other), subject (3–120) and message (10–2000), and pass Turnstile, then I see "Thanks! We've received your message." and the message appears in the admin inbox table. | TC-SITE-001 |
 |---|---|---|
 | 12.2 | Given I send more than 3 messages in an hour from one network, then I see "Too many messages. Please try again later." | TC-SITE-002 |
 | 12.3 | Given the form is used, then **no email is sent to any team address** and no team email or phone appears anywhere on the page. | TC-SITE-001 |
@@ -205,15 +205,13 @@ Server-side validation repeats every rule; the client shows the same messages.
 Sign every email "— The Khabar Chakra team". No images beyond a small logo; no tracking links.
 
 ### 6.3 Landing
-Headline "Good food deserves a *second chance*." (two words in the cursive accent) · sub-headline "Track what's in your kitchen, share what you can't finish, and sort the rest the right way." · buttons "Start free" and "See food near me" · loop cards: Scan "Point your camera at any packet, plate or shelf." · Track "Every item gets a freshness status and a countdown." · Rescue "Use it up with a recipe, or share it with someone nearby." · Recycle "Wet, dry or packaging — we show you where it goes." · events heading "Weddings end. The food doesn't have to go to waste." · events body "Hosts and caterers can tell verified organisations about leftovers ahead of time, then share them for a few hours with a simple pickup code." · impact placeholder "We're just getting started." · final call-to-action "Ready to waste less?" · tagline "Save • Share • Sustain".
+Headline "Good food deserves a *second chance*." (two words in the cursive accent) · sub-headline "Track what's in your domestic kitchen, cook what is about to expire, and eliminate household food waste." · buttons "Start free" and "My Kitchen" · loop cards: Scan "Point your camera at grocery receipts and packaging." · Track "Every item gets a freshness status and a countdown." · Rescue "Turn near-expiry ingredients into complete recipes." · Recycle "Compost food scraps and recycle packaging responsibly." · impact placeholder "Track your household ₹ savings and food rescued." · final call-to-action "Ready to waste less?" · tagline "Track • Cook • Save".
 
 ### 6.4 Other screens
 | Key | Text |
 |-----|------|
-| home.placeholder.title | Your kitchen is coming soon |
-| home.placeholder.body | We're building food tracking and sharing step by step. Meanwhile, read how it will work. |
-| available.comingSoon.title | Available Food is coming soon |
-| available.comingSoon.body | Soon you'll see food shared near you here. Read the FAQ to learn how sharing will work. |
+| home.title | My Kitchen Almanac |
+| home.body | Track domestic freshness, plan meals, and log kitchen outcomes. |
 | contact.success | Thanks! We've received your message. |
 | contact.support.title | Technical support |
 | contact.support.coming | Coming soon. Until then, please use the contact form. |
@@ -226,22 +224,22 @@ Headline "Good food deserves a *second chance*." (two words in the cursive accen
 ### 6.5 FAQ (12 items to seed; Markdown answers)
 | Category | Question | Answer |
 |----------|----------|--------|
-| Getting started | What is Khabar Chakra? | A free website that helps you track food freshness, share surplus food (including wedding and event leftovers) with people and verified organisations nearby for a limited time, and sort leftover waste the right way. Khabar means food and Chakra means cycle. |
-| Getting started | Is it free? | Yes. Khabar Chakra is free to use. |
+| Getting started | What is Khabar Chakra? | A free domestic food-lifecycle website that helps you track pantry freshness, prevent duplicate grocery purchases, cook recipes from near-expiry ingredients, and sort kitchen waste responsibly. Khabar means food and Chakra means cycle. |
+| Getting started | Is it free? | Yes. Khabar Chakra is completely free of charge. |
 | Getting started | Who can use it? | You must be 18 or older. |
-| Getting started | What's available right now? | You can create an account and read how everything will work. Food tracking, sharing and the map are being added step by step. |
-| Account and password | Why do I need to verify my email? | It helps keep the community safe. You can browse without it, but you need a verified email to post, request food or see contact details. |
+| Getting started | What's available right now? | You can manage your private pantry, track freshness countdowns, generate zero-waste recipes, and monitor your domestic ₹ savings. |
+| Account and password | Why do I need to verify my email? | It helps protect your account and ensures secure login sessions. |
 | Account and password | I didn't get the verification email. | Check your spam folder, then use "Send a new link" on the verification page (you can resend every 60 seconds). |
 | Account and password | How do I reset my password? | Choose "Forgot password" on the login page and follow the link we email you. For safety, other devices are signed out afterwards. |
 | Account and password | How do I change my email or delete my account? | Open Settings → Security. Changing your email needs confirmation on the new address. Deleting your account hides it right away and removes your data within 30 days. |
-| Food safety | Does Khabar Chakra check that food is safe? | No. We never certify food. You decide whether food is safe to accept. A green verified badge only means an organisation's documents were reviewed. |
-| Privacy and safety | Is my data private? | We collect only what we need, never show your phone number publicly, and delete data on a schedule. Read the Privacy Policy for details. |
+| Food safety | Does Khabar Chakra check that food is safe? | No. Khabar Chakra provides mathematical shelf life calculations based on ICMR-NIN standards. You inspect smell, texture, and appearance before cooking or eating. |
+| Privacy and safety | Is my data private? | Yes. Your pantry, grocery receipts, and inventory are strictly private to your account via Supabase Row-Level Security. Read the Privacy Policy for details. |
 | Privacy and safety | How do I make a privacy request? | Use the contact form and choose "Privacy request". |
 | Technical support | How can I get technical help? | Technical support details are coming soon. Until then, use the contact form. |
 Slugs are the question text in lower-case with hyphens (for example `is-it-free`).
 
 ### 6.6 Help article outline (Phase 1 content)
-Getting started: create an account, verify email, set up your profile, install as an app (coming). For donors / event hosts / organisations / waste guide: a short "how it will work" with "coming soon" notices and links to the FAQ. Food safety: our rules in plain language, the verified badge meaning, "you decide". Troubleshooting: verification email missing, password reset, signing in on a new device, contacting us.
+Getting started: create an account, verify email, set up your kitchen profile. Kitchen inventory / Smart freshness / Recipe rescue / Waste guide: how domestic tracking and recipes work with links to the FAQ. Troubleshooting: verification email missing, password reset, signing in on a new device, contacting us.
 
 ### 6.7 Team page (use exactly; plain-text names)
 **Team name:** The S-QUAD · **College:** Asansol Engineering College · **Story:** "We are students who saw how much good food goes to waste — at home, in hostels and at big family events — and decided to build a free tool to help. Khabar Chakra is our way of closing the food cycle."

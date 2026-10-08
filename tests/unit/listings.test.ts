@@ -2,22 +2,21 @@ import { describe, it, expect } from 'vitest';
 import {
   validateListingInput,
   sortListingsEndingSoonestThenNearest,
-  calculateDistanceKm,
   generatePickupCode,
   Listing,
 } from '../../src/domain/listings';
 
-describe('Listings Domain Logic & Constraints (Phase 4)', () => {
+describe('Inventory Item Validation & Constraints (Phase 4)', () => {
   const validBase: Partial<Listing> = {
-    title: 'Surplus Festive Sweets',
+    title: 'Stored Festive Sweets',
     category: 'packaged',
     dietType: 'veg',
-    kind: 'donate',
+    kind: 'pantry_item',
     quantityValue: 2,
     quantityUnit: 'kg',
     photos: ['https://example.com/sweet1.jpg'],
     windowHours: 24,
-    donorVerified: false,
+    ownerVerified: false,
     isEmergency: false,
   };
 
@@ -70,45 +69,45 @@ describe('Listings Domain Logic & Constraints (Phase 4)', () => {
     expect(withinCeiling.isValid).toBe(true);
   });
 
-  it('restricts Emergency Food Sharing to verified NGOs per Decision D12', () => {
+  it('restricts Emergency Food Alerts to verified authorities per Decision D12', () => {
     const invalidEmergency = validateListingInput({
       ...validBase,
       isEmergency: true,
-      donorVerified: false,
-      donorOrgType: 'individual',
+      ownerVerified: false,
+      ownerOrgType: 'individual',
     });
     expect(invalidEmergency.isValid).toBe(false);
     expect(invalidEmergency.errors[0]).toContain('Decision D12');
 
-    const validNgoEmergency = validateListingInput({
+    const validAuthorityEmergency = validateListingInput({
       ...validBase,
       isEmergency: true,
-      donorVerified: true,
-      donorOrgType: 'ngo',
+      ownerVerified: true,
+      ownerOrgType: 'authority',
     });
-    expect(validNgoEmergency.isValid).toBe(true);
+    expect(validAuthorityEmergency.isValid).toBe(true);
   });
 
-  it('generates a 6-digit pickup code per Decision D5', () => {
+  it('generates a 6-digit verification code per Decision D5', () => {
     const code = generatePickupCode();
     expect(code).toMatch(/^\d{6}$/);
   });
 
-  it('sorts listings by ending soonest, then nearest per Decision D11', () => {
+  it('sorts items by ending soonest, then nearest per Decision D11', () => {
     const now = new Date('2026-10-08T12:00:00Z');
     const userLocation = { lat: 23.6889, lng: 86.9661 }; // Asansol
 
-    const listingLaterNear: Listing = {
+    const itemLaterNear: Listing = {
       id: 'item-1',
-      donorId: 'u1',
-      donorName: 'Donor 1',
-      donorPhone: '+919000000001',
-      donorVerified: false,
+      ownerId: 'u1',
+      ownerName: 'User 1',
+      ownerPhone: '+919000000001',
+      ownerVerified: false,
       title: 'Item Expires in 20h, 1km away',
       description: 'Test',
       category: 'cooked_food',
       dietType: 'veg',
-      kind: 'share',
+      kind: 'cooked_dish',
       quantityValue: 1,
       quantityUnit: 'portion',
       photos: ['1.jpg'],
@@ -125,15 +124,15 @@ describe('Listings Domain Logic & Constraints (Phase 4)', () => {
       updatedAt: '2026-10-08T12:00:00Z',
     };
 
-    const listingSoonerFar: Listing = {
-      ...listingLaterNear,
+    const itemSoonerFar: Listing = {
+      ...itemLaterNear,
       id: 'item-2',
       title: 'Item Expires in 4h, 15km away',
       location: { lat: 23.5500, lng: 87.0500, addressText: 'Durgapur Border', city: 'Asansol', pinCode: '713303' },
       expiresAt: '2026-10-08T16:00:00Z', // 4 hours left
     };
 
-    const sorted = sortListingsEndingSoonestThenNearest([listingLaterNear, listingSoonerFar], userLocation, now);
+    const sorted = sortListingsEndingSoonestThenNearest([itemLaterNear, itemSoonerFar], userLocation, now);
     expect(sorted[0].id).toBe('item-2'); // Ending soonest prioritized
   });
 });

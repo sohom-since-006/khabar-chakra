@@ -54,7 +54,7 @@ export default function VerifyEmailPage({ params }: VerifyEmailPageProps) {
         <h1 className="text-2xl font-bold text-[var(--kc-ink)]">Verify Your Email</h1>
         
         <p className="text-sm text-[var(--kc-muted)] leading-relaxed">
-          To maintain security and prevent spam in our food-sharing network, please check your inbox and click the activation link.
+          To maintain security and prevent spam in your household inventory, please check your inbox and click the activation link.
         </p>
 
         {msg && (

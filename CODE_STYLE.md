@@ -192,18 +192,18 @@ export function assertNever(x: never): never {
 }
 ```
 ```ts
-// src/features/listings/schemas.ts
+// src/features/inventory/schemas.ts
 import { z } from 'zod';
 
-export const createListingSchema = z.object({
-  title: z.string().trim().min(3).max(80),
+export const createInventoryItemSchema = z.object({
+  title: z.string().trim().min(2).max(80),
   description: z.string().trim().max(1000).optional(),
-  category: z.enum(['packaged', 'vegetables', 'fruits', 'dairy', 'grains_pulses', 'bread_bakery', 'cooked_food', 'beverages', 'other']), // meat_fish_egg is intentionally absent (D8)
-  dietType: z.enum(['veg', 'non_veg', 'egg', 'vegan']), // the donor must choose; never default
+  category: z.enum(['packaged', 'vegetables', 'fruits', 'dairy', 'grains_pulses', 'bread_bakery', 'cooked_food', 'beverages', 'other']),
+  dietType: z.enum(['veg', 'non_veg', 'egg', 'vegan']), // the user must choose; never default
   qtyValue: z.coerce.number().positive().max(100000),
-  availableUntil: z.string().datetime(),
+  expiryDate: z.string().datetime(),
 });
-export type CreateListingInput = z.infer<typeof createListingSchema>;
+export type CreateInventoryItemInput = z.infer<typeof createInventoryItemSchema>;
 ```
 ```ts
 // Exhaustive switch

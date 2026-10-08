@@ -20,7 +20,7 @@ export type WasteRiskLevel = 'low' | 'medium' | 'high';
 
 export type FSSAIStatus = 'verified' | 'missing' | 'unregulated' | 'exempt';
 
-export type ItemOutcome = 'consumed' | 'cooked' | 'shared' | 'donated' | 'composted' | 'recycled' | 'discarded';
+export type ItemOutcome = 'consumed' | 'cooked' | 'composted' | 'recycled' | 'discarded';
 
 export interface InventoryItem {
   id: string;

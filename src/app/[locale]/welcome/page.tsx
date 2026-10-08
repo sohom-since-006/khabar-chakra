@@ -66,7 +66,7 @@ export default function WelcomePage() {
               <h2 className="text-lg font-bold text-[var(--kc-charcoal)]">Age Confirmation (18+ Mandate)</h2>
             </div>
             <p className="text-sm text-[var(--kc-charcoal)] mb-6 leading-relaxed">
-              To participate in surplus food sharing and community stewardship, Khabar Chakra requires all account holders to be at least 18 years old. No exact birth date is stored.
+              To manage your household kitchen ledger and domestic food intelligence, Khabar Chakra requires all account holders to be at least 18 years old. No exact birth date is stored.
             </p>
 
             <form onSubmit={handleStep1Submit} className="space-y-6">
@@ -109,7 +109,7 @@ export default function WelcomePage() {
               <h2 className="text-lg font-bold text-[var(--kc-charcoal)]">Select Your Area (Optional)</h2>
             </div>
             <p className="text-sm text-[var(--kc-charcoal)] mb-6 leading-relaxed">
-              We never track live GPS. Selecting a general neighbourhood or town helps filter listings ending soonest and nearest to you.
+              We never track live GPS. Setting your general region helps localize seasonal produce calendars and regional market pricing.
             </p>
 
             <form onSubmit={handleStep2Submit} className="space-y-4">
@@ -179,18 +179,18 @@ export default function WelcomePage() {
               </div>
 
               <div className="p-3 border border-[var(--kc-moss)] bg-[var(--kc-parchment)] flex items-start gap-3">
-                <KhabarIcon name="share" className="w-5 h-5 text-[var(--kc-mango)] shrink-0 mt-0.5" />
+                <KhabarIcon name="track" className="w-5 h-5 text-[var(--kc-mango)] shrink-0 mt-0.5" />
                 <div>
-                  <h3 className="text-xs font-bold font-mono uppercase text-[var(--kc-charcoal)]">2. Share Surplus</h3>
-                  <p className="text-xs text-[var(--kc-moss)] mt-0.5">Post excess edible dishes or event surplus within a strict 48-hour window.</p>
+                  <h3 className="text-xs font-bold font-mono uppercase text-[var(--kc-charcoal)]">2. Smart Freshness & Triage</h3>
+                  <p className="text-xs text-[var(--kc-moss)] mt-0.5">Automated shelf-life calculation and &quot;Use This First&quot; queue to stop spoilage before it happens.</p>
                 </div>
               </div>
 
               <div className="p-3 border border-[var(--kc-moss)] bg-[var(--kc-parchment)] flex items-start gap-3">
-                <KhabarIcon name="verified" className="w-5 h-5 text-[var(--kc-blueberry)] shrink-0 mt-0.5" />
+                <KhabarIcon name="recipe" className="w-5 h-5 text-[var(--kc-blueberry)] shrink-0 mt-0.5" />
                 <div>
-                  <h3 className="text-xs font-bold font-mono uppercase text-[var(--kc-charcoal)]">3. Verified Safety</h3>
-                  <p className="text-xs text-[var(--kc-moss)] mt-0.5">Khabar Chakra never certifies food safety. The recipient always decides.</p>
+                  <h3 className="text-xs font-bold font-mono uppercase text-[var(--kc-charcoal)]">3. Recipe Rescue & Savings</h3>
+                  <p className="text-xs text-[var(--kc-moss)] mt-0.5">Turn expiring ingredients into nutritious domestic meals and track verified domestic ₹ savings.</p>
                 </div>
               </div>
             </div>

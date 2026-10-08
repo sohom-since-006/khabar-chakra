@@ -22,7 +22,7 @@ export default function ImpactPage() {
           {
             id: 'seed-imp-1',
             ownerId: 'u1',
-            name: 'Puri Sabzi Feast Surplus',
+            name: 'Puri Sabzi Leftovers',
             category: 'cooked_food',
             dietType: 'veg',
             quantityValue: 6,
@@ -34,7 +34,7 @@ export default function ImpactPage() {
             fssaiStatus: 'verified',
             isFlagged: false,
             status: 'closed',
-            outcome: 'shared',
+            outcome: 'consumed',
             createdAt: '2026-10-01',
             updatedAt: '2026-10-02',
           },

@@ -36,7 +36,7 @@ Warm, concrete, local, never guilt-tripping.
 | "This listing has ended. Thank you for sharing!" | "Listing expired." |
 | "You decide whether the food is safe to accept." | "This food is safe." |
 | "Documents reviewed by Khabar Chakra." | "Trusted by the government." |
-Sample copy (goes in the message files): landing headline "Good food deserves a second chance." (two words in the cursive accent) · "From your fridge to the wedding hall — keep food out of the bin." · "Weddings end. The food doesn't have to go to waste." · empty inventory "Nothing here yet. Add your first item and we'll keep an eye on it." · camera denied "No problem. You can upload a photo or type the details instead." · cooked food "Cooked food is best picked up within a few hours. You decide whether it's safe to accept." · pickup code "Show this code to the person collecting the food."
+Sample copy (goes in the message files): landing headline "Good food deserves a second chance." (two words in the cursive accent) · "From your fridge to the pantry — keep food out of the bin." · "Smart domestic food intelligence." · empty inventory "Nothing here yet. Add your first item and we'll keep an eye on it." · camera denied "No problem. You can upload a photo or type the details instead." · recipe suggestion "Cook this tonight to rescue expiring ingredients."
 
 ## 3. Colour — "Market Fresh"
 ### 3.1 Idea
@@ -255,8 +255,7 @@ Columns: Product · Help (FAQ, Help Centre, Contact) · Legal (Terms, Privacy, F
 | Filter chips | Toggle buttons; selected shows a check icon, not just colour |
 | Skeletons | Match final layout; shimmer 1.4 s (static when reduced) |
 | Empty states | Mascot or scene, one sentence, one clear action |
-| Stepper | Listing wizard Food → Photos → Place and time → Confirm; current step marked |
-| Pickup code | Large digits (48 px), copy button, "Show this to the collector" |
+| Freshness Badge | Status bands (🟢 Fresh, 🟡 Consume soon, 🔴 Expiring) with hours countdown |
 | Admin table | Sticky header, 48 px rows, sortable, keyboard row actions |
 | Charts | Patterns, labels, table alternative, draw-in animation |
 | Avatars | Photo or initials on brand colours (contrast checked) |

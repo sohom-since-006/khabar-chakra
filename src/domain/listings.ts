@@ -1,7 +1,7 @@
 import { FoodCategory, DietType } from './types';
 
-export type ListingKind = 'donate' | 'share' | 'swap' | 'event_surplus';
-export type ListingStatus = 'active' | 'reserved' | 'claimed' | 'cancelled' | 'expired';
+export type ListingKind = 'pantry_item' | 'fridge_item' | 'freezer_item' | 'cooked_dish' | 'household_record';
+export type ListingStatus = 'active' | 'consumed' | 'cooked' | 'archived';
 export type LocationPrivacy = 'exact' | 'approximate';
 export type ContactRevealPolicy = 'instant' | 'on_approval';
 
@@ -15,11 +15,11 @@ export interface ListingLocation {
 
 export interface Listing {
   id: string;
-  donorId: string;
-  donorName: string;
-  donorPhone: string;
-  donorOrgType?: 'individual' | 'ngo' | 'caterer' | 'banquet_hall' | 'authority';
-  donorVerified: boolean;
+  ownerId: string;
+  ownerName: string;
+  ownerPhone?: string;
+  ownerOrgType?: 'individual' | 'household' | 'authority';
+  ownerVerified: boolean;
   title: string;
   description: string;
   category: FoodCategory;
@@ -27,19 +27,17 @@ export interface Listing {
   kind: ListingKind;
   quantityValue: number;
   quantityUnit: string;
-  photos: string[]; // 1 to 4 photos required (D4)
-  location: ListingLocation;
-  locationPrivacy: LocationPrivacy;
+  photos: string[]; // 1 to 4 photos allowed (D4)
+  location?: ListingLocation;
+  locationPrivacy?: LocationPrivacy;
   fuzzedLocation?: { lat: number; lng: number };
-  contactRevealPolicy: ContactRevealPolicy;
+  contactRevealPolicy?: ContactRevealPolicy;
   windowHours: number; // hard ceiling <= 48h (D3)
   startsAt: string;
   expiresAt: string;
-  pickupCode: string; // 6-digit code (D5)
-  isEmergency: boolean; // D12: verified NGOs only
+  pickupCode?: string; // 6-digit code (D5)
+  isEmergency?: boolean;
   status: ListingStatus;
-  claimedBy?: string;
-  claimedAt?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -57,16 +55,16 @@ export const ASANSOL_DEFAULT_COORDS = {
 export function validateListingInput(input: Partial<Listing>): ListingValidationResult {
   const errors: string[] = [];
 
-  // Decision D8: Raw meat, fish, and eggs are NEVER listable
+  // Decision D8: Raw meat, fish, and eggs are restricted to private domestic storage only
   if (input.category === 'meat_fish_egg') {
-    errors.push('Raw meat, fish, and eggs cannot be shared, donated, or listed (Decision D8). Cooked dishes containing them must be classified under Cooked Food.');
+    errors.push('Raw meat, fish, and eggs are restricted to private domestic tracking only and cannot be shared (Decision D8). Cooked dishes containing them must be classified under Cooked Food.');
   }
 
-  // Decision D4: 1 to 4 photos required
+  // Decision D4: 1 to 4 photos
   if (!input.photos || input.photos.length < 1) {
-    errors.push('At least 1 photo is required to publish a listing (Decision D4).');
+    errors.push('At least 1 photo is required (Decision D4).');
   } else if (input.photos.length > 4) {
-    errors.push('Maximum 4 photos allowed per listing (Decision D4).');
+    errors.push('Maximum 4 photos allowed per entry (Decision D4).');
   }
 
   // Decision D3: Hard 48-hour ceiling
@@ -78,9 +76,9 @@ export function validateListingInput(input: Partial<Listing>): ListingValidation
     }
   }
 
-  // Decision D12: Emergency food sharing restricted to verified NGOs
-  if (input.isEmergency && (!input.donorVerified || input.donorOrgType !== 'ngo')) {
-    errors.push('Emergency Food Sharing broadcast is strictly reserved for verified NGOs (Decision D12).');
+  // Decision D12: Emergency alerts restricted to verified authorities
+  if (input.isEmergency && (!input.ownerVerified || input.ownerOrgType !== 'authority')) {
+    errors.push('Emergency food alerts are strictly reserved for verified local authorities (Decision D12).');
   }
 
   if (!input.title || input.title.trim().length < 3) {
@@ -93,9 +91,6 @@ export function validateListingInput(input: Partial<Listing>): ListingValidation
   };
 }
 
-/**
- * Sanitizes and masks private phone numbers and emails from public listing descriptions (D2 & SECURITY §3.2)
- */
 export function sanitizeListingContent(title: string, description: string): { cleanTitle: string; cleanDescription: string } {
   const EMAIL_REGEX = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/gi;
   const PHONE_REGEX = /(?:\+91[\s.-]?)?(?:[6-9]\d{9}|[6-9]\d{4}[\s.-]?\d{5}|\d{3}[\s.-]?\d{3}[\s.-]?\d{4})/g;
@@ -106,13 +101,11 @@ export function sanitizeListingContent(title: string, description: string): { cl
   return { cleanTitle, cleanDescription };
 }
 
-
 export function generatePickupCode(): string {
   // 6-digit secure code (D5)
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Calculate approximate Haversine distance in kilometres
 export function calculateDistanceKm(
   lat1: number,
   lon1: number,
@@ -132,24 +125,20 @@ export function calculateDistanceKm(
   return Math.round(R * c * 10) / 10;
 }
 
-// Decision D11: Available Food default order: ending soonest, then nearest
 export function sortListingsEndingSoonestThenNearest(
   listings: Listing[],
   userCoords: { lat: number; lng: number } = ASANSOL_DEFAULT_COORDS,
   now: Date = new Date()
 ): Listing[] {
   return [...listings].sort((a, b) => {
-    // 1. Prioritize active listings over completed/claimed
     if (a.status === 'active' && b.status !== 'active') return -1;
     if (a.status !== 'active' && b.status === 'active') return 1;
 
-    // 2. Primary sort: Remaining time (ending soonest)
     const aRemaining = new Date(a.expiresAt).getTime() - now.getTime();
     const bRemaining = new Date(b.expiresAt).getTime() - now.getTime();
 
-    // If both expire within ~3 hours of each other, break tie with distance (nearest)
     const timeDiffHours = Math.abs(aRemaining - bRemaining) / (1000 * 60 * 60);
-    if (timeDiffHours <= 3) {
+    if (timeDiffHours <= 3 && a.location && b.location) {
       const aDist = calculateDistanceKm(userCoords.lat, userCoords.lng, a.location.lat, a.location.lng);
       const bDist = calculateDistanceKm(userCoords.lat, userCoords.lng, b.location.lat, b.location.lng);
       return aDist - bDist;

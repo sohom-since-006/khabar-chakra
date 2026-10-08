@@ -18,7 +18,7 @@ export default function SignupPage({ params }: SignupPageProps) {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [accountType, setAccountType] = useState<'member' | 'caterer' | 'ngo'>('member');
+  const [accountType] = useState<'member' | 'caterer' | 'ngo'>('member');
   const [isAgeConfirmed, setIsAgeConfirmed] = useState(false);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -111,22 +111,7 @@ export default function SignupPage({ params }: SignupPageProps) {
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[var(--kc-ink)] tracking-tight">
             Open Your Kitchen Ledger
           </h1>
-          <p className="text-sm text-[var(--kc-muted)] leading-relaxed">
-            Join the community food loop. Track what is in your pantry, reduce waste, or step forward as an accredited organisation.
-          </p>
 
-          <div className="p-4 border-l-2 border-[var(--kc-basil)] bg-[var(--kc-card)] text-xs space-y-2">
-            <div className="font-semibold text-[var(--kc-ink)]">Community Safety Rules:</div>
-            <ul className="list-disc pl-4 space-y-1 text-[var(--kc-muted)]">
-              <li>18+ participation only.</li>
-              <li>Raw meat, fish, and eggs are never shared.</li>
-              <li>Static pins protect exact donor addresses.</li>
-            </ul>
-          </div>
-
-          <div className="font-annotation text-base text-[var(--kc-muted)] pt-2">
-            &ldquo;Your food choices ripple across your neighbourhood.&rdquo;
-          </div>
         </div>
 
         {/* Right Numbered Form Column */}
@@ -183,56 +168,7 @@ export default function SignupPage({ params }: SignupPageProps) {
               />
             </div>
 
-            {/* 4. Account Type Selection */}
-            <div>
-              <label className="block text-xs font-mono uppercase text-[var(--kc-muted)] mb-1.5">
-                4. Primary Intent / Account Type
-              </label>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-                <label className={`p-2.5 border rounded-sm cursor-pointer flex flex-col justify-between ${accountType === 'member' ? 'border-[var(--kc-basil)] bg-[var(--kc-mint)] font-medium' : 'border-[var(--kc-hairline)]'}`}>
-                  <input
-                    type="radio"
-                    name="accountType"
-                    checked={accountType === 'member'}
-                    onChange={() => setAccountType('member')}
-                    className="sr-only"
-                  />
-                  <span>Household</span>
-                  <span className="text-[10px] text-[var(--kc-muted)] mt-1">Individual / Home</span>
-                </label>
-
-                <label className={`p-2.5 border rounded-sm cursor-pointer flex flex-col justify-between ${accountType === 'caterer' ? 'border-[var(--kc-basil)] bg-[var(--kc-mint)] font-medium' : 'border-[var(--kc-hairline)]'}`}>
-                  <input
-                    type="radio"
-                    name="accountType"
-                    checked={accountType === 'caterer'}
-                    onChange={() => setAccountType('caterer')}
-                    className="sr-only"
-                  />
-                  <span>Caterer / Hall</span>
-                  <span className="text-[10px] text-[var(--kc-muted)] mt-1">Event surplus</span>
-                </label>
-
-                <label className={`p-2.5 border rounded-sm cursor-pointer flex flex-col justify-between ${accountType === 'ngo' ? 'border-[var(--kc-basil)] bg-[var(--kc-mint)] font-medium' : 'border-[var(--kc-hairline)]'}`}>
-                  <input
-                    type="radio"
-                    name="accountType"
-                    checked={accountType === 'ngo'}
-                    onChange={() => setAccountType('ngo')}
-                    className="sr-only"
-                  />
-                  <span>NGO / Partner</span>
-                  <span className="text-[10px] text-[var(--kc-muted)] mt-1">Verified relief</span>
-                </label>
-              </div>
-              {accountType === 'ngo' && (
-                <p className="text-[11px] text-[var(--kc-muted)] mt-1.5 italic">
-                  * Organisations apply for the Verified Leaf-Tick badge after initial account confirmation.
-                </p>
-              )}
-            </div>
-
-            {/* 5. Age & Terms Checkboxes (Mandatory per PRD & D20) */}
+            {/* 4. Age & Terms Checkboxes (Mandatory per PRD & D20) */}
             <div className="space-y-2 pt-2 border-t border-[var(--kc-hairline)] text-xs">
               <label className="flex items-start gap-2 cursor-pointer">
                 <input

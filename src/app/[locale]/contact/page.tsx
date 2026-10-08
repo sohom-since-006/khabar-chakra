@@ -8,7 +8,7 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    topic: 'food_info',
+    topic: 'kitchen_intelligence',
     subject: '',
     message: '',
   });
@@ -40,7 +40,7 @@ export default function ContactPage() {
       setFormData({
         name: '',
         email: '',
-        topic: 'food_info',
+        topic: 'kitchen_intelligence',
         subject: '',
         message: '',
       });
@@ -146,11 +146,10 @@ export default function ContactPage() {
                       onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
                       className="w-full px-3 py-2 text-sm border border-[var(--kc-moss)] bg-[var(--kc-parchment)] text-[var(--kc-charcoal)] focus:outline-none focus:border-[var(--kc-basil)]"
                     >
-                      <option value="food_info">Food Information / Guidelines</option>
-                      <option value="donation">Surplus Sharing / Donation Inquiry</option>
+                      <option value="kitchen_intelligence">Household Kitchen Intelligence</option>
+                      <option value="inventory_tracking">Pantry & Fridge Tracking</option>
+                      <option value="recipe_rescue">Recipe Rescue & Meal Planning</option>
                       <option value="technical_support">Technical Support</option>
-                      <option value="partnership">Community Partnership / Caterer</option>
-                      <option value="food_distribution">NGO Food Distribution</option>
                       <option value="privacy_request">Privacy Request / Grievance</option>
                       <option value="other">Other Inquiry</option>
                     </select>

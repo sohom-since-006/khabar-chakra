@@ -23,7 +23,7 @@ A complete brand icon system ships with this repo. Use it; never substitute it.
 
 ## The 78 UI icons
 
-- **lifecycle:** buy, track, store, consume, cook, share, donate, reuse, recycle, dispose
+- **lifecycle:** buy, track, store, triage, cook, consume, compost, recycle, dispose
 - **food:** ingredient, recipe, meal, portion, leftover, fresh, expiring, expired, fridge, freezer, pantry, shopping-list, scan, market
 - **safety:** veg-marker, nonveg-marker, allergen, plant-based, no-onion-garlic, spice
 - **community:** household, family, neighbour, volunteer, ngo, verified, caterer, event-host, community, pickup, delivery, route, claim-surplus

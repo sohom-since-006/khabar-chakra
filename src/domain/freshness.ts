@@ -59,7 +59,7 @@ export function calculateFreshness(params: {
     case 'expiring':
       bandColorToken = 'var(--kc-chilli)';
       bandBadgeLabel = '🔴 Expiring';
-      actionRecommendation = 'Urgent: Consume today, cook dish, or share surplus with neighbours.';
+      actionRecommendation = 'Urgent: Consume today or cook dish immediately to prevent waste.';
       break;
     case 'expired':
       bandColorToken = 'var(--kc-charcoal)';
@@ -68,8 +68,8 @@ export function calculateFreshness(params: {
       break;
   }
 
-  // Decision D8: Raw meat, fish, and eggs are NEVER listable or shareable.
-  // Flagged items (FSSAI issues) and expired items are also NOT listable.
+  // Decision D8: Raw meat, fish, and eggs require strict hygiene and temperature control.
+  // Flagged items (FSSAI issues) and expired items are also high risk.
   let isListable = true;
   if (params.category === 'meat_fish_egg') {
     isListable = false;
