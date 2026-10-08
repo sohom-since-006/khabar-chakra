@@ -42,7 +42,7 @@ export function ThemeToggle({ className = '', showLabel = false }: ThemeTogglePr
   if (!mounted) {
     // Avoid SSR hydration mismatch
     return (
-      <div className={`w-8 h-8 rounded-full bg-black/10 dark:bg-white/10 ${className}`} />
+      <div className={`min-w-[44px] min-h-[44px] rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center ${className}`} />
     );
   }
 
@@ -52,7 +52,7 @@ export function ThemeToggle({ className = '', showLabel = false }: ThemeTogglePr
       onClick={toggleTheme}
       aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
       title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-      className={`relative inline-flex items-center gap-2 p-1.5 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#22B282] ${
+      className={`relative inline-flex items-center justify-center gap-2 min-w-[44px] min-h-[44px] p-2 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#22B282] ${
         isDark
           ? 'bg-[#122E22] text-[#FFD56B] border border-[#215E46] shadow-[0_0_12px_rgba(255,213,107,0.25)] hover:bg-[#183B2C]'
           : 'bg-[#EAF3EC] text-[#0D382B] border border-[#CDE1D4] shadow-sm hover:bg-[#DDF0E1]'

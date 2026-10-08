@@ -47,6 +47,64 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* UI/UX Pro Max Accessibility & Interaction Hardening */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+select {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid var(--kc-basil);
+  outline-offset: 2px;
+}
+
+::selection {
+  background-color: var(--kc-basil);
+  color: #ffffff;
+}
+
+/* Custom Botanical Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--kc-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--kc-hairline);
+  border-radius: 9999px;
+  border: 2px solid var(--kc-bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--kc-muted);
+}
+
+/* Respect User Reduced Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
 /* Typography Utility Classes */
 .font-cursive-vibes {
   font-family: 'Great Vibes', cursive, serif;

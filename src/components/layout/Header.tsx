@@ -81,11 +81,12 @@ export function Header({ locale }: HeaderProps) {
           {/* Expiry Reminders Notification Bell */}
           <Link
             href={`/${locale}/notifications`}
-            className="p-2 text-[#C0E0D0] hover:text-white rounded-full bg-[#0E3E2F] hover:bg-[#165842] border border-[#195A44] relative transition-colors"
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center text-[#C0E0D0] hover:text-white rounded-full bg-[#0E3E2F] hover:bg-[#165842] border border-[#195A44] relative transition-colors focus-visible:ring-2 focus-visible:ring-[#2EB286]"
             title="Expiry Reminders & Alerts"
+            aria-label="View Expiry Reminders and Alerts (2 pending)"
           >
-            <KhabarIcon name="bell" size={17} />
-            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#D6381F] text-white text-[9px] font-bold flex items-center justify-center shadow-sm">
+            <KhabarIcon name="bell" size={18} />
+            <span className="absolute 1.5 -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#D6381F] text-white text-[9px] font-bold flex items-center justify-center shadow-sm">
               2
             </span>
           </Link>
@@ -131,7 +132,7 @@ export function Header({ locale }: HeaderProps) {
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-[#C0E0D0] hover:text-white bg-[#0E3E2F] border border-[#195A44] rounded-lg"
+            className="lg:hidden min-w-[44px] min-h-[44px] flex items-center justify-center text-[#C0E0D0] hover:text-white bg-[#0E3E2F] border border-[#195A44] rounded-lg focus-visible:ring-2 focus-visible:ring-[#2EB286]"
             aria-label="Toggle Navigation"
           >
             <KhabarIcon name={mobileMenuOpen ? "error" : "sliders"} size={18} />

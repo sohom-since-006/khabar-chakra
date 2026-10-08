@@ -52,7 +52,58 @@ export function LiveDynamicBackground() {
       });
     }
 
-    // Render loop
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const prefersReducedMotion = motionQuery.matches;
+
+    // Draw single frame of gentle static elements for reduced-motion users
+    const drawParticles = () => {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach((p) => {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rotation);
+        ctx.globalAlpha = p.opacity;
+
+        if (p.type === 'leaf') {
+          ctx.beginPath();
+          ctx.moveTo(0, -p.size);
+          ctx.bezierCurveTo(p.size * 0.7, -p.size * 0.5, p.size * 0.7, p.size * 0.5, 0, p.size);
+          ctx.bezierCurveTo(-p.size * 0.7, p.size * 0.5, -p.size * 0.7, -p.size * 0.5, 0, -p.size);
+          ctx.fillStyle = '#227B4E';
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.moveTo(0, -p.size * 0.85);
+          ctx.lineTo(0, p.size * 0.85);
+          ctx.strokeStyle = '#175E3B';
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        } else if (p.type === 'mote') {
+          const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, p.size * 0.8);
+          gradient.addColorStop(0, 'rgba(255, 218, 128, 0.45)');
+          gradient.addColorStop(1, 'rgba(64, 160, 96, 0)');
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(0, 0, p.size * 0.8, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.ellipse(0, 0, p.size * 0.4, p.size * 0.8, Math.PI / 4, 0, Math.PI * 2);
+          ctx.fillStyle = '#68AA7E';
+          ctx.fill();
+        }
+        ctx.restore();
+      });
+    };
+
+    if (prefersReducedMotion) {
+      drawParticles();
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }
+
+    // Render loop for motion-enabled users
     const render = () => {
       ctx.clearRect(0, 0, width, height);
 
@@ -75,7 +126,6 @@ export function LiveDynamicBackground() {
         ctx.globalAlpha = p.opacity;
 
         if (p.type === 'leaf') {
-          // Elegant botanical leaf shape
           ctx.beginPath();
           ctx.moveTo(0, -p.size);
           ctx.bezierCurveTo(p.size * 0.7, -p.size * 0.5, p.size * 0.7, p.size * 0.5, 0, p.size);
@@ -83,7 +133,6 @@ export function LiveDynamicBackground() {
           ctx.fillStyle = '#227B4E';
           ctx.fill();
 
-          // Leaf center vein
           ctx.beginPath();
           ctx.moveTo(0, -p.size * 0.85);
           ctx.lineTo(0, p.size * 0.85);
@@ -91,7 +140,6 @@ export function LiveDynamicBackground() {
           ctx.lineWidth = 0.8;
           ctx.stroke();
         } else if (p.type === 'mote') {
-          // Soft golden-green glowing sun mote
           const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, p.size * 0.8);
           gradient.addColorStop(0, 'rgba(255, 218, 128, 0.45)');
           gradient.addColorStop(1, 'rgba(64, 160, 96, 0)');
@@ -100,7 +148,6 @@ export function LiveDynamicBackground() {
           ctx.arc(0, 0, p.size * 0.8, 0, Math.PI * 2);
           ctx.fill();
         } else {
-          // Soft sage botanical petal
           ctx.beginPath();
           ctx.ellipse(0, 0, p.size * 0.4, p.size * 0.8, Math.PI / 4, 0, Math.PI * 2);
           ctx.fillStyle = '#68AA7E';

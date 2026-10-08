@@ -21,7 +21,6 @@
 ## 2. Environment & MCP Servers Configuration
 Global MCP configurations are stored in `C:\Users\sohom\.gemini\config\mcp_config.json`:
 - **Stitch MCP:** `https://stitch.googleapis.com/mcp` (remote SSE)
-- **Devfolio MCP:** `https://mcp.devfolio.co/mcp` (remote SSE)
 - **Filesystem MCP:** `@modelcontextprotocol/server-filesystem` (stdio, path: `d:/Antigravity/Khabar Chakra`)
 - **GitHub MCP:** `@modelcontextprotocol/server-github` (stdio, using `GITHUB_PERSONAL_ACCESS_TOKEN`)
 - **Playwright MCP:** `@playwright/mcp` (stdio)
