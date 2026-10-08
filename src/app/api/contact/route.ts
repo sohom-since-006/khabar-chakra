@@ -58,26 +58,38 @@ export async function POST(req: NextRequest) {
     }
 
     const { name, email, topic, subject, message } = result.data;
-    const supabase = await createClient();
+    const ticketId = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // Store in admin_inbox if table exists
-    const { error: dbError } = await supabase.from('admin_inbox').insert({
-      sender_name: name,
-      sender_email: email,
+    // 1. Store in Supabase contact_messages table
+    try {
+      const supabase = await createClient();
+      await supabase.from('contact_messages').insert({
+        name,
+        email,
+        topic,
+        message: `[Subject: ${subject}]\n\n${message}`,
+        status: 'unread',
+      });
+    } catch (err) {
+      console.warn('Database logging note:', err);
+    }
+
+    // 2. Dispatch via Resend
+    const { sendContactDispatchEmail } = await import('@/lib/email/resend');
+    const emailResult = await sendContactDispatchEmail({
+      name,
+      email,
       topic,
       subject,
       message,
-      created_at: new Date().toISOString(),
+      ticketId,
     });
-
-    if (dbError) {
-      // If table is not yet migrated in remote Supabase, log safely without PII (Decision D6)
-      console.warn('Note: admin_inbox table not accessible or pending migration. Message logged safely with masked metadata.');
-    }
 
     return NextResponse.json({
       success: true,
-      message: "Thanks! We've received your message.",
+      ticketId,
+      emailDispatched: emailResult.success,
+      message: `Thanks! We've received your message (Ticket #${ticketId}).`,
     });
   } catch (error) {
     console.error('Contact submission error:', error);
