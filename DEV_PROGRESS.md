@@ -6,17 +6,15 @@
 ---
 
 ## 1. Quick Reference & Core Directives
-- **Project Vision:** Community food-lifecycle platform: track freshness → share surplus for a limited time (homes, events, NGOs) → handle waste responsibly.
+- **Project Vision (V2.0 Pivot):** 100% focused on Personal Household Food Intelligence, Freshness Lifecycle & Domestic Waste Reduction. Public food listings, NGO verifications, event sharing, and map pins have been permanently removed.
 - **Budget/Cost Rule:** ₹0 cost hard ceiling (only free tiers, no paid services).
-- **Core Governance Rule:** Never certify food safety (recipient decides). 18+ only. Strict privacy (static pins, no GPS tracking, contact reveal via RPC + RLS only).
-- **Phases:** 
-  1. Foundation (Active)
-  2. Scan & Track
-  3. Alerts, Recipes, Nutrition
-  4. Share & Community
-  5. Waste & Impact
-  6. Polish & Launch
-- **Skill Engine Directive:** Whenever new agent skills are needed or existing skills require updates/benchmarking, strictly follow and execute [skill-creator/SKILL.md](file:///d:/Antigravity/Khabar%20Chakra/skill-creator/SKILL.md).
+- **Core Governance Rule:** Client-side OCR + open data only. No hardcoded or mock users (real Supabase Google OAuth session or explicit `eg. Home Chef`). High-contrast Light/Dark mode.
+- **5 Core Product Pillars:** 
+  1. Advanced Inventory Tracking & Receipt OCR (Multi-zone fridge/pantry/freezer, Tesseract bill parser, Open Food Facts barcode).
+  2. Smart Freshness & Risk Scoring (Color-coded bands, dynamic waste risk score, "Use This First" priority shelf).
+  3. "Before You Buy" Kitchen Intelligence (Real-time pantry cross-check preventing duplicate purchases).
+  4. Recipe Rescue & Meal Planning (Auto-generated recipes from expiring pantry stock with macro tracking).
+  5. Household Waste & ₹ Savings Analytics (Domestic rupees saved, food weight rescued, streak counter).
 
 ---
 

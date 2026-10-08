@@ -1,36 +1,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Bad+Script&family=Great+Vibes&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Open+Sans:wght@400;600;700&family=Sacramento&family=Yellowtail&display=swap');
 @import "tailwindcss";
-@import "leaflet/dist/leaflet.css";
 
 :root {
-  /* Kitchen Almanac & Sanctuary Palette */
-  --kc-bg: #F8FAF7;
+  /* Light Mode - Kitchen Sanctuary Clean & High Contrast */
+  --kc-bg: #F7FAF7;
+  --kc-card: #FFFFFF;
+  --kc-card-border: #E2ECE5;
   --kc-ink: #0A281E;
-  --kc-muted: #536B63;
+  --kc-muted: #4B685C;
   --kc-hairline: #E1EBE4;
   --kc-basil: #0B6E3C;
+  --kc-basil-hover: #08552E;
   --kc-forest: #0D382B;
-  --kc-mango: #FFC93C;
+  --kc-mango: #E5A800;
   --kc-chilli: #D6381F;
   --kc-blueberry: #2457A6;
   --kc-mint: #E8F4EC;
-  --kc-card: #FFFFFF;
+  --kc-glow: rgba(11, 110, 60, 0.12);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --kc-bg: #0A1912;
-    --kc-ink: #EAF4EE;
-    --kc-muted: #8AA49A;
-    --kc-hairline: #1C3328;
-    --kc-basil: #1B9C82;
-    --kc-forest: #07221A;
-    --kc-mango: #F5BD2D;
-    --kc-chilli: #E04D36;
-    --kc-blueberry: #4F80D4;
-    --kc-mint: #132B20;
-    --kc-card: #0E2219;
-  }
+.dark {
+  /* Dark Mode - Obsidian Botanical Sanctuary with High Contrast */
+  --kc-bg: #07150F;
+  --kc-card: #0E2219;
+  --kc-card-border: #1C3D30;
+  --kc-ink: #F2FBF6;
+  --kc-muted: #9BB8AB;
+  --kc-hairline: #17382B;
+  --kc-basil: #22B282;
+  --kc-basil-hover: #2CD69D;
+  --kc-forest: #051A13;
+  --kc-mango: #FFC93C;
+  --kc-chilli: #F0533C;
+  --kc-blueberry: #5B8EE6;
+  --kc-mint: #123023;
+  --kc-glow: rgba(34, 178, 130, 0.28);
 }
 
 body {
@@ -40,6 +44,7 @@ body {
   min-height: 100vh;
   margin: 0;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Typography Utility Classes */
@@ -65,6 +70,23 @@ body {
 
 .font-montserrat {
   font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+}
+
+/* Ambient Glow & Shadow Effects */
+.glow-emerald {
+  box-shadow: 0 0 20px -3px rgba(34, 178, 130, 0.32);
+}
+
+.glow-gold {
+  box-shadow: 0 0 20px -3px rgba(255, 201, 60, 0.35);
+}
+
+.glow-card {
+  box-shadow: 0 4px 20px -2px rgba(11, 110, 60, 0.07);
+}
+
+.dark .glow-card {
+  box-shadow: 0 0 25px -4px rgba(34, 178, 130, 0.16);
 }
 
 /* Floating Leaf & Particle Animations for Live Dynamic Background */
@@ -116,7 +138,7 @@ body {
   border-right: 1px solid var(--kc-hairline);
 }
 
-/* Marker Highlight (Mango) */
+/* Marker Highlight */
 .marker-highlight {
   background-color: var(--kc-mango);
   color: #072A26;
@@ -126,7 +148,7 @@ body {
   -webkit-box-decoration-break: clone;
 }
 
-/* Urgent / Status Stamp (Chilli) */
+/* Status Stamp */
 .almanac-stamp {
   display: inline-block;
   border: 1.5px solid var(--kc-chilli);
@@ -160,6 +182,6 @@ body {
 /* Clean Ticket / Perforated Border effect */
 .almanac-ticket {
   border: 1px dashed var(--kc-hairline);
-  border-radius: 6px;
+  border-radius: 8px;
   background-color: var(--kc-card);
 }

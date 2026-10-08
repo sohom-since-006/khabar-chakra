@@ -19,6 +19,7 @@
     "@types/three": "^0.186.0",
     "@upstash/ratelimit": "^2.2.0",
     "@upstash/redis": "^1.39.0",
+    "framer-motion": "^14.0.0",
     "leaflet": "^1.9.4",
     "next": "16.4.0",
     "next-intl": "^4.14.9",

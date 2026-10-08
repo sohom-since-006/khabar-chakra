@@ -18,10 +18,10 @@ export async function GET(
       if (next && next.startsWith('/') && !next.startsWith('//')) {
         return NextResponse.redirect(new URL(next, requestUrl.origin));
       }
-      return NextResponse.redirect(new URL(`/${locale}/welcome`, requestUrl.origin));
+      return NextResponse.redirect(new URL(`/${locale}`, requestUrl.origin));
     }
   }
 
-  // Return to verify email screen with expired or invalid error indicator
-  return NextResponse.redirect(new URL(`/${locale}/verify-email?error=expired`, requestUrl.origin));
+  // Return to login with error indicator if exchange fails
+  return NextResponse.redirect(new URL(`/${locale}/login?error=auth_failed`, requestUrl.origin));
 }
