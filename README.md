@@ -2,13 +2,13 @@
 
 # 🥬 Khabar Chakra · খাবার চক্র
 
-### Save • Share • Sustain
+### Smart Kitchen Food Tracker & Domestic Zero Waste
 
-**A free, community food-lifecycle website: track food freshness, share surplus (from homes, weddings and events) with people and verified organisations nearby for a limited time, and handle leftover waste the right way.**
+**A 100% free domestic kitchen food-lifecycle intelligence platform: multi-zone pantry & fridge tracking, dynamic freshness scoring, automated "Use This First" urgency shelves, "Before You Buy" grocery duplicate prevention, recipe rescue from expiring ingredients, and domestic waste & ₹ savings analytics.**
 
-`Buy → Track → Store → Consume → Cook → Share → Donate → Reuse → Recycle → Dispose responsibly`
+`Intake (OCR & Barcode) → Multi-Zone Storage → Freshness Lifecycle → "Use This First" Priority → Recipe Rescue → Domestic ₹ Savings`
 
-Live site: *to be added after the first deploy* · [Report a bug](../../issues) · [Documentation](./docs)
+**Live Deployment:** [https://khabar-chakra.vercel.app/](https://khabar-chakra.vercel.app/) · [Report an Issue](../../issues) · [Documentation](./docs)
 
 </div>
 
@@ -22,34 +22,25 @@ Live site: *to be added after the first deploy* · [Report a bug](../../issues) 
 ---
 
 ## 1. What is Khabar Chakra?
-*Khabar* (খাবার) means **food**; *Chakra* (চক্র) means **cycle**. Food is wasted because people lose track of it at home, because weddings and functions end with large leftovers and no quick way to pass them on, and because nobody explains what to do with the packaging afterwards.
+*Khabar* (খাবার) means **food**; *Chakra* (চক্র) means **cycle**. Food is wasted in domestic households because people lose track of what is in their fridge and pantry, purchase duplicates during grocery trips, and discard edible ingredients when simple recipes could have rescued them.
 
-- **Prevent waste:** add food by photo, barcode or typing; see a colour-coded freshness status; get alerts; cook recipes from what is about to expire; avoid buying what you already have.
-- **Share surplus:** list food for a time window you choose (up to 48 hours) with photos and a map pin. Logged-in, email-verified people can see your pickup contact only while the window is open. Hosts, caterers and banquet halls can pre-announce events to verified organisations.
-- **Handle waste responsibly:** reuse, recycle, compost or dispose guidance with nearby drop points.
-- **See your impact:** food rescued, money saved, waste diverted.
-
-Built first for **West Bengal (starting in Asansol)** and designed to grow across India.
+- **Private Domestic Tracking:** Multi-zone inventory (Fridge, Freezer, Pantry). All pantry data is private to your account via Supabase Row-Level Security (`auth.uid() = owner_id`).
+- **Prevent Waste:** Add food by receipt OCR, barcode lookup (Open Food Facts), or manual entry; see mathematical freshness scores and automated urgency triage.
+- **"Use This First" Smart Shelf:** Prioritizes ingredients about to expire within 24–48 hours to save them from spoiling.
+- **"Before You Buy" Assistant:** Checks planned shopping lists against active kitchen stock to eliminate duplicate grocery purchases and overspending.
+- **Recipe Rescue:** Suggests Indian and regional recipes prioritizing items expiring soon in your domestic kitchen.
+- **Domestic ₹ Savings Analytics:** Live tracking of household rupees saved, weight diverted (kg), domestic CO₂e avoided, and zero-waste streaks.
 
 ## 2. Features
-| Area | What you get |
-|------|--------------|
-| Accounts | Email + password or Google, email verification, reset/change password and email, profile, language, light/dark mode, 18+ confirmation |
-| Add food | Take a photo (with retake), upload, scan a barcode or type; on-device text reading suggests dates; you always confirm |
-| Freshness | 🟢 Fresh · 🟡 Consume soon · 🔴 Expiring, "Use This First" shelf, Food Waste Risk Score |
-| FSSAI check | Flags a missing FSSAI mark on packaged food and guides you to the official complaint route |
-| Before You Buy | Scan in a shop to see if you already have it |
-| Recipes and nutrition | Indian/Bengali recipes from near-expiry items; BMI, calories, macros; meals from what you have |
-| Available Food | One page for everything shareable: list + map, **ending soonest first**, with filters |
-| Share, donate, swap | Photos required; static map pin; pickup contact visible to logged-in, verified users during your window (or after you approve); pickup code to confirm handover |
-| Events | Weddings, parties, functions: pre-announce surplus to verified organisations, then post it when ready |
-| Verified badges | Green leaf-tick for admin-approved NGOs, caterers, banquet halls and trusted authorities |
-| Emergency requests | Verified NGOs can post urgent food needs |
-| Waste guide | Reuse / recycle / compost / dispose steps and nearby drop points |
-| Impact | Animated charts, badges and streaks (points have no cash value) |
-| Help and support | Help Centre, working FAQ, contact form (messages go to an admin inbox). Technical support shows **Coming soon** |
-| Live background | 3D food garden on the landing page that simplifies automatically on weak devices or with "Reduce animations" |
-Raw meat, fish and eggs can be **tracked** but can **never be listed** for sharing. Cooked dishes can be shared under stricter time limits.
+| Pillar | What you get |
+|---|---|
+| **Accounts & Privacy** | Google OAuth & Supabase email auth, privacy by default (RLS-enforced), persistent Light/Dark mode, 18+ confirmation |
+| **Intake Intelligence** | Multi-zone storage (Fridge, Freezer, Pantry); client-side receipt OCR; Open Food Facts barcode search |
+| **Smart Freshness** | Real-time freshness index (0–100%); 🟢 Fresh · 🟡 Consume soon · 🔴 Expiring bands; "Use This First" urgency triage |
+| **Before You Buy** | Real-time grocery checklist cross-referenced against home stock to prevent duplicate spend |
+| **Recipe Rescue** | Zero-waste recipe suggestions prioritized by near-expiry pantry items with calories and macro estimates |
+| **Waste & ₹ Analytics** | Domestic waste reduction metrics: avoided ₹ waste, kilograms saved, and personal zero-waste streak counters |
+| **Almanac & Safety** | Domestic Kitchen Almanac guidelines, FSSAI guidance, Help Centre, and private contact correspondence |
 
 ## 3. Tech stack (all free)
 Next.js (App Router, the 16 line) · React · TypeScript (strict) · Tailwind CSS · shadcn/ui · Framer Motion · three.js (react-three-fiber) · Supabase (Postgres + PostGIS, Auth, Storage, Realtime, pg_cron + pg_net, region Mumbai) · Vercel (Hobby) · Leaflet with OpenStreetMap-based map tiles (provider chosen in Phase 4) · Tesseract.js, barcode detector and a small on-device food model · Open Food Facts · Web Push · Resend or Brevo (email) · Upstash (rate limiting) · Cloudflare Turnstile · Sentry (optional) · Vitest, Playwright, pgTAP, axe, Lighthouse CI, GitHub Actions.
@@ -102,9 +93,10 @@ You need free accounts on **GitHub, Supabase and Vercel**; for full features als
 7. Apply the hardening checklist in SECURITY §12.1.
 
 **Vercel**
-1. Import the GitHub repository and add the environment variables (server-only ones as non-public). Production secrets go to Production only; **Preview deployments use the staging project**.
-2. Deploy to get a free `*.vercel.app` address, then set that address as `NEXT_PUBLIC_SITE_URL` and in Supabase's redirect list, and redeploy.
-3. A custom domain can be added later (update the same places and the email provider).
+1. Import the GitHub repository and configure environment variables in Vercel project settings (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, etc.).
+2. The production site is live at: **[https://khabar-chakra.vercel.app/](https://khabar-chakra.vercel.app/)**
+3. Ensure the Vercel URL and redirect destinations (`https://khabar-chakra.vercel.app/**`) are added to the Supabase Authentication Redirect URLs list.
+4. A custom domain can be added later (update the same places and the email provider).
 Vercel's free Hobby plan is for **non-commercial** use.
 
 **Other services:** Resend/Brevo (API key; without a domain mail may land in spam) · Upstash (free Redis, REST URL and token) · Cloudflare Turnstile (site key and secret) · Sentry (optional) · UptimeRobot (optional, watch `/api/health`).
