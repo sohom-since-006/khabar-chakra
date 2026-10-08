@@ -1,3 +1,5 @@
+import 'server-only';
+
 /**
  * Cloudflare Turnstile Server-side Token Verification
  * Strictly adheres to 0-cost and fail-open in test/development environments if keys are missing.

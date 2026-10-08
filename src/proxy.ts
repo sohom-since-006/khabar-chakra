@@ -3,7 +3,7 @@ import { type NextRequest } from "next/server";
 import { updateSession } from "@/utils/supabase/middleware";
 
 const handleI18n = createIntlMiddleware({
-  locales: ['en'],
+  locales: ['en', 'bn', 'hi'],
   defaultLocale: 'en',
   localePrefix: 'always',
 });

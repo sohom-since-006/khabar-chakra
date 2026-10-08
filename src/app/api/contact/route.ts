@@ -71,6 +71,12 @@ export async function POST(req: NextRequest) {
 
     const { name, email, topic, subject, message, captchaToken } = result.data;
 
+    // Sanitize user inputs against XSS and control chars
+    const { sanitizeUserInput } = await import('@/lib/sanitize');
+    const cleanName = sanitizeUserInput(name, false);
+    const cleanSubject = sanitizeUserInput(subject, false);
+    const cleanMessage = sanitizeUserInput(message, false);
+
     // Check Cloudflare Turnstile token
     const captchaCheck = await verifyTurnstileToken(captchaToken, ip);
     if (!captchaCheck.success) {
@@ -86,10 +92,10 @@ export async function POST(req: NextRequest) {
     try {
       const supabase = await createClient();
       await supabase.from('contact_messages').insert({
-        name,
+        name: cleanName,
         email,
         topic,
-        message: `[Subject: ${subject}]\n\n${message}`,
+        message: `[Subject: ${cleanSubject}]\n\n${cleanMessage}`,
         status: 'unread',
       });
     } catch (err) {

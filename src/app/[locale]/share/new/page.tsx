@@ -10,6 +10,7 @@ import {
   ContactRevealPolicy,
   validateListingInput,
   generatePickupCode,
+  sanitizeListingContent,
   Listing,
 } from '@/domain/listings';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
@@ -101,8 +102,12 @@ export default function NewListingPage() {
 
     setIsSubmitting(true);
 
+    const { cleanTitle, cleanDescription } = sanitizeListingContent(title, description);
+
     const newListing: Listing = {
       ...(candidateListing as Listing),
+      title: cleanTitle,
+      description: cleanDescription,
       id: `lst-${Date.now()}`,
       donorId: 'usr-current',
       donorName: 'Community Kitchen Member',

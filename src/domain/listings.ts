@@ -93,6 +93,20 @@ export function validateListingInput(input: Partial<Listing>): ListingValidation
   };
 }
 
+/**
+ * Sanitizes and masks private phone numbers and emails from public listing descriptions (D2 & SECURITY §3.2)
+ */
+export function sanitizeListingContent(title: string, description: string): { cleanTitle: string; cleanDescription: string } {
+  const EMAIL_REGEX = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/gi;
+  const PHONE_REGEX = /(?:\+91[\s.-]?)?(?:[6-9]\d{9}|[6-9]\d{4}[\s.-]?\d{5}|\d{3}[\s.-]?\d{3}[\s.-]?\d{4})/g;
+
+  const cleanTitle = title.replace(EMAIL_REGEX, '[email hidden]').replace(PHONE_REGEX, '[phone hidden]').trim();
+  const cleanDescription = description.replace(EMAIL_REGEX, '[email hidden]').replace(PHONE_REGEX, '[phone hidden]').trim();
+
+  return { cleanTitle, cleanDescription };
+}
+
+
 export function generatePickupCode(): string {
   // 6-digit secure code (D5)
   return Math.floor(100000 + Math.random() * 900000).toString();
