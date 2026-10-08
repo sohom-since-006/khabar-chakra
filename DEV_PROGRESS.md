@@ -31,6 +31,7 @@ Global MCP configurations are stored in `C:\Users\sohom\.gemini\config\mcp_confi
 - **Fetch MCP:** `mcp-server-fetch` (stdio via `python -m mcp_server_fetch`)
 - **Memory MCP:** `@modelcontextprotocol/server-memory` (stdio knowledge graph)
 - **Google Search MCP:** `@modelcontextprotocol/server-google-search` (stdio)
+- **Resend MCP:** `https://mcp.resend.com/mcp` (remote SSE)
 
 Remote control has been enabled in `C:\Users\sohom\.gemini\config\config.json`:
 - `remoteControlHostname`: `"dell-supreme-dark-nebula"`
@@ -104,6 +105,7 @@ Remote control has been enabled in `C:\Users\sohom\.gemini\config\config.json`:
 | 2026-10-08 | Implemented Phase 4 Share & Community: Listings domain & validation (`listings.ts`, D3, D4, D5, D8, D11, D12), Asansol seed mock catalog (`mockListings.ts`), Verified Badge with D9 tooltip (`VerifiedBadge.tsx`), surplus listing creation flow (`/[locale]/share/new`), Available Food directory with static radar map (`/[locale]/available`, `AvailableFoodMap.tsx`), contact reveal & 6-digit pickup handover, organisation accreditation docket (`/[locale]/organisations/register`), Emergency Food Sharing channel (`/[locale]/emergency`), and Admin Desk with D10 404 gate, TOTP step-up, and D21 Two-Admin rule (`/[locale]/admin`) | `src/domain/listings.ts`, `src/data/mockListings.ts`, `src/components/ui/VerifiedBadge.tsx`, `src/components/map/AvailableFoodMap.tsx`, `src/app/[locale]/share/new/**`, `src/app/[locale]/available/**`, `src/app/[locale]/organisations/register/**`, `src/app/[locale]/emergency/**`, `src/app/[locale]/admin/**`, `tests/unit/listings.test.ts` | Complete & Verified (33/33 tests pass) |
 | 2026-10-08 | Implemented Phase 5 Waste & Impact: 5-tier waste separation taxonomy (`waste.ts`), interactive search classifier & Asansol drop-off hubs directory (`/[locale]/waste`), and pure formula-based idempotent impact accounting ledger (`impact.ts`, `/[locale]/impact`) with transparent citations (`TODO(source): ...`) and household savings forecast simulator | `src/domain/waste.ts`, `src/domain/impact.ts`, `src/app/[locale]/waste/**`, `src/app/[locale]/impact/**`, `tests/unit/impact.test.ts` | Complete & Verified (36/36 tests pass) |
 | 2026-10-08 | Implemented Phase 6 Polish & Launch: i18n dictionaries for English (`en`), Bengali (`bn`), and Hindi (`hi` without Hindi in logo per D18) in `messages/`, dynamic locale loader (`src/i18n/request.ts`), Web App Manifest (`src/app/manifest.ts`) with theme color `#0B6E3C` and standalone display, offline shell service worker (`public/sw.js`), and full quality audit (40/40 unit tests passing, zero design lint violations, clean Next.js 16 Turbopack production compilation) | `messages/**`, `src/i18n/request.ts`, `src/app/manifest.ts`, `public/sw.js`, `tests/unit/i18n.test.ts` | Complete & Verified (40/40 tests pass) |
+| 2026-10-08 | Initialized Supabase CLI, linked project `traxfemzrvxirtlcxpov`, authored initial schema migration (`20261008000000_init_khabar_chakra.sql`), pushed schema to remote DB via `supabase db push`, and generated TypeScript types (`src/types_database.ts`) | `supabase/**`, `src/types_database.ts` | Complete & Active on Remote DB |
 
 ---
 
