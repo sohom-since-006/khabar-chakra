@@ -1,0 +1,944 @@
+{
+  "name": "Khabar Chakra UI icons",
+  "version": "1.0",
+  "grid": 24,
+  "stroke": 2,
+  "strokeLinecap": "round",
+  "strokeLinejoin": "round",
+  "liveArea": [
+    3,
+    3,
+    21,
+    21
+  ],
+  "palette": {
+    "teal": "#0B5B4E",
+    "green": "#3EA44C"
+  },
+  "icons": [
+    {
+      "name": "buy",
+      "category": "lifecycle",
+      "tags": [
+        "purchase",
+        "shop",
+        "grocery",
+        "basket"
+      ],
+      "file": "buy.svg",
+      "sprite": "#kc-buy"
+    },
+    {
+      "name": "track",
+      "category": "lifecycle",
+      "tags": [
+        "progress",
+        "monitor",
+        "gauge",
+        "status"
+      ],
+      "file": "track.svg",
+      "sprite": "#kc-track"
+    },
+    {
+      "name": "store",
+      "category": "lifecycle",
+      "tags": [
+        "keep",
+        "container",
+        "box",
+        "save"
+      ],
+      "file": "store.svg",
+      "sprite": "#kc-store"
+    },
+    {
+      "name": "consume",
+      "category": "lifecycle",
+      "tags": [
+        "eat",
+        "meal",
+        "plate",
+        "finished"
+      ],
+      "file": "consume.svg",
+      "sprite": "#kc-consume"
+    },
+    {
+      "name": "cook",
+      "category": "lifecycle",
+      "tags": [
+        "cooking",
+        "pot",
+        "stove",
+        "prepare"
+      ],
+      "file": "cook.svg",
+      "sprite": "#kc-cook"
+    },
+    {
+      "name": "share",
+      "category": "lifecycle",
+      "tags": [
+        "give",
+        "distribute",
+        "network",
+        "send"
+      ],
+      "file": "share.svg",
+      "sprite": "#kc-share"
+    },
+    {
+      "name": "donate",
+      "category": "lifecycle",
+      "tags": [
+        "give",
+        "charity",
+        "heart",
+        "help"
+      ],
+      "file": "donate.svg",
+      "sprite": "#kc-donate"
+    },
+    {
+      "name": "reuse",
+      "category": "lifecycle",
+      "tags": [
+        "again",
+        "leftover",
+        "cycle",
+        "repeat"
+      ],
+      "file": "reuse.svg",
+      "sprite": "#kc-reuse"
+    },
+    {
+      "name": "recycle",
+      "category": "lifecycle",
+      "tags": [
+        "recycling",
+        "sustainable",
+        "circular"
+      ],
+      "file": "recycle.svg",
+      "sprite": "#kc-recycle"
+    },
+    {
+      "name": "dispose",
+      "category": "lifecycle",
+      "tags": [
+        "bin",
+        "discard",
+        "waste",
+        "responsible"
+      ],
+      "file": "dispose.svg",
+      "sprite": "#kc-dispose"
+    },
+    {
+      "name": "ingredient",
+      "category": "food",
+      "tags": [
+        "carrot",
+        "vegetable",
+        "raw",
+        "produce"
+      ],
+      "file": "ingredient.svg",
+      "sprite": "#kc-ingredient"
+    },
+    {
+      "name": "recipe",
+      "category": "food",
+      "tags": [
+        "book",
+        "instructions",
+        "method",
+        "cookbook"
+      ],
+      "file": "recipe.svg",
+      "sprite": "#kc-recipe"
+    },
+    {
+      "name": "meal",
+      "category": "food",
+      "tags": [
+        "dish",
+        "cloche",
+        "serve",
+        "lunch"
+      ],
+      "file": "meal.svg",
+      "sprite": "#kc-meal"
+    },
+    {
+      "name": "portion",
+      "category": "food",
+      "tags": [
+        "serving",
+        "measure",
+        "scoop",
+        "split a portion"
+      ],
+      "file": "portion.svg",
+      "sprite": "#kc-portion"
+    },
+    {
+      "name": "leftover",
+      "category": "food",
+      "tags": [
+        "tiffin",
+        "container",
+        "saved",
+        "box"
+      ],
+      "file": "leftover.svg",
+      "sprite": "#kc-leftover"
+    },
+    {
+      "name": "fresh",
+      "category": "food",
+      "tags": [
+        "new",
+        "leaf",
+        "just cooked",
+        "quality"
+      ],
+      "file": "fresh.svg",
+      "sprite": "#kc-fresh"
+    },
+    {
+      "name": "expiring",
+      "category": "food",
+      "tags": [
+        "soon",
+        "clock",
+        "deadline",
+        "urgent"
+      ],
+      "file": "expiring.svg",
+      "sprite": "#kc-expiring"
+    },
+    {
+      "name": "expired",
+      "category": "food",
+      "tags": [
+        "past",
+        "spoiled",
+        "date",
+        "alert"
+      ],
+      "file": "expired.svg",
+      "sprite": "#kc-expired"
+    },
+    {
+      "name": "fridge",
+      "category": "food",
+      "tags": [
+        "cold",
+        "storage",
+        "appliance"
+      ],
+      "file": "fridge.svg",
+      "sprite": "#kc-fridge"
+    },
+    {
+      "name": "freezer",
+      "category": "food",
+      "tags": [
+        "frozen",
+        "snowflake",
+        "cold store"
+      ],
+      "file": "freezer.svg",
+      "sprite": "#kc-freezer"
+    },
+    {
+      "name": "pantry",
+      "category": "food",
+      "tags": [
+        "shelf",
+        "jars",
+        "store cupboard",
+        "stock"
+      ],
+      "file": "pantry.svg",
+      "sprite": "#kc-pantry"
+    },
+    {
+      "name": "shopping-list",
+      "category": "food",
+      "tags": [
+        "grocery",
+        "checklist",
+        "plan",
+        "buy list"
+      ],
+      "file": "shopping-list.svg",
+      "sprite": "#kc-shopping-list"
+    },
+    {
+      "name": "scan",
+      "category": "food",
+      "tags": [
+        "barcode",
+        "label",
+        "qr",
+        "add item"
+      ],
+      "file": "scan.svg",
+      "sprite": "#kc-scan"
+    },
+    {
+      "name": "market",
+      "category": "food",
+      "tags": [
+        "bazaar",
+        "shop",
+        "stall",
+        "vendor"
+      ],
+      "file": "market.svg",
+      "sprite": "#kc-market"
+    },
+    {
+      "name": "veg-marker",
+      "category": "safety",
+      "tags": [
+        "vegetarian",
+        "green dot",
+        "india"
+      ],
+      "file": "veg-marker.svg",
+      "sprite": "#kc-veg-marker"
+    },
+    {
+      "name": "nonveg-marker",
+      "category": "safety",
+      "tags": [
+        "non vegetarian",
+        "red",
+        "india"
+      ],
+      "file": "nonveg-marker.svg",
+      "sprite": "#kc-nonveg-marker"
+    },
+    {
+      "name": "allergen",
+      "category": "safety",
+      "tags": [
+        "nut",
+        "peanut",
+        "allergy",
+        "contains"
+      ],
+      "file": "allergen.svg",
+      "sprite": "#kc-allergen"
+    },
+    {
+      "name": "plant-based",
+      "category": "safety",
+      "tags": [
+        "vegan",
+        "leaf",
+        "vegetarian option"
+      ],
+      "file": "plant-based.svg",
+      "sprite": "#kc-plant-based"
+    },
+    {
+      "name": "no-onion-garlic",
+      "category": "safety",
+      "tags": [
+        "jain",
+        "satvik",
+        "restriction",
+        "avoid"
+      ],
+      "file": "no-onion-garlic.svg",
+      "sprite": "#kc-no-onion-garlic"
+    },
+    {
+      "name": "spice",
+      "category": "safety",
+      "tags": [
+        "chilli",
+        "hot",
+        "flavour",
+        "level"
+      ],
+      "file": "spice.svg",
+      "sprite": "#kc-spice"
+    },
+    {
+      "name": "household",
+      "category": "community",
+      "tags": [
+        "home",
+        "family",
+        "kitchen",
+        "my place"
+      ],
+      "file": "household.svg",
+      "sprite": "#kc-household"
+    },
+    {
+      "name": "family",
+      "category": "community",
+      "tags": [
+        "people",
+        "group",
+        "home"
+      ],
+      "file": "family.svg",
+      "sprite": "#kc-family"
+    },
+    {
+      "name": "neighbour",
+      "category": "community",
+      "tags": [
+        "next door",
+        "local",
+        "nearby",
+        "houses"
+      ],
+      "file": "neighbour.svg",
+      "sprite": "#kc-neighbour"
+    },
+    {
+      "name": "volunteer",
+      "category": "community",
+      "tags": [
+        "helper",
+        "donate time",
+        "person",
+        "heart"
+      ],
+      "file": "volunteer.svg",
+      "sprite": "#kc-volunteer"
+    },
+    {
+      "name": "ngo",
+      "category": "community",
+      "tags": [
+        "organisation",
+        "partner",
+        "building",
+        "verified partner"
+      ],
+      "file": "ngo.svg",
+      "sprite": "#kc-ngo"
+    },
+    {
+      "name": "verified",
+      "category": "community",
+      "tags": [
+        "trusted",
+        "shield",
+        "approved",
+        "check"
+      ],
+      "file": "verified.svg",
+      "sprite": "#kc-verified"
+    },
+    {
+      "name": "caterer",
+      "category": "community",
+      "tags": [
+        "chef",
+        "commercial",
+        "event food",
+        "kitchen"
+      ],
+      "file": "caterer.svg",
+      "sprite": "#kc-caterer"
+    },
+    {
+      "name": "event-host",
+      "category": "community",
+      "tags": [
+        "party",
+        "function",
+        "gathering",
+        "date"
+      ],
+      "file": "event-host.svg",
+      "sprite": "#kc-event-host"
+    },
+    {
+      "name": "community",
+      "category": "community",
+      "tags": [
+        "people",
+        "group",
+        "together",
+        "shared"
+      ],
+      "file": "community.svg",
+      "sprite": "#kc-community"
+    },
+    {
+      "name": "pickup",
+      "category": "community",
+      "tags": [
+        "collect",
+        "van",
+        "logistics",
+        "transport"
+      ],
+      "file": "pickup.svg",
+      "sprite": "#kc-pickup"
+    },
+    {
+      "name": "delivery",
+      "category": "community",
+      "tags": [
+        "bicycle",
+        "rider",
+        "courier",
+        "drop off"
+      ],
+      "file": "delivery.svg",
+      "sprite": "#kc-delivery"
+    },
+    {
+      "name": "route",
+      "category": "community",
+      "tags": [
+        "path",
+        "distance",
+        "journey",
+        "pickup route"
+      ],
+      "file": "route.svg",
+      "sprite": "#kc-route"
+    },
+    {
+      "name": "claim-surplus",
+      "category": "community",
+      "tags": [
+        "take",
+        "package",
+        "available",
+        "box"
+      ],
+      "file": "claim-surplus.svg",
+      "sprite": "#kc-claim-surplus"
+    },
+    {
+      "name": "meals-saved",
+      "category": "impact",
+      "tags": [
+        "rescued",
+        "served",
+        "achievement"
+      ],
+      "file": "meals-saved.svg",
+      "sprite": "#kc-meals-saved"
+    },
+    {
+      "name": "kg-rescued",
+      "category": "impact",
+      "tags": [
+        "weight",
+        "kilos",
+        "measured",
+        "impact"
+      ],
+      "file": "kg-rescued.svg",
+      "sprite": "#kc-kg-rescued"
+    },
+    {
+      "name": "co2-avoided",
+      "category": "impact",
+      "tags": [
+        "emissions",
+        "carbon",
+        "climate",
+        "reduced"
+      ],
+      "file": "co2-avoided.svg",
+      "sprite": "#kc-co2-avoided"
+    },
+    {
+      "name": "water-saved",
+      "category": "impact",
+      "tags": [
+        "drop",
+        "conservation",
+        "resource"
+      ],
+      "file": "water-saved.svg",
+      "sprite": "#kc-water-saved"
+    },
+    {
+      "name": "streak",
+      "category": "impact",
+      "tags": [
+        "flame",
+        "habit",
+        "daily",
+        "consistency"
+      ],
+      "file": "streak.svg",
+      "sprite": "#kc-streak"
+    },
+    {
+      "name": "badge",
+      "category": "impact",
+      "tags": [
+        "award",
+        "medal",
+        "achievement",
+        "reward"
+      ],
+      "file": "badge.svg",
+      "sprite": "#kc-badge"
+    },
+    {
+      "name": "leaderboard",
+      "category": "impact",
+      "tags": [
+        "ranking",
+        "top",
+        "community",
+        "standings"
+      ],
+      "file": "leaderboard.svg",
+      "sprite": "#kc-leaderboard"
+    },
+    {
+      "name": "certificate",
+      "category": "impact",
+      "tags": [
+        "recognition",
+        "document",
+        "proof",
+        "award"
+      ],
+      "file": "certificate.svg",
+      "sprite": "#kc-certificate"
+    },
+    {
+      "name": "tier",
+      "category": "impact",
+      "tags": [
+        "level",
+        "upgrade",
+        "progress",
+        "ranking"
+      ],
+      "file": "tier.svg",
+      "sprite": "#kc-tier"
+    },
+    {
+      "name": "goal",
+      "category": "impact",
+      "tags": [
+        "target",
+        "objective",
+        "milestone",
+        "aim"
+      ],
+      "file": "goal.svg",
+      "sprite": "#kc-goal"
+    },
+    {
+      "name": "search",
+      "category": "ui",
+      "tags": [
+        "find",
+        "lookup",
+        "magnifier"
+      ],
+      "file": "search.svg",
+      "sprite": "#kc-search"
+    },
+    {
+      "name": "filter",
+      "category": "ui",
+      "tags": [
+        "refine",
+        "narrow",
+        "options",
+        "funnel"
+      ],
+      "file": "filter.svg",
+      "sprite": "#kc-filter"
+    },
+    {
+      "name": "map",
+      "category": "ui",
+      "tags": [
+        "location",
+        "area",
+        "region",
+        "view map"
+      ],
+      "file": "map.svg",
+      "sprite": "#kc-map"
+    },
+    {
+      "name": "location",
+      "category": "ui",
+      "tags": [
+        "pin",
+        "place",
+        "here",
+        "address"
+      ],
+      "file": "location.svg",
+      "sprite": "#kc-location"
+    },
+    {
+      "name": "calendar",
+      "category": "ui",
+      "tags": [
+        "date",
+        "schedule",
+        "month",
+        "plan"
+      ],
+      "file": "calendar.svg",
+      "sprite": "#kc-calendar"
+    },
+    {
+      "name": "schedule",
+      "category": "ui",
+      "tags": [
+        "time",
+        "when",
+        "plan",
+        "reminder"
+      ],
+      "file": "schedule.svg",
+      "sprite": "#kc-schedule"
+    },
+    {
+      "name": "bell",
+      "category": "ui",
+      "tags": [
+        "notify",
+        "alert",
+        "push",
+        "announcement"
+      ],
+      "file": "bell.svg",
+      "sprite": "#kc-bell"
+    },
+    {
+      "name": "message",
+      "category": "ui",
+      "tags": [
+        "chat",
+        "talk",
+        "comment",
+        "support"
+      ],
+      "file": "message.svg",
+      "sprite": "#kc-message"
+    },
+    {
+      "name": "invite",
+      "category": "ui",
+      "tags": [
+        "add person",
+        "refer",
+        "bring",
+        "member"
+      ],
+      "file": "invite.svg",
+      "sprite": "#kc-invite"
+    },
+    {
+      "name": "share-arrow",
+      "category": "ui",
+      "tags": [
+        "send",
+        "export",
+        "forward",
+        "upload"
+      ],
+      "file": "share-arrow.svg",
+      "sprite": "#kc-share-arrow"
+    },
+    {
+      "name": "qr",
+      "category": "ui",
+      "tags": [
+        "code",
+        "scan to donate",
+        "poster",
+        "quick"
+      ],
+      "file": "qr.svg",
+      "sprite": "#kc-qr"
+    },
+    {
+      "name": "profile",
+      "category": "ui",
+      "tags": [
+        "account",
+        "user",
+        "me",
+        "avatar"
+      ],
+      "file": "profile.svg",
+      "sprite": "#kc-profile"
+    },
+    {
+      "name": "sliders",
+      "category": "ui",
+      "tags": [
+        "settings",
+        "preferences",
+        "adjust",
+        "configure"
+      ],
+      "file": "sliders.svg",
+      "sprite": "#kc-sliders"
+    },
+    {
+      "name": "help",
+      "category": "ui",
+      "tags": [
+        "question",
+        "support",
+        "faq",
+        "how to"
+      ],
+      "file": "help.svg",
+      "sprite": "#kc-help"
+    },
+    {
+      "name": "star-rating",
+      "category": "ui",
+      "tags": [
+        "favourite",
+        "rate",
+        "review",
+        "quality"
+      ],
+      "file": "star-rating.svg",
+      "sprite": "#kc-star-rating"
+    },
+    {
+      "name": "success",
+      "category": "state",
+      "tags": [
+        "done",
+        "ok",
+        "complete",
+        "confirmed"
+      ],
+      "file": "success.svg",
+      "sprite": "#kc-success"
+    },
+    {
+      "name": "warning",
+      "category": "state",
+      "tags": [
+        "caution",
+        "attention",
+        "risk"
+      ],
+      "file": "warning.svg",
+      "sprite": "#kc-warning"
+    },
+    {
+      "name": "error",
+      "category": "state",
+      "tags": [
+        "failed",
+        "problem",
+        "wrong",
+        "invalid"
+      ],
+      "file": "error.svg",
+      "sprite": "#kc-error"
+    },
+    {
+      "name": "info",
+      "category": "state",
+      "tags": [
+        "note",
+        "details",
+        "about",
+        "hint"
+      ],
+      "file": "info.svg",
+      "sprite": "#kc-info"
+    },
+    {
+      "name": "empty",
+      "category": "state",
+      "tags": [
+        "no results",
+        "nothing here",
+        "blank",
+        "none"
+      ],
+      "file": "empty.svg",
+      "sprite": "#kc-empty"
+    },
+    {
+      "name": "offline",
+      "category": "state",
+      "tags": [
+        "no network",
+        "disconnected",
+        "cloud off"
+      ],
+      "file": "offline.svg",
+      "sprite": "#kc-offline"
+    },
+    {
+      "name": "sync",
+      "category": "state",
+      "tags": [
+        "refresh",
+        "update",
+        "reload",
+        "loading data"
+      ],
+      "file": "sync.svg",
+      "sprite": "#kc-sync"
+    },
+    {
+      "name": "loading",
+      "category": "state",
+      "tags": [
+        "spinner",
+        "please wait",
+        "busy",
+        "processing"
+      ],
+      "file": "loading.svg",
+      "sprite": "#kc-loading"
+    },
+    {
+      "name": "locked",
+      "category": "state",
+      "tags": [
+        "private",
+        "secure",
+        "restricted",
+        "no access"
+      ],
+      "file": "locked.svg",
+      "sprite": "#kc-locked"
+    },
+    {
+      "name": "hidden",
+      "category": "state",
+      "tags": [
+        "hide",
+        "invisible",
+        "eye off",
+        "privacy"
+      ],
+      "file": "hidden.svg",
+      "sprite": "#kc-hidden"
+    }
+  ]
+}
