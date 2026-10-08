@@ -99,4 +99,5 @@ Remote control has been enabled in `C:\Users\sohom\.gemini\config\config.json`:
 | 2026-10-08 | Initialized Persistent Development Ledger | `DEV_PROGRESS.md` | Active |
 | 2026-10-08 | Implemented all Phase 1 Foundation routes (Auth, Welcome passport, Home shelf, Available Food preview, S-QUAD Colophon Team, Help manual, searchable FAQ, Form 102 Contact, Profile & Preferences, Security, Legal drafts, SEO robots/sitemap) | `src/app/**`, `tests/unit/**` | Complete & Verified |
 | 2026-10-08 | Added Vitest test suite with 9 passing tests; verified Next.js 16 build | `tests/unit/phase1.test.ts` | Complete |
+| 2026-10-08 | Implemented Phase 2 Scan & Track: pure TypeScript domain modules (`freshness.ts`, `wasteRisk.ts`, `shelfLife.ts`, `fssai.ts`), Open Food Facts integration, Add Food ingestion with EXIF stripping and proof sheet (`/[locale]/inventory/add`), Before You Buy assistant (`/[locale]/inventory/check`), and live Kitchen Ledger (`/[locale]/home` and `/[locale]/inventory`) with "Use This First" shelf | `src/domain/**`, `src/app/[locale]/inventory/**`, `src/app/[locale]/home/**`, `tests/unit/domain.test.ts` | Complete & Verified (18/18 tests pass) |
 

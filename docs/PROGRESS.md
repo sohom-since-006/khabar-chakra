@@ -5,8 +5,8 @@
 ---
 
 ## Overall Status
-- **Current Phase:** Phase 2 (Scan & Track)
-- **Active Task:** T2.0 Specification & Architecture
+- **Current Phase:** Phase 3 (Alerts, Recipes, Nutrition)
+- **Active Task:** T3.0 Specification & Planning
 
 ---
 
@@ -25,11 +25,12 @@
 ---
 
 ## Phase 2: Scan & Track
-- [ ] **T2.0 Spec**: Write `docs/phase-2/PHASE-2-SPEC.md`.
-- [ ] **T2.1 Database Migrations**: `inventory_items`, bands, constraints, RLS policies.
-- [ ] **T2.2 Domain Logic**: Freshness scoring, bands, waste risk calculation with unit tests.
-- [ ] **T2.3 Add Food Viewfinder**: Camera/gallery capture, Web Worker OCR/barcode/classifier, editable confirmation proof sheet.
-- [ ] **T2.4 Inventory UI**: Ruled ledger table / mobile list, "Use This First" shelf, filters and density switches.
+- [x] **T2.0 Spec**: `docs/phase-2/PHASE-2-SPEC.md` written and validated.
+- [x] **T2.1 Domain Logic & Invariants**: Pure TypeScript `src/domain/` modules (`freshness.ts`, `wasteRisk.ts`, `shelfLife.ts`, `fssai.ts`) with half-up rounding, D8 Meat/Fish/Egg sharing ban lock, and 18 passing Vitest unit tests.
+- [x] **T2.2 Barcode & Open Food Facts**: Free zero-cost integration (`src/lib/openFoodFacts.ts`) with dietary mapping.
+- [x] **T2.3 Add Food Ingestion Flow**: Mode switcher (manual, barcode, camera viewfinder with EXIF wipe), FSSAI 14-digit validator, shelf-life auto-estimation, and editable confirmation proof sheet (`/[locale]/inventory/add`).
+- [x] **T2.4 "Before You Buy" Assistant**: Real-time grocery duplicate checker (`/[locale]/inventory/check`).
+- [x] **T2.5 Kitchen Ledger UI**: Active pantry dashboard with prominent "Use This First" priority shelf, ruled ledger table, card view, category/band filters, and Action Ladder outcome tracking modal (`/[locale]/home` and `/[locale]/inventory`).
 
 ---
 
