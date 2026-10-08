@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
 
 interface HeaderProps {
@@ -11,213 +12,132 @@ interface HeaderProps {
 
 export function Header({ locale }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  const navLinks = [
+    { label: 'Home', href: `/${locale}`, icon: 'household' as const },
+    { label: 'My Food', href: `/${locale}/available`, icon: 'meal' as const },
+    { label: 'Recipes', href: `/${locale}/recipes`, icon: 'cook' as const },
+    { label: 'Nutrition', href: `/${locale}/nutrition`, icon: 'portion' as const },
+    { label: 'Waste', href: `/${locale}/waste`, icon: 'recycle' as const },
+    { label: 'Impact', href: `/${locale}/impact`, icon: 'streak' as const },
+    { label: 'Community', href: `/${locale}/home`, icon: 'community' as const },
+  ];
 
   return (
-    <header className="almanac-rule sticky top-0 bg-[var(--kc-bg)] z-40 transition-colors">
-      {/* Top Folio Bar */}
-      <div className="px-4 py-1.5 flex justify-between items-center text-xs text-[var(--kc-muted)] border-b border-[var(--kc-hairline)] font-mono">
-        <span>KHABAR CHAKRA · খাবার চক্র · VOL. 1</span>
-        <span className="hidden sm:inline">WEST BENGAL COMMUNITY FOOD LIFECYCLE</span>
-        <span>₹0 FREE PLATFORM</span>
-      </div>
-
-      {/* Main Masthead Navigation */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <Link href={`/${locale}`} className="flex items-center gap-2.5 text-[var(--kc-ink)] hover:opacity-90">
+    <header className="sticky top-0 bg-[#0B3326] text-white z-50 border-b border-[#144737] shadow-sm transition-colors">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        {/* Left: Brand Logo & Cursive Typography */}
+        <Link href={`/${locale}`} className="flex items-center gap-3 group">
+          <div className="relative w-9 h-9 rounded-full bg-[#164D3B] p-1 flex items-center justify-center border border-[#217056] shadow-inner">
             <Image
               src="/branding/app-logo.png"
               alt="Khabar Chakra"
-              width={38}
-              height={38}
-              className="rounded-sm object-contain"
+              width={34}
+              height={34}
+              className="rounded-full object-contain"
               priority
             />
-            <div className="leading-tight">
-              <span className="font-bold tracking-tight text-lg block">Khabar Chakra</span>
-              <span className="text-[10px] text-[var(--kc-muted)] block -mt-0.5">খাবার চক্র · Kitchen Almanac</span>
-            </div>
-          </Link>
+          </div>
+          <div className="leading-tight">
+            <span className="font-cursive-sacramento text-2xl sm:text-[28px] font-bold tracking-wide text-[#F9F7EE] block -mb-1 group-hover:text-[#FFD56B] transition-colors">
+              Khabar Chakra
+            </span>
+            <span className="text-[10px] text-[#A5C7B7] font-medium tracking-tight block">
+              খাবার চক্র : Save · Share · Sustain
+            </span>
+          </div>
+        </Link>
 
-          <nav className="hidden md:flex items-center gap-5 text-sm font-medium">
-            <Link href={`/${locale}/available`} className="hover:text-[var(--kc-basil)] transition-colors">
-              Available Food
-            </Link>
-            <Link href={`/${locale}/home`} className="hover:text-[var(--kc-basil)] transition-colors">
-              My Kitchen
-            </Link>
-            <Link href={`/${locale}/recipes`} className="hover:text-[var(--kc-basil)] transition-colors">
-              Recipes
-            </Link>
-            <Link href={`/${locale}/nutrition`} className="hover:text-[var(--kc-basil)] transition-colors">
-              Nutrition
-            </Link>
-            <Link href={`/${locale}/waste`} className="hover:text-[var(--kc-basil)] transition-colors">
-              Waste
-            </Link>
-            <Link href={`/${locale}/impact`} className="hover:text-[var(--kc-basil)] transition-colors">
-              Impact
-            </Link>
-            <Link href={`/${locale}/help`} className="hover:text-[var(--kc-basil)] transition-colors">
-              Help
-            </Link>
-            <Link href={`/${locale}/faq`} className="hover:text-[var(--kc-basil)] transition-colors">
-              FAQ
-            </Link>
-            <Link href={`/${locale}/contact`} className="hover:text-[var(--kc-basil)] transition-colors">
-              Contact
-            </Link>
-          </nav>
-        </div>
+        {/* Center: Sleek Pill Navigational Menu */}
+        <nav className="hidden lg:flex items-center gap-1.5 bg-[#08261C] p-1 rounded-full border border-[#144737]">
+          {navLinks.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
+                  isActive
+                    ? 'bg-[#185A43] text-white shadow-sm font-semibold'
+                    : 'text-[#B4D5C5] hover:text-white hover:bg-[#114232]'
+                }`}
+              >
+                <KhabarIcon name={item.icon} size={15} />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
 
-        {/* Auth CTA & Mobile Toggle */}
+        {/* Right: Notifications & User Profile Chip */}
         <div className="flex items-center gap-3">
+          {/* Notification Bell with Badge */}
           <Link
             href={`/${locale}/notifications`}
-            className="p-1.5 text-[var(--kc-ink)] hover:text-[var(--kc-basil)] border border-[var(--kc-hairline)] rounded-sm relative"
-            title="Freshness Alerts"
-            aria-label="Freshness Alerts"
+            className="p-2 text-[#C0E0D0] hover:text-white rounded-full bg-[#0E3E2F] hover:bg-[#165842] border border-[#195A44] relative transition-colors"
+            title="Freshness Notifications"
           >
-            <KhabarIcon name="bell" size={18} />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[var(--kc-chilli)]" />
+            <KhabarIcon name="bell" size={17} />
+            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#D6381F] text-white text-[9px] font-bold flex items-center justify-center shadow-sm">
+              3
+            </span>
           </Link>
 
-          <div className="hidden sm:flex items-center gap-2">
-            <Link
-              href={`/${locale}/login`}
-              className="text-sm font-medium px-3 py-1.5 hover:text-[var(--kc-basil)] transition-colors"
-            >
-              Log in
-            </Link>
-            <Link
-              href={`/${locale}/signup`}
-              className="text-sm font-semibold px-3 py-1.5 bg-[var(--kc-basil)] text-white rounded-sm hover:opacity-90 transition-opacity"
-            >
-              Register Ledger
-            </Link>
-          </div>
+          {/* User Profile Chip */}
+          <Link
+            href={`/${locale}/profile`}
+            className="hidden sm:flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-[#0E3E2F] hover:bg-[#165842] border border-[#195A44] transition-colors group"
+          >
+            <div className="w-7 h-7 rounded-full bg-[#207357] text-[#D5F5E3] font-bold text-xs flex items-center justify-center border border-[#2EB286]">
+              SD
+            </div>
+            <div className="text-left leading-tight">
+              <span className="text-xs font-semibold text-[#F2FBF6] group-hover:text-white block">
+                Hello, Shuvangi
+              </span>
+            </div>
+            <span className="text-[#8FB7A3] text-[10px]">▼</span>
+          </Link>
 
           {/* Mobile hamburger button */}
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-1.5 text-[var(--kc-ink)] border border-[var(--kc-hairline)] rounded-sm"
+            className="lg:hidden p-2 text-[#C0E0D0] hover:text-white bg-[#0E3E2F] border border-[#195A44] rounded-lg"
             aria-label="Toggle Navigation"
           >
-            <KhabarIcon name={mobileMenuOpen ? "error" : "sliders"} size={20} />
+            <KhabarIcon name={mobileMenuOpen ? "error" : "sliders"} size={18} />
           </button>
         </div>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-[var(--kc-hairline)] bg-[var(--kc-bg)] px-4 py-4 space-y-3">
-          <Link
-            href={`/${locale}/available`}
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm py-1.5 font-medium"
-          >
-            Available Food
-          </Link>
-          <Link
-            href={`/${locale}/home`}
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm py-1.5 font-medium"
-          >
-            My Kitchen
-          </Link>
-          <Link
-            href={`/${locale}/recipes`}
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm py-1.5 font-medium"
-          >
-            Recipe Rescue
-          </Link>
-          <Link
-            href={`/${locale}/nutrition`}
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm py-1.5 font-medium"
-          >
-            Nutrition Journal
-          </Link>
-          <Link
-            href={`/${locale}/notifications`}
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm py-1.5 font-medium flex items-center justify-between"
-          >
-            <span>Freshness Alerts</span>
-            <span className="w-2 h-2 rounded-full bg-[var(--kc-chilli)]" />
-          </Link>
-          <Link
-            href={`/${locale}/share/new`}
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm py-1.5 font-medium text-[var(--kc-basil)] font-semibold"
-          >
-            + Post Surplus Food
-          </Link>
-          <Link
-            href={`/${locale}/emergency`}
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm py-1.5 font-medium text-[var(--kc-chilli)] font-semibold"
-          >
-            ★ Emergency NGO Relief
-          </Link>
-          <Link
-            href={`/${locale}/waste`}
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm py-1.5 font-medium"
-          >
-            Waste Separation Guide
-          </Link>
-          <Link
-            href={`/${locale}/impact`}
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm py-1.5 font-medium"
-          >
-            Impact Accounting Ledger
-          </Link>
-          <Link
-            href={`/${locale}/help`}
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm py-1.5 font-medium"
-          >
-            Help Centre
-          </Link>
-          <Link
-            href={`/${locale}/faq`}
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm py-1.5 font-medium"
-          >
-            FAQ
-          </Link>
-          <Link
-            href={`/${locale}/contact`}
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm py-1.5 font-medium"
-          >
-            Contact Admin
-          </Link>
-          <Link
-            href={`/${locale}/team`}
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-sm py-1.5 font-medium text-[var(--kc-muted)]"
-          >
-            Team S-QUAD
-          </Link>
-          <div className="pt-3 border-t border-[var(--kc-hairline)] flex gap-2">
+        <div className="lg:hidden bg-[#0A2E22] border-t border-[#144737] px-4 py-4 space-y-2">
+          {navLinks.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-[#C8E8D9] hover:bg-[#144D39] hover:text-white"
+            >
+              <KhabarIcon name={item.icon} size={16} />
+              <span>{item.label}</span>
+            </Link>
+          ))}
+          <div className="pt-3 border-t border-[#164F3B] flex gap-2">
             <Link
               href={`/${locale}/login`}
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex-1 text-center py-2 text-sm border border-[var(--kc-hairline)] rounded-sm font-medium"
+              className="flex-1 text-center py-2 text-xs font-semibold bg-[#164F3B] text-white rounded-lg"
             >
               Log in
             </Link>
             <Link
-              href={`/${locale}/signup`}
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex-1 text-center py-2 text-sm bg-[var(--kc-basil)] text-white rounded-sm font-medium"
+              href={`/${locale}/share/new`}
+              className="flex-1 text-center py-2 text-xs font-semibold bg-[#FFC93C] text-[#0A281E] rounded-lg"
             >
-              Sign up
+              Share Food +
             </Link>
           </div>
         </div>

@@ -1,13 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Bad+Script&family=Great+Vibes&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Open+Sans:wght@400;600;700&family=Sacramento&family=Yellowtail&display=swap');
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
 :root {
-  /* Kitchen Almanac / Market Fresh Palette */
-  --kc-bg: #FAFDF6;
-  --kc-ink: #072A26;
-  --kc-muted: #4A635B;
-  --kc-hairline: #D1E0D7;
+  /* Kitchen Almanac & Sanctuary Palette */
+  --kc-bg: #F8FAF7;
+  --kc-ink: #0A281E;
+  --kc-muted: #536B63;
+  --kc-hairline: #E1EBE4;
   --kc-basil: #0B6E3C;
+  --kc-forest: #0D382B;
   --kc-mango: #FFC93C;
   --kc-chilli: #D6381F;
   --kc-blueberry: #2457A6;
@@ -22,6 +24,7 @@
     --kc-muted: #8AA49A;
     --kc-hairline: #1C3328;
     --kc-basil: #1B9C82;
+    --kc-forest: #07221A;
     --kc-mango: #F5BD2D;
     --kc-chilli: #E04D36;
     --kc-blueberry: #4F80D4;
@@ -33,10 +36,71 @@
 body {
   background-color: var(--kc-bg);
   color: var(--kc-ink);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   min-height: 100vh;
   margin: 0;
   -webkit-font-smoothing: antialiased;
+}
+
+/* Typography Utility Classes */
+.font-cursive-vibes {
+  font-family: 'Great Vibes', cursive, serif;
+}
+
+.font-cursive-sacramento {
+  font-family: 'Sacramento', cursive, serif;
+}
+
+.font-cursive-yellowtail {
+  font-family: 'Yellowtail', cursive, serif;
+}
+
+.font-cursive-badscript {
+  font-family: 'Bad Script', cursive, serif;
+}
+
+.font-display-abril {
+  font-family: 'Abril Fatface', serif;
+}
+
+.font-montserrat {
+  font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+}
+
+/* Floating Leaf & Particle Animations for Live Dynamic Background */
+@keyframes floatSway {
+  0% {
+    transform: translateY(0px) rotate(0deg) translateX(0px);
+  }
+  50% {
+    transform: translateY(-25px) rotate(12deg) translateX(15px);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg) translateX(0px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.08);
+  }
+}
+
+.animate-float-slow {
+  animation: floatSway 8s ease-in-out infinite;
+}
+
+.animate-float-medium {
+  animation: floatSway 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 10s ease-in-out infinite;
 }
 
 /* Hairline Rules */
@@ -87,15 +151,15 @@ body {
 
 /* Margin Handwritten Annotation */
 .font-annotation {
-  font-family: 'Caveat', 'Segoe Script', cursive, sans-serif;
+  font-family: 'Sacramento', 'Caveat', cursive, sans-serif;
   color: var(--kc-muted);
-  font-size: 1.1rem;
+  font-size: 1.35rem;
   line-height: 1.2;
 }
 
 /* Clean Ticket / Perforated Border effect */
 .almanac-ticket {
   border: 1px dashed var(--kc-hairline);
-  border-radius: 3px;
+  border-radius: 6px;
   background-color: var(--kc-card);
 }

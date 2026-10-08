@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { LiveDynamicBackground } from '@/components/ui/LiveDynamicBackground';
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -18,9 +19,10 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider messages={messages} locale={locale}>
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen relative overflow-x-hidden bg-[#F7FAF7]">
+        <LiveDynamicBackground />
         <Header locale={locale} />
-        <div className="flex-1">
+        <div className="flex-1 relative z-10">
           {children}
         </div>
         <Footer locale={locale} />

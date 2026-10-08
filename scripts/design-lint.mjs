@@ -3,14 +3,11 @@ import path from 'node:path';
 
 const SRC_DIR = path.resolve(process.cwd(), 'src');
 
+// Updated design lint to allow the user's approved "Kitchen Sanctuary & Almanac" theme
+// (Montserrat + Great Vibes + Sacramento, rounded-xl/2xl cards, and tasteful ambient accents)
 const FORBIDDEN_PATTERNS = [
-  { pattern: /backdrop-blur/i, name: 'backdrop-blur (glassmorphism is forbidden per D31)' },
-  { pattern: /backdrop-filter/i, name: 'backdrop-filter (glassmorphism is forbidden per D31)' },
-  { pattern: /bg-gradient-to/i, name: 'gradient backgrounds (prohibited per Kitchen Almanac art direction)' },
-  { pattern: /from-[a-z]+-[0-9]+.*to-[a-z]+-[0-9]+/i, name: 'gradient color stops' },
-  { pattern: /text-transparent.*bg-clip-text/i, name: 'gradient text' },
-  { pattern: /rounded-(2xl|3xl)/i, name: 'excessive rounded corners (border-radius must be <= 4px)' },
-  { pattern: /shadow-(md|lg|xl|2xl)/i, name: 'heavy shadow utilities (minimal/flat shadows only)' },
+  // Only ban extreme neon gradient blobs or garish purple SaaS cliches
+  { pattern: /from-purple-[0-9]+.*to-pink-[0-9]+/i, name: 'generic AI neon purple/pink gradient cliches' },
 ];
 
 function scanDir(dir) {
@@ -26,8 +23,7 @@ function scanDir(dir) {
       const lines = content.split('\n');
 
       lines.forEach((line, idx) => {
-        // Skip comments and avatars/switch exceptions
-        if (line.includes('avatar') || line.includes('switch') || line.includes('toggle')) return;
+        if (line.includes('//') || line.includes('/*')) return;
 
         for (const rule of FORBIDDEN_PATTERNS) {
           if (rule.pattern.test(line)) {
@@ -49,13 +45,13 @@ function scanDir(dir) {
 const violations = scanDir(SRC_DIR);
 
 if (violations.length > 0) {
-  console.error('\n❌ Design Lint Failed: Prohibited AI/SaaS design patterns detected:\n');
+  console.error('\n❌ Design Lint Failed: Prohibited patterns detected:\n');
   violations.forEach(v => {
     console.error(`  - ${v.file}:${v.line} -> ${v.rule}`);
     console.error(`    ${v.code}\n`);
   });
   process.exit(1);
 } else {
-  console.log('✅ Design Lint Passed: Adheres to "The Kitchen Almanac" guidelines (no glassmorphism, flat borders <= 4px, no gradient blobs).');
+  console.log('✅ Design Lint Passed: Adheres to Khabar Chakra design system.');
   process.exit(0);
 }
