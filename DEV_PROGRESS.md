@@ -107,6 +107,9 @@ Remote control has been enabled in `C:\Users\sohom\.gemini\config\config.json`:
 | 2026-10-08 | Implemented Phase 6 Polish & Launch: i18n dictionaries for English (`en`), Bengali (`bn`), and Hindi (`hi` without Hindi in logo per D18) in `messages/`, dynamic locale loader (`src/i18n/request.ts`), Web App Manifest (`src/app/manifest.ts`) with theme color `#0B6E3C` and standalone display, offline shell service worker (`public/sw.js`), and full quality audit (40/40 unit tests passing, zero design lint violations, clean Next.js 16 Turbopack production compilation) | `messages/**`, `src/i18n/request.ts`, `src/app/manifest.ts`, `public/sw.js`, `tests/unit/i18n.test.ts` | Complete & Verified (40/40 tests pass) |
 | 2026-10-08 | Initialized Supabase CLI, linked project `traxfemzrvxirtlcxpov`, authored initial schema migration (`20261008000000_init_khabar_chakra.sql`), pushed schema to remote DB via `supabase db push`, and generated TypeScript types (`src/types_database.ts`) | `supabase/**`, `src/types_database.ts` | Complete & Active on Remote DB |
 | 2026-10-08 | Installed `resend`, implemented server helper (`src/lib/email/resend.ts`) with Kitchen Almanac branded HTML email template, and integrated live dispatch in `/api/contact` | `src/lib/email/resend.ts`, `src/app/api/contact/route.ts` | Complete & Verified |
+| 2026-10-08 | Installed `@upstash/ratelimit` & `@upstash/redis`, built `src/lib/ratelimit.ts`, and protected `/api/contact`, `/api/internal/jobs/freshness`, and `/api/listings/[id]/reveal-contact` | `src/lib/ratelimit.ts`, `src/app/api/**` | Complete & Verified |
+| 2026-10-08 | Integrated MapTiler street tiles + Leaflet raster layer into `AvailableFoodMap.tsx` respecting static pin security (D1, D24) and Kitchen Almanac theme | `src/components/map/AvailableFoodMap.tsx`, `package.json`, `src/app/globals.css` | Complete & Verified |
+| 2026-10-08 | Built Cloudflare Turnstile token verifier (`src/lib/turnstile.ts`) and client widget (`TurnstileWidget.tsx`), embedded on `/contact` with dev mode fallback | `src/lib/turnstile.ts`, `src/components/ui/TurnstileWidget.tsx`, `src/app/[locale]/contact/page.tsx` | Complete & Verified |
 
 ---
 
@@ -117,6 +120,7 @@ Remote control has been enabled in `C:\Users\sohom\.gemini\config\config.json`:
 - **Phase 4: Share & Community:** 100% Complete & Committed
 - **Phase 5: Waste & Impact:** 100% Complete & Committed
 - **Phase 6: Polish & Launch:** 100% Complete & Verified (40/40 unit tests pass, Turbopack build succeeds)
+- **External Integrations:** Supabase Remote DB, Resend Email, Upstash Redis Rate Limiting, MapTiler Cartography, Cloudflare Turnstile Protection all 100% wired!
 
 **Project State:** All 6 Phases defined in [MASTER PROMPT.md](file:///d:/Antigravity/Khabar%20Chakra/MASTER%20PROMPT.md), [PRD.md](file:///d:/Antigravity/Khabar%20Chakra/PRD.md), [TRD.md](file:///d:/Antigravity/Khabar%20Chakra/TRD.md), and [AGENTS.md](file:///d:/Antigravity/Khabar%20Chakra/AGENTS.md) are fully implemented, verified, tested, and launch-ready!
 

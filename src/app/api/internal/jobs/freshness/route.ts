@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generateFreshnessAlerts } from '@/domain/freshnessAlerts';
 import { InventoryItem } from '@/domain/types';
+import { internalJobsLimiter, checkRateLimit } from '@/lib/ratelimit';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,6 +18,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       { error: 'Unauthorized: invalid or missing cron secret' },
       { status: 401 }
+    );
+  }
+
+  // Rate limit check for internal jobs (prevent runaway trigger loops)
+  const rateCheck = await checkRateLimit(internalJobsLimiter, 'cron:freshness');
+  if (!rateCheck.success) {
+    return NextResponse.json(
+      { error: 'Rate limit exceeded for internal cron job' },
+      { status: 429 }
     );
   }
 

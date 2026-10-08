@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createClient } from '@/utils/supabase/server';
+import { contactRateLimiter, checkRateLimit } from '@/lib/ratelimit';
+import { verifyTurnstileToken } from '@/lib/turnstile';
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, 'Please enter your name (2 to 80 characters).').max(80),
@@ -16,18 +18,19 @@ const contactSchema = z.object({
   ]),
   subject: z.string().trim().min(3, 'Please add a short subject.').max(120),
   message: z.string().trim().min(10, 'Please write at least 10 characters (up to 2000).').max(2000),
+  captchaToken: z.string().optional(),
 });
 
-// Simple in-memory rate limiter per IP for free tier: max 3 per hour
+// Simple in-memory fallback for offline test runners
 const ipMap = new Map<string, number[]>();
 
-function isRateLimited(ip: string): boolean {
+function isMemoryRateLimited(ip: string): boolean {
   const now = Date.now();
   const timestamps = ipMap.get(ip) || [];
   const oneHourAgo = now - 60 * 60 * 1000;
   const recent = timestamps.filter(t => t > oneHourAgo);
   
-  if (recent.length >= 3) {
+  if (recent.length >= 5) {
     return true;
   }
   
@@ -38,12 +41,21 @@ function isRateLimited(ip: string): boolean {
 
 export async function POST(req: NextRequest) {
   try {
-    const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'unknown';
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() || '127.0.0.1';
     
-    if (isRateLimited(ip)) {
+    // Check Upstash Redis rate limit first, fallback to memory
+    const rateCheck = await checkRateLimit(contactRateLimiter, `contact:${ip}`);
+    if (!rateCheck.success || isMemoryRateLimited(ip)) {
       return NextResponse.json(
-        { error: 'Too many messages. Please try again later.' },
-        { status: 429 }
+        { error: 'Too many messages. Please wait a few minutes before submitting again.' },
+        {
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': rateCheck.limit.toString(),
+            'X-RateLimit-Remaining': rateCheck.remaining.toString(),
+            'X-RateLimit-Reset': rateCheck.reset.toString(),
+          },
+        }
       );
     }
 
@@ -57,7 +69,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { name, email, topic, subject, message } = result.data;
+    const { name, email, topic, subject, message, captchaToken } = result.data;
+
+    // Check Cloudflare Turnstile token
+    const captchaCheck = await verifyTurnstileToken(captchaToken, ip);
+    if (!captchaCheck.success) {
+      return NextResponse.json(
+        { error: captchaCheck.error || 'Bot protection verification failed.' },
+        { status: 403 }
+      );
+    }
+
     const ticketId = Math.floor(100000 + Math.random() * 900000).toString();
 
     // 1. Store in Supabase contact_messages table

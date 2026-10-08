@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { TurnstileWidget } from '@/components/ui/TurnstileWidget';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ export default function ContactPage() {
     subject: '',
     message: '',
   });
+  const [captchaToken, setCaptchaToken] = useState<string>('');
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -23,7 +25,7 @@ export default function ContactPage() {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, captchaToken }),
       });
 
       const data = await res.json();
@@ -190,6 +192,9 @@ export default function ContactPage() {
                     <span>Max 3 submissions per hour per network</span>
                   </div>
                 </div>
+
+                {/* Cloudflare Turnstile Verification */}
+                <TurnstileWidget onSuccess={setCaptchaToken} />
 
                 <div className="pt-4 border-t border-[var(--kc-moss)] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <p className="text-xs text-[var(--kc-moss)]">
