@@ -5,8 +5,8 @@
 ---
 
 ## Overall Status
-- **Current Phase:** Phase 5 (Waste & Impact)
-- **Active Task:** T5.0 Specification & Planning
+- **Current Phase:** Phase 6 (Polish & Launch)
+- **Active Task:** T6.0 Specification & Planning
 
 ---
 
@@ -55,9 +55,9 @@
 ---
 
 ## Phase 5: Waste & Impact
-- [ ] **T5.0 Spec**: Write `docs/phase-5/PHASE-5-SPEC.md`.
-- [ ] **T5.1 Waste Guide**: Five-card waste taxonomy, drop-off directory.
-- [ ] **T5.2 Impact Ledger**: Idempotent formula-based impact accounting, annual report layout.
+- [x] **T5.0 Spec**: `docs/phase-5/PHASE-5-SPEC.md` written and validated.
+- [x] **T5.1 Waste Separation Guide**: 5-tier household waste taxonomy, local Asansol drop-off & composting hubs directory, interactive classifier (`/[locale]/waste`).
+- [x] **T5.2 Impact Accounting Ledger**: Pure formula-based idempotent calculations (`impact.ts`), annual report breakdown, transparent source citations (`TODO(source): ...`), interactive savings simulator (`/[locale]/impact`).
 
 ---
 

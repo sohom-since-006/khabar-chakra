@@ -46,6 +46,12 @@ export function Header({ locale }: HeaderProps) {
             <Link href={`/${locale}/nutrition`} className="hover:text-[var(--kc-basil)] transition-colors">
               Nutrition
             </Link>
+            <Link href={`/${locale}/waste`} className="hover:text-[var(--kc-basil)] transition-colors">
+              Waste
+            </Link>
+            <Link href={`/${locale}/impact`} className="hover:text-[var(--kc-basil)] transition-colors">
+              Impact
+            </Link>
             <Link href={`/${locale}/help`} className="hover:text-[var(--kc-basil)] transition-colors">
               Help
             </Link>
@@ -149,6 +155,20 @@ export function Header({ locale }: HeaderProps) {
             className="block text-sm py-1.5 font-medium text-[var(--kc-chilli)] font-semibold"
           >
             ★ Emergency NGO Relief
+          </Link>
+          <Link
+            href={`/${locale}/waste`}
+            onClick={() => setMobileMenuOpen(false)}
+            className="block text-sm py-1.5 font-medium"
+          >
+            Waste Separation Guide
+          </Link>
+          <Link
+            href={`/${locale}/impact`}
+            onClick={() => setMobileMenuOpen(false)}
+            className="block text-sm py-1.5 font-medium"
+          >
+            Impact Accounting Ledger
           </Link>
           <Link
             href={`/${locale}/help`}
