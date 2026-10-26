@@ -23,7 +23,7 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
   return (
     <nav
       aria-label="Mobile Navigation"
-      className="xl:hidden fixed bottom-0 left-0 right-0 z-40 bg-[var(--kc-card)]/95 backdrop-blur-md border-t border-[var(--kc-card-border)] px-2 py-1.5 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.3)]"
+      className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[var(--kc-card)]/95 backdrop-blur-md border-t border-[var(--kc-card-border)] px-2 pt-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom,0px))] shadow-[0_-4px_20px_rgba(0,0,0,0.06)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.3)]"
     >
       <div className="max-w-md mx-auto flex items-center justify-around">
         {navItems.map((item) => {

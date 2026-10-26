@@ -226,7 +226,7 @@ export default function KitchenLedgerPage() {
       {/* Top Banner / Masthead */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-[var(--kc-card-border)] gap-4">
         <div>
-          <span className="font-annotation text-[var(--kc-basil)] text-xl">Active Kitchen Shelf · Zero Waste Hub</span>
+          <span className="font-annotation text-[var(--kc-basil)] text-lg sm:text-xl">Active Kitchen Shelf · Zero Waste Hub</span>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--kc-ink)] mt-0.5">
             My Kitchen Freshness Board
           </h1>
@@ -234,16 +234,16 @@ export default function KitchenLedgerPage() {
             {activeItems.length} active items tracked · {useThisFirstItems.length} require priority consumption
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
           <Link
             href="/en/shopping-list"
-            className="px-4 py-2.5 text-xs font-mono rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-card)] text-[var(--kc-ink)] hover:border-[var(--kc-basil)] transition-colors flex items-center gap-1.5"
+            className="px-4 py-2.5 text-xs font-mono rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-card)] text-[var(--kc-ink)] hover:border-[var(--kc-basil)] transition-colors flex items-center justify-center gap-1.5 min-h-[44px]"
           >
             <span>🛒 Before You Buy</span>
           </Link>
           <Link
             href="/en/inventory/add"
-            className="px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil-hover)] transition-colors flex items-center gap-1.5 shadow-sm"
+            className="px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil-hover)] transition-colors flex items-center justify-center gap-1.5 shadow-sm min-h-[44px]"
           >
             <span>+ Log Food Item</span>
           </Link>
@@ -565,7 +565,7 @@ export default function KitchenLedgerPage() {
       {/* Item Outcome / Action Modal */}
       {closingItem && (
         <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-          <div className="almanac-card bg-[var(--kc-card)] border border-[var(--kc-card-border)] p-6 sm:p-8 rounded-2xl shadow-xl max-w-lg w-full space-y-4">
+          <div className="almanac-card bg-[var(--kc-card)] border border-[var(--kc-card-border)] p-5 sm:p-8 rounded-2xl shadow-xl max-w-lg w-full space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="border-b border-[var(--kc-hairline)] pb-3 flex justify-between items-center">
               <div>
                 <span className="font-annotation text-[var(--kc-basil)] text-sm">Action Ladder · Household Reduction</span>

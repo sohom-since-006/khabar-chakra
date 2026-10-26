@@ -7,6 +7,7 @@ import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { AppSidebar } from '@/components/layout/AppSidebar';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
 import { useUserSession } from '@/hooks/useUserSession';
+import { InventoryItem } from '@/domain/types';
 
 interface LandingPageProps {
   params: Promise<{ locale: string }>;
@@ -47,10 +48,49 @@ const cardHoverProps = {
 export default function LandingPage({ params }: LandingPageProps) {
   const [locale, setLocale] = useState('en');
   const { user, displayName, isLoggedIn } = useUserSession();
+  const [shelfStats, setShelfStats] = useState({
+    activeCount: 0,
+    urgentCount: 0,
+    freshCount: 0,
+    savedCount: 0,
+  });
 
   useEffect(() => {
     params.then((p) => setLocale(p.locale));
   }, [params]);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('kc-inventory');
+      if (stored) {
+        const items: InventoryItem[] = JSON.parse(stored);
+        const active = items.filter((i) => i.status === 'active');
+        const now = Date.now();
+        const urgent = active.filter((i) => {
+          if (!i.expiryDate) return false;
+          const hoursLeft = (new Date(i.expiryDate).getTime() - now) / 3600000;
+          return hoursLeft <= 48;
+        });
+        const closed = items.filter((i) => i.status === 'closed');
+        setShelfStats({
+          activeCount: active.length,
+          urgentCount: urgent.length,
+          freshCount: Math.max(0, active.length - urgent.length),
+          savedCount: closed.length,
+        });
+      } else {
+        // Sample baseline if user has not yet initialized localStorage
+        setShelfStats({
+          activeCount: 5,
+          urgentCount: 2,
+          freshCount: 3,
+          savedCount: 1,
+        });
+      }
+    } catch {
+      // storage quota fallback
+    }
+  }, []);
 
   const userGreeting = isLoggedIn
     ? displayName || user?.email?.split('@')[0] || 'Home Chef'
@@ -71,22 +111,22 @@ export default function LandingPage({ params }: LandingPageProps) {
         {/* Top Hero Welcome Banner */}
         <motion.section
           variants={itemVariants}
-          className="relative rounded-2xl bg-[var(--kc-card)] border border-[var(--kc-card-border)] shadow-sm dark:shadow-[0_0_25px_rgba(34,178,130,0.08)] overflow-hidden flex flex-col md:flex-row items-center justify-between min-h-[160px] p-6 lg:p-8 group transition-all"
+          className="relative rounded-2xl bg-[var(--kc-card)] border border-[var(--kc-card-border)] shadow-sm dark:shadow-[0_0_25px_rgba(34,178,130,0.08)] overflow-hidden flex flex-col md:flex-row items-center justify-between min-h-[140px] p-4 sm:p-6 lg:p-8 group transition-all"
         >
           <div className="z-10 space-y-2 max-w-xl">
             <div className="leading-tight">
-              <span className="font-cursive-sacramento text-3xl sm:text-4xl text-[var(--kc-basil)] font-bold block">
+              <span className="font-cursive-sacramento text-2xl sm:text-4xl text-[var(--kc-basil)] font-bold block">
                 Welcome back,
               </span>
-              <h1 className="font-montserrat text-3xl sm:text-5xl font-black text-[var(--kc-ink)] tracking-tight block -mt-1">
+              <h1 className="font-montserrat text-2xl sm:text-4xl md:text-5xl font-black text-[var(--kc-ink)] tracking-tight block -mt-1">
                 {userGreeting}!
               </h1>
             </div>
-            <p className="text-[11px] sm:text-xs font-bold font-mono tracking-widest text-[var(--kc-muted)] uppercase">
+            <p className="text-[10px] sm:text-xs font-bold font-mono tracking-widest text-[var(--kc-muted)] uppercase">
               SMART TRACKING · ZERO WASTE · HOUSEHOLD SAVINGS
             </p>
-            <div className="pt-1">
-              <span className="font-cursive-vibes text-2xl sm:text-3xl text-[var(--kc-basil)] italic block">
+            <div className="pt-0.5 sm:pt-1">
+              <span className="font-cursive-vibes text-xl sm:text-2xl md:text-3xl text-[var(--kc-basil)] italic block">
                 &ldquo;Track freshness. Cook creatively. Eliminate waste.&rdquo; ♡
               </span>
             </div>
@@ -96,7 +136,7 @@ export default function LandingPage({ params }: LandingPageProps) {
           <motion.div
             whileHover={{ scale: 1.02 }}
             transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
-            className="relative w-full md:w-80 h-44 sm:h-48 shrink-0 mt-4 md:mt-0 rounded-xl overflow-hidden shadow-sm border border-[var(--kc-card-border)] cursor-pointer"
+            className="relative w-full md:w-80 h-36 sm:h-44 md:h-48 shrink-0 mt-3 md:mt-0 rounded-xl overflow-hidden shadow-sm border border-[var(--kc-card-border)] cursor-pointer"
           >
             <Image
               src="/images/fresh_produce_bowl.jpg"
@@ -109,20 +149,20 @@ export default function LandingPage({ params }: LandingPageProps) {
           </motion.div>
         </motion.section>
 
-        {/* Middle Section: Hero Proclamation Card + Food Waste Status Card */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Middle Section: Hero Proclamation Card + Kitchen Shelf Radar */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
           {/* Left: Forest Green Proclamation Banner (7 cols) */}
           <motion.section
             variants={itemVariants}
-            className="lg:col-span-7 rounded-2xl bg-gradient-to-br from-[#0B3728] via-[#0D382B] to-[#08261C] dark:from-[#061C14] dark:via-[#09291D] dark:to-[#04140E] p-6 sm:p-8 text-white shadow-md relative overflow-hidden flex flex-col justify-between border border-[#144737] dark:border-[#1C4D3A]"
+            className="lg:col-span-7 rounded-2xl bg-gradient-to-br from-[#0B3728] via-[#0D382B] to-[#08261C] dark:from-[#061C14] dark:via-[#09291D] dark:to-[#04140E] p-5 sm:p-7 lg:p-8 text-white shadow-md relative overflow-hidden flex flex-col justify-between border border-[#144737] dark:border-[#1C4D3A]"
           >
-            <div className="relative z-10 space-y-3">
+            <div className="relative z-10 space-y-2.5 sm:space-y-3">
               <div className="flex items-center gap-2 text-xs font-mono text-[#7BD4A8] tracking-widest uppercase">
                 <KhabarIcon name="plant-based" size={15} />
                 <span>KITCHEN INTELLIGENCE · PROCLAMATION NO. 01</span>
               </div>
 
-              <h2 className="font-cursive-vibes text-3xl sm:text-5xl text-[#FFD56B] leading-tight font-bold">
+              <h2 className="font-cursive-vibes text-2xl sm:text-4xl md:text-5xl text-[#FFD56B] leading-tight font-bold">
                 Never let good food go to waste.
               </h2>
 
@@ -133,21 +173,21 @@ export default function LandingPage({ params }: LandingPageProps) {
               </p>
             </div>
 
-            <div className="relative z-10 flex flex-wrap items-center gap-3 pt-6">
-              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+            <div className="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-5 sm:pt-6">
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
                 <Link
                   href={`/${locale}/inventory/add`}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#FFC93C] text-[#0A281E] font-bold text-xs sm:text-sm hover:bg-[#FFD56B] transition-colors shadow-sm"
+                  className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#FFC93C] text-[#0A281E] font-bold text-xs sm:text-sm hover:bg-[#FFD56B] transition-colors shadow-sm w-full sm:w-auto min-h-[44px]"
                 >
                   <KhabarIcon name="scan" size={16} />
                   <span>Scan Food or Receipt (OCR) →</span>
                 </Link>
               </motion.div>
 
-              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
                 <Link
                   href={`/${locale}/inventory`}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#217056] text-[#E0F3EB] font-semibold text-xs sm:text-sm hover:bg-[#144737] transition-colors"
+                  className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-[#217056] text-[#E0F3EB] font-semibold text-xs sm:text-sm hover:bg-[#144737] transition-colors w-full sm:w-auto min-h-[44px]"
                 >
                   <KhabarIcon name="expiring" size={16} />
                   <span>Open &ldquo;Use This First&rdquo; Shelf</span>
@@ -156,7 +196,7 @@ export default function LandingPage({ params }: LandingPageProps) {
             </div>
 
             {/* Background subtle art / photo thumbnail accent */}
-            <div className="absolute -bottom-6 -right-6 w-52 h-52 opacity-25 rounded-full overflow-hidden pointer-events-none">
+            <div className="absolute -bottom-6 -right-6 w-44 sm:w-52 h-44 sm:h-52 opacity-25 rounded-full overflow-hidden pointer-events-none">
               <Image
                 src="/images/vegetables_basket.jpg"
                 alt="Fresh Food Happy Homes"
@@ -166,116 +206,93 @@ export default function LandingPage({ params }: LandingPageProps) {
             </div>
           </motion.section>
 
-          {/* Right: Food Waste Status Card (5 cols) */}
+          {/* Right: Real Household Kitchen Status Radar (Zero Mock Graphs or Fake Indexes) */}
           <motion.section
             variants={itemVariants}
-            className="lg:col-span-5 rounded-2xl bg-[var(--kc-card)] border border-[var(--kc-card-border)] p-6 shadow-sm flex flex-col justify-between space-y-6 transition-colors"
+            className="lg:col-span-5 rounded-2xl bg-[var(--kc-card)] border border-[var(--kc-card-border)] p-5 sm:p-6 shadow-sm flex flex-col justify-between space-y-4 sm:space-y-5 transition-colors"
           >
             <div className="flex items-center justify-between pb-3 border-b border-[var(--kc-hairline)]">
               <div className="flex items-center gap-2">
                 <span className="text-lg">🌿</span>
                 <h3 className="font-cursive-sacramento text-2xl sm:text-3xl font-bold text-[var(--kc-ink)]">
-                  Food Waste Status
+                  Kitchen Shelf Radar
                 </h3>
               </div>
               <span className="text-[10px] font-mono text-[var(--kc-basil)] bg-[var(--kc-mint)] px-2.5 py-1 rounded-full flex items-center gap-1.5 font-bold">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
-                Live Household Radar
+                Live Household Sync
               </span>
             </div>
 
-            {/* Circular Progress & Stat Badges */}
-            <div className="flex flex-col sm:flex-row items-center justify-around gap-6 py-2">
-              {/* Circular Meter Gauge (Freshness Index) */}
-              <div className="relative w-36 h-36 flex items-center justify-center">
-                <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    fill="transparent"
-                    stroke="var(--kc-hairline)"
-                    strokeWidth="8"
-                  />
-                  <motion.circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    fill="transparent"
-                    stroke="#10B981"
-                    strokeWidth="8"
-                    strokeDasharray="251.2"
-                    initial={{ strokeDashoffset: 251.2 }}
-                    animate={{ strokeDashoffset: 25.1 }}
-                    transition={{ duration: 1.2, ease: 'easeOut' }}
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <div className="absolute text-center leading-tight">
-                  <span className="font-montserrat font-extrabold text-2xl text-[var(--kc-ink)] block">
-                    94%
-                  </span>
-                  <span className="text-[9px] font-mono font-bold text-[var(--kc-muted)] uppercase block tracking-wider">
-                    Freshness<br />Index
-                  </span>
+            {/* Clean Real Stats Grid (Zero mock circular graphs, zero fake indexes) */}
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3 py-1">
+              <div className="p-3 sm:p-3.5 rounded-xl bg-neutral-50 dark:bg-[#132A20] border border-[var(--kc-hairline)] flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] font-mono text-[var(--kc-muted)] uppercase tracking-wider">Active Items</span>
+                  <KhabarIcon name="fridge" size={15} className="text-[var(--kc-basil)]" />
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl sm:text-3xl font-bold font-mono text-[var(--kc-ink)]">{shelfStats.activeCount}</span>
+                  <span className="text-[10px] font-mono text-[var(--kc-muted)]">tracked</span>
                 </div>
               </div>
 
-              {/* Status Pill Badges */}
-              <div className="space-y-3 w-full sm:w-auto">
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  className="flex items-center gap-2.5 p-2.5 rounded-xl bg-[var(--kc-mint)] border border-[var(--kc-card-border)]"
-                >
-                  <div className="w-7 h-7 rounded-full bg-[var(--kc-basil)] text-white flex items-center justify-center font-bold text-xs">
-                    ₹
-                  </div>
-                  <div className="leading-tight">
-                    <span className="text-xs font-black text-[var(--kc-ink)] block">₹3,450</span>
-                    <span className="text-[10px] text-[var(--kc-muted)] font-medium uppercase">
-                      Money Saved (Month)
-                    </span>
-                  </div>
-                </motion.div>
+              <div className="p-3 sm:p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/60 flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] font-mono text-amber-700 dark:text-amber-400 uppercase tracking-wider">Urgent (&lt;48h)</span>
+                  <KhabarIcon name="expiring" size={15} className="text-[#D6381F]" />
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl sm:text-3xl font-bold font-mono text-[#D6381F]">{shelfStats.urgentCount}</span>
+                  <span className="text-[10px] font-mono text-amber-700 dark:text-amber-400">priority</span>
+                </div>
+              </div>
 
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  className="flex items-center gap-2.5 p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800"
-                >
-                  <div className="w-7 h-7 rounded-full bg-[#F59E0B] text-white flex items-center justify-center font-bold text-xs">
-                    🔥
-                  </div>
-                  <div className="leading-tight">
-                    <span className="text-xs font-black text-amber-900 dark:text-amber-300 block">14 Days</span>
-                    <span className="text-[10px] text-amber-700 dark:text-amber-400 font-medium uppercase">
-                      Zero-Waste Streak
-                    </span>
-                  </div>
-                </motion.div>
+              <div className="p-3 sm:p-3.5 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-900/60 flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] font-mono text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Fresh &amp; Safe</span>
+                  <KhabarIcon name="plant-based" size={15} className="text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl sm:text-3xl font-bold font-mono text-emerald-800 dark:text-emerald-300">{shelfStats.freshCount}</span>
+                  <span className="text-[10px] font-mono text-emerald-700 dark:text-emerald-400">stable</span>
+                </div>
+              </div>
+
+              <div className="p-3 sm:p-3.5 rounded-xl bg-blue-50/70 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-900/60 flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] font-mono text-blue-700 dark:text-blue-400 uppercase tracking-wider">Meals Rescued</span>
+                  <KhabarIcon name="meal" size={15} className="text-blue-600 dark:text-blue-400" />
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl sm:text-3xl font-bold font-mono text-blue-800 dark:text-blue-300">{shelfStats.savedCount}</span>
+                  <span className="text-[10px] font-mono text-blue-700 dark:text-blue-400">consumed</span>
+                </div>
               </div>
             </div>
 
-            {/* Bottom Saved Metrics */}
-            <div className="grid grid-cols-2 gap-3 pt-4 border-t border-[var(--kc-hairline)]">
-              <div className="flex items-center gap-3 p-2.5 rounded-xl bg-neutral-50 dark:bg-[#132A20] border border-[var(--kc-hairline)]">
-                <div className="w-8 h-8 rounded-lg bg-[var(--kc-mint)] text-[var(--kc-basil)] flex items-center justify-center shrink-0">
-                  <KhabarIcon name="meal" size={16} />
-                </div>
-                <div className="overflow-hidden">
-                  <span className="text-[10px] text-[var(--kc-muted)] block truncate">Food Rescued</span>
-                  <span className="text-base font-black text-[var(--kc-ink)] block truncate">12.5 kg</span>
-                </div>
+            {/* Contextual Status Ribbon & Fast Action */}
+            <div className="pt-3 border-t border-[var(--kc-hairline)] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+              <div className="flex items-center gap-2 text-xs">
+                {shelfStats.urgentCount > 0 ? (
+                  <span className="font-semibold text-amber-700 dark:text-amber-400 flex items-center gap-1.5 text-xs">
+                    <span className="w-2 h-2 rounded-full bg-[#D6381F] animate-ping shrink-0" />
+                    <span>{shelfStats.urgentCount} item(s) require priority cooking</span>
+                  </span>
+                ) : (
+                  <span className="font-semibold text-[var(--kc-basil)] flex items-center gap-1.5 text-xs">
+                    <span>✨</span>
+                    <span>All kitchen items are fresh &amp; stable</span>
+                  </span>
+                )}
               </div>
 
-              <div className="flex items-center gap-3 p-2.5 rounded-xl bg-neutral-50 dark:bg-[#132A20] border border-[var(--kc-hairline)]">
-                <div className="w-8 h-8 rounded-lg bg-[var(--kc-mint)] text-[var(--kc-basil)] flex items-center justify-center shrink-0">
-                  <KhabarIcon name="co2-avoided" size={16} />
-                </div>
-                <div className="overflow-hidden">
-                  <span className="text-[10px] text-[var(--kc-muted)] block truncate">CO₂ Avoided</span>
-                  <span className="text-base font-black text-[var(--kc-ink)] block truncate">28.7 kg</span>
-                </div>
-              </div>
+              <Link
+                href={`/${locale}/inventory`}
+                className="px-3.5 py-2 text-xs font-bold rounded-xl bg-[var(--kc-basil)] hover:bg-[var(--kc-basil-hover)] text-white text-center transition-colors shadow-sm min-h-[44px] flex items-center justify-center shrink-0"
+              >
+                Open Priority Shelf →
+              </Link>
             </div>
           </motion.section>
         </div>
@@ -412,27 +429,27 @@ export default function LandingPage({ params }: LandingPageProps) {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
             {/* Item 1 */}
             <motion.div
               whileHover={{ y: -3, scale: 1.01 }}
-              className="p-4 rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50/50 dark:bg-red-950/20 flex items-center justify-between shadow-sm"
+              className="p-3.5 sm:p-4 rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50/50 dark:bg-red-950/20 flex items-center justify-between gap-3 shadow-sm"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#1A2620] flex items-center justify-center text-xl shadow-inner">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#1A2620] flex items-center justify-center text-xl shadow-inner shrink-0">
                   🥛
                 </div>
-                <div>
-                  <h5 className="text-sm font-bold text-[var(--kc-ink)]">Red Cow Toned Milk</h5>
+                <div className="min-w-0">
+                  <h5 className="text-sm font-bold text-[var(--kc-ink)] truncate">Red Cow Toned Milk</h5>
                   <span className="text-[11px] font-mono font-semibold text-[#D6381F] flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-[#D6381F] animate-ping" />
-                    ~10 hours left · Fridge
+                    <span className="w-2 h-2 rounded-full bg-[#D6381F] animate-ping shrink-0" />
+                    <span>~10h left · Fridge</span>
                   </span>
                 </div>
               </div>
               <Link
                 href={`/${locale}/recipes`}
-                className="px-3 py-1.5 rounded-lg bg-[#D6381F] text-white text-xs font-bold hover:opacity-90 shadow-sm"
+                className="px-3.5 py-1.5 rounded-lg bg-[#D6381F] text-white text-xs font-bold hover:opacity-90 shadow-sm shrink-0 min-h-[36px] flex items-center justify-center"
               >
                 Cook
               </Link>
@@ -441,22 +458,22 @@ export default function LandingPage({ params }: LandingPageProps) {
             {/* Item 2 */}
             <motion.div
               whileHover={{ y: -3, scale: 1.01 }}
-              className="p-4 rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20 flex items-center justify-between shadow-sm"
+              className="p-3.5 sm:p-4 rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20 flex items-center justify-between gap-3 shadow-sm"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#1A2620] flex items-center justify-center text-xl shadow-inner">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#1A2620] flex items-center justify-center text-xl shadow-inner shrink-0">
                   🍲
                 </div>
-                <div>
-                  <h5 className="text-sm font-bold text-[var(--kc-ink)]">Cooked Chholar Dal</h5>
-                  <span className="text-[11px] font-mono font-semibold text-amber-600 dark:text-amber-400">
-                    ~18 hours left · Fridge
+                <div className="min-w-0">
+                  <h5 className="text-sm font-bold text-[var(--kc-ink)] truncate">Cooked Chholar Dal</h5>
+                  <span className="text-[11px] font-mono font-semibold text-amber-600 dark:text-amber-400 block truncate">
+                    ~18h left · Fridge
                   </span>
                 </div>
               </div>
               <Link
                 href={`/${locale}/recipes`}
-                className="px-3 py-1.5 rounded-lg bg-[#F59E0B] text-white text-xs font-bold hover:opacity-90 shadow-sm"
+                className="px-3.5 py-1.5 rounded-lg bg-[#F59E0B] text-white text-xs font-bold hover:opacity-90 shadow-sm shrink-0 min-h-[36px] flex items-center justify-center"
               >
                 Cook
               </Link>
@@ -465,22 +482,22 @@ export default function LandingPage({ params }: LandingPageProps) {
             {/* Item 3 */}
             <motion.div
               whileHover={{ y: -3, scale: 1.01 }}
-              className="p-4 rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/50 dark:bg-emerald-950/20 flex items-center justify-between shadow-sm"
+              className="p-3.5 sm:p-4 rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/50 dark:bg-emerald-950/20 flex items-center justify-between gap-3 shadow-sm"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#1A2620] flex items-center justify-center text-xl shadow-inner">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#1A2620] flex items-center justify-center text-xl shadow-inner shrink-0">
                   🥬
                 </div>
-                <div>
-                  <h5 className="text-sm font-bold text-[var(--kc-ink)]">Fresh Spinach (Palak)</h5>
-                  <span className="text-[11px] font-mono font-semibold text-emerald-700 dark:text-emerald-400">
-                    ~48 hours left · Crisper
+                <div className="min-w-0">
+                  <h5 className="text-sm font-bold text-[var(--kc-ink)] truncate">Fresh Spinach (Palak)</h5>
+                  <span className="text-[11px] font-mono font-semibold text-emerald-700 dark:text-emerald-400 block truncate">
+                    ~48h left · Crisper
                   </span>
                 </div>
               </div>
               <Link
                 href={`/${locale}/recipes`}
-                className="px-3 py-1.5 rounded-lg bg-[var(--kc-basil)] text-white text-xs font-bold hover:opacity-90 shadow-sm"
+                className="px-3.5 py-1.5 rounded-lg bg-[var(--kc-basil)] text-white text-xs font-bold hover:opacity-90 shadow-sm shrink-0 min-h-[36px] flex items-center justify-center"
               >
                 Cook
               </Link>

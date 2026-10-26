@@ -148,4 +148,4 @@ Phase 1 Foundation (design system, landing, auth, profile, legal, Help/FAQ/Conta
 **Made by [The S-QUAD](/en/team)**, students of Asansol Engineering College, West Bengal: **Sohom Paul** (full-stack development, video editing) · **Snehasish Kundu** (C programming, emerging full-stack development) · **Shreyasi Acharya** (C and Python programming, data structures and algorithms) · **Shuvangi Dutta** (UI/UX design, creative content).
 **Technical support:** *Coming soon.* Until then, use the contact form on the website.
 
-<div align="center">🥬 *Save • Share • Sustain* 🌱</div>
+<div align="center">🥬 *Smart Kitchen Food Tracker & Domestic Zero Waste* 🌱</div>

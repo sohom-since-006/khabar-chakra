@@ -46,8 +46,11 @@ export function Header({ locale }: HeaderProps) {
             <span className="font-cursive-sacramento text-2xl sm:text-[28px] font-bold tracking-wide text-[#F9F7EE] block -mb-1 group-hover:text-[#FFD56B] transition-colors">
               Khabar Chakra
             </span>
-            <span className="text-[10px] text-[#A5C7B7] font-medium tracking-tight block">
-              খাবার চক্র : Smart Food Tracker & Zero Waste
+            <span className="text-[10px] text-[#A5C7B7] font-medium tracking-tight hidden sm:block">
+              খাবার চক্র : Smart Food Tracker &amp; Zero Waste
+            </span>
+            <span className="text-[10px] text-[#A5C7B7] font-medium tracking-tight block sm:hidden">
+              খাবার চক্র
             </span>
           </div>
         </Link>
@@ -74,7 +77,7 @@ export function Header({ locale }: HeaderProps) {
         </nav>
 
         {/* Right: Theme Toggle, Notifications & Real User Profile Chip */}
-        <div className="flex items-center gap-2.5 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           {/* Custom Working Light/Dark Mode Toggle Button */}
           <ThemeToggle />
 

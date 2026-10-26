@@ -248,8 +248,8 @@ export function estimateExpiryDate(
   category: FoodCategory,
   storage: StorageLocation,
   baseDate: Date = new Date()
-): { expiryDate: Date; rule: ShelfLifeRule } {
+): { expiryDate: Date; rule: ShelfLifeRule; shelfLifeHours: number } {
   const rule = SHELF_LIFE_DEFAULTS[category]?.[storage] || SHELF_LIFE_DEFAULTS.other.room;
   const expiryDate = new Date(baseDate.getTime() + rule.defaultShelfHours * 3600 * 1000);
-  return { expiryDate, rule };
+  return { expiryDate, rule, shelfLifeHours: rule.defaultShelfHours };
 }

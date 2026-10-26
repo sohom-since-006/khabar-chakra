@@ -25,7 +25,7 @@ export default async function LocaleLayout({
         <CustomCursor />
         <LiveDynamicBackground />
         <Header locale={locale} />
-        <div className="flex-1 relative z-10 pb-20 xl:pb-0">
+        <div className="flex-1 relative z-10 pb-20 lg:pb-0">
           {children}
         </div>
         <Footer locale={locale} />
