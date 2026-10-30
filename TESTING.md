@@ -10,7 +10,7 @@ Added tests for: required listing photos · 48-hour ceiling and locked meat/fish
 ## 1. Principles
 | # | Principle |
 |---|-----------|
-| T1 | **Test the risks first:** privacy (contacts, locations, documents), food-safety rules, admin access, the 48-hour window. |
+| T1 | **Test the risk first:** privacy (contacts, locations, documents), food-safety rules, admin access, the 48-hour window. |
 | T2 | **Enforce rules where they cannot be bypassed:** every business rule is tested at database/server level, never only in the UI. |
 | T3 | **Deterministic time:** clock-dependent behaviour is tested with a controlled clock, never sleeping. |
 | T4 | **Every bug gets a regression test.** |
