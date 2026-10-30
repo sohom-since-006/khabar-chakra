@@ -17,7 +17,7 @@
 ---
 
 ## Contents
-1. What is Khabar Chakra? · 2. Features · 3. Tech stack (all free) · 4. Run it on your computer · 5. Settings (environment variables) · 6. Commands · 7. Project structure · 8. Deploy for free · 9. Setting up the four admins · 10. Testing · 11. Free-tier care · 12. Troubleshooting · 13. Documentation map · 14. Roadmap · 15. Contributing, security, licence · 16. The team
+1. What is Khabar Chakra ? · 2. Features · 3. Tech stack (all free) · 4. Run it on your computer · 5. Settings (environment variables) · 6. Commands · 7. Project structure · 8. Deploy for free · 9. Setting up the four admins · 10. Testing · 11. Free-tier care · 12. Troubleshooting · 13. Documentation map · 14. Roadmap · 15. Contributing, security, licence · 16. The team
 
 ---
 
