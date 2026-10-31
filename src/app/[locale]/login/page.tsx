@@ -27,6 +27,7 @@ export default function LoginPage({ params }: LoginPageProps) {
   const [password, setPassword] = useState('');
   const [staySignedIn, setStaySignedIn] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
@@ -34,6 +35,11 @@ export default function LoginPage({ params }: LoginPageProps) {
     const err = searchParams.get('error');
     if (err === 'auth_failed') {
       setErrorMsg('Authentication could not be completed. Please try again or sign in with email.');
+    }
+    if (searchParams.get('logout') === 'true') {
+      setSuccessMsg('You have been signed out of your kitchen ledger.');
+      const supabase = createClient();
+      supabase.auth.signOut({ scope: 'local' }).catch(() => {});
     }
   }, [searchParams]);
 
@@ -113,6 +119,14 @@ export default function LoginPage({ params }: LoginPageProps) {
             <KhabarIcon name="profile" size={22} />
           </div>
         </div>
+
+        {/* Success notification (e.g. after logout) */}
+        {successMsg && (
+          <div className="p-3.5 bg-green-50 dark:bg-emerald-950/40 border border-[var(--kc-basil)] text-[var(--kc-basil)] text-xs rounded-xl flex items-center gap-2">
+            <KhabarIcon name="success" size={16} />
+            <span>{successMsg}</span>
+          </div>
+        )}
 
         {/* Error notification */}
         {errorMsg && (

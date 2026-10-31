@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useUserSession } from '@/hooks/useUserSession';
 
 export default function ProfilePage() {
+  const { user, displayName: sessionDisplayName, signOut } = useUserSession();
   const [displayName, setDisplayName] = useState('Kitchen Steward');
   const [phone, setPhone] = useState('');
   const [city, setCity] = useState('Asansol');
@@ -12,6 +14,12 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (sessionDisplayName) {
+      setDisplayName(sessionDisplayName);
+    }
+  }, [sessionDisplayName]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,8 +61,13 @@ export default function ProfilePage() {
           <h1 className="text-3xl font-bold tracking-tight text-[var(--kc-charcoal)] mt-1">
             Kitchen Profile
           </h1>
+          {user?.email && (
+            <p className="text-xs font-mono text-[var(--kc-moss)] mt-0.5">
+              Logged in as: <span className="font-bold text-[var(--kc-charcoal)]">{user.email}</span>
+            </p>
+          )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Link
             href="/en/settings"
             className="px-3 py-1.5 text-xs font-mono border border-[var(--kc-moss)] bg-[var(--kc-cream)] hover:bg-[var(--kc-parchment)] text-[var(--kc-charcoal)]"
@@ -67,6 +80,13 @@ export default function ProfilePage() {
           >
             Security & Login
           </Link>
+          <button
+            type="button"
+            onClick={() => signOut('en')}
+            className="px-3 py-1.5 text-xs font-mono font-bold bg-[#A82B1B] hover:bg-[#8A2416] text-white transition-colors"
+          >
+            Sign Out ⎋
+          </button>
         </div>
       </div>
 

@@ -2,8 +2,10 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useUserSession } from '@/hooks/useUserSession';
 
 export default function SettingsPage() {
+  const { signOut } = useUserSession();
   const [theme, setTheme] = useState<'system' | 'light' | 'dark'>(() => {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('kc-theme') as 'system' | 'light' | 'dark' | null;
@@ -64,7 +66,7 @@ export default function SettingsPage() {
             Account & App Settings
           </h1>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Link
             href="/en/profile"
             className="px-3 py-1.5 text-xs font-mono border border-[var(--kc-moss)] bg-[var(--kc-cream)] hover:bg-[var(--kc-parchment)] text-[var(--kc-charcoal)]"
@@ -77,6 +79,13 @@ export default function SettingsPage() {
           >
             Security & Login
           </Link>
+          <button
+            type="button"
+            onClick={() => signOut('en')}
+            className="px-3 py-1.5 text-xs font-mono font-bold bg-[#A82B1B] hover:bg-[#8A2416] text-white transition-colors"
+          >
+            Sign Out ⎋
+          </button>
         </div>
       </div>
 

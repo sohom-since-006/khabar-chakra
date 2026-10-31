@@ -14,10 +14,11 @@ interface AppSidebarProps {
 
 export function AppSidebar({ locale }: AppSidebarProps) {
   const pathname = usePathname();
-  const { user, displayName, avatarUrl, initials, isLoggedIn } = useUserSession();
+  const { user, displayName, avatarUrl, initials, isLoggedIn, signOut } = useUserSession();
 
   const menuItems = [
-    { label: 'Kitchen Home', href: `/${locale}/home`, icon: 'household' as const },
+    { label: 'Overview', href: `/${locale}/home`, icon: 'household' as const },
+    { label: 'Kitchen Ledger', href: `/${locale}/home`, icon: 'fridge' as const },
     { label: 'Scan & OCR Receipt', href: `/${locale}/inventory/add`, icon: 'scan' as const },
     { label: 'Use This First', href: `/${locale}/inventory`, icon: 'expiring' as const },
     { label: 'Before You Buy', href: `/${locale}/shopping-list`, icon: 'shopping-list' as const },
@@ -33,33 +34,51 @@ export function AppSidebar({ locale }: AppSidebarProps) {
       <div className="space-y-5">
         {/* User Profile Mini Badge or Guest Quick Sign-in */}
         {isLoggedIn ? (
-          <Link
-            href={`/${locale}/profile`}
-            className="flex items-center gap-3 p-3 rounded-2xl bg-neutral-50 dark:bg-[#132A20] border border-[var(--kc-hairline)] hover:border-[var(--kc-basil)] transition-all shadow-sm group"
-          >
-            {avatarUrl ? (
-              <div className="relative w-10 h-10 rounded-full overflow-hidden border border-[#2EB286] shrink-0">
-                <Image
-                  src={avatarUrl}
-                  alt={displayName || 'User Profile'}
-                  fill
-                  className="object-cover"
-                />
+          <div className="p-3 rounded-2xl bg-neutral-50 dark:bg-[#132A20] border border-[var(--kc-hairline)] shadow-sm space-y-2.5">
+            <Link
+              href={`/${locale}/profile`}
+              className="flex items-center gap-3 group"
+            >
+              {avatarUrl ? (
+                <div className="relative w-10 h-10 rounded-full overflow-hidden border border-[#2EB286] shrink-0">
+                  <Image
+                    src={avatarUrl}
+                    alt={displayName || 'User Profile'}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-[var(--kc-basil)] text-white flex items-center justify-center font-bold text-sm shadow-inner group-hover:scale-105 transition-transform shrink-0">
+                  {initials}
+                </div>
+              )}
+              <div className="leading-tight overflow-hidden">
+                <span className="text-sm font-bold text-[var(--kc-ink)] block truncate">
+                  {displayName || user?.email?.split('@')[0]}
+                </span>
+                <span className="text-xs text-[var(--kc-basil)] font-semibold flex items-center gap-1 mt-0.5">
+                  Kitchen Lead 🌿
+                </span>
               </div>
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-[var(--kc-basil)] text-white flex items-center justify-center font-bold text-sm shadow-inner group-hover:scale-105 transition-transform shrink-0">
-                {initials}
-              </div>
-            )}
-            <div className="leading-tight overflow-hidden">
-              <span className="text-sm font-bold text-[var(--kc-ink)] block truncate">
-                {displayName || user?.email?.split('@')[0]}
-              </span>
-              <span className="text-xs text-[var(--kc-basil)] font-semibold flex items-center gap-1 mt-0.5">
-                Kitchen Lead 🌿
-              </span>
+            </Link>
+            <div className="pt-2 border-t border-[var(--kc-hairline)] flex items-center justify-between">
+              <Link
+                href={`/${locale}/settings/security`}
+                className="text-[11px] font-mono text-[var(--kc-muted)] hover:text-[var(--kc-basil)] underline"
+              >
+                Security
+              </Link>
+              <button
+                type="button"
+                onClick={() => signOut(locale)}
+                className="text-[11px] font-mono font-bold text-red-600 dark:text-red-400 hover:underline flex items-center gap-1"
+                title="Sign Out"
+              >
+                Sign Out ⎋
+              </button>
             </div>
-          </Link>
+          </div>
         ) : (
           <Link
             href={`/${locale}/login`}

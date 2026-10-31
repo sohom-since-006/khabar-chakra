@@ -12,7 +12,26 @@ const isAuthRoute = (path: string) => {
   return (
     path.startsWith('/login') ||
     path.startsWith('/signup') ||
-    path.startsWith('/auth')
+    path.startsWith('/auth') ||
+    path.startsWith('/forgot-password') ||
+    path.startsWith('/reset-password') ||
+    path.startsWith('/verify-email')
+  );
+};
+
+const isProtectedRoute = (path: string) => {
+  return (
+    path.startsWith('/home') ||
+    path.startsWith('/inventory') ||
+    path.startsWith('/planner') ||
+    path.startsWith('/shopping-list') ||
+    path.startsWith('/waste') ||
+    path.startsWith('/profile') ||
+    path.startsWith('/settings') ||
+    path.startsWith('/admin') ||
+    path.startsWith('/available') ||
+    path.startsWith('/notifications') ||
+    path.startsWith('/share')
   );
 };
 
@@ -21,6 +40,25 @@ export async function proxy(request: NextRequest) {
 
   // 1. Run next-intl middleware for locale routing
   const response = handleI18n(request);
+
+  // If user requested logout, clear cookies and show login page without redirecting back to home
+  if (request.nextUrl.searchParams.has('logout')) {
+    request.cookies.getAll().forEach((cookie) => {
+      if (
+        cookie.name.startsWith('sb-') ||
+        cookie.name.includes('supabase') ||
+        cookie.name.includes('auth-token')
+      ) {
+        response.cookies.delete(cookie.name);
+        response.cookies.set(cookie.name, '', {
+          path: '/',
+          maxAge: 0,
+          expires: new Date(0),
+        });
+      }
+    });
+    return response;
+  }
 
   // If next-intl triggered a redirect (e.g. '/' -> '/en'), return early
   if (response.headers.get('location')) {
@@ -47,12 +85,10 @@ export async function proxy(request: NextRequest) {
   const locale = ['en', 'bn', 'hi'].includes(segments[0]) ? segments[0] : 'en';
   const subPath = segments.length > 1 ? `/${segments.slice(1).join('/')}` : '/';
 
-  // 4. Mandatory Auth Gate: Unauthenticated users must log in first before doing anything
-  if (!user && !isAuthRoute(subPath)) {
+  // 4. Protect private kitchen and personal routes
+  if (!user && isProtectedRoute(subPath)) {
     const loginUrl = new URL(`/${locale}/login`, request.url);
-    if (subPath !== '/' && subPath !== '') {
-      loginUrl.searchParams.set('next', pathname);
-    }
+    loginUrl.searchParams.set('next', pathname);
     const redirectResponse = NextResponse.redirect(loginUrl);
     if (sessionResponse) {
       sessionResponse.cookies.getAll().forEach((cookie) => {
@@ -62,8 +98,8 @@ export async function proxy(request: NextRequest) {
     return redirectResponse;
   }
 
-  // 5. If already authenticated and visiting login/signup or the root landing page, redirect straight to kitchen home
-  if (user && (isAuthRoute(subPath) || subPath === '/' || subPath === '')) {
+  // 5. If already authenticated and visiting auth pages, redirect straight to kitchen home
+  if (user && isAuthRoute(subPath)) {
     const homeUrl = new URL(`/${locale}/home`, request.url);
     const redirectResponse = NextResponse.redirect(homeUrl);
     if (sessionResponse) {

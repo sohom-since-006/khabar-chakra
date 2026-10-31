@@ -4,10 +4,12 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
+import { useUserSession } from '@/hooks/useUserSession';
 
 export default function SecuritySettingsPage() {
   const router = useRouter();
   const supabase = createClient();
+  const { signOut } = useUserSession();
 
   // Password change state
   const [currentPassword, setCurrentPassword] = useState('');
@@ -15,11 +17,6 @@ export default function SecuritySettingsPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [pwStatus, setPwStatus] = useState<string | null>(null);
   const [pwError, setPwError] = useState<string | null>(null);
-
-  // Email change state
-  const [newEmail, setNewEmail] = useState('');
-  const [emailStatus, setEmailStatus] = useState<string | null>(null);
-  const [emailError, setEmailError] = useState<string | null>(null);
 
   // Logout devices
   const [logoutStatus, setLogoutStatus] = useState<string | null>(null);
@@ -59,27 +56,8 @@ export default function SecuritySettingsPage() {
     }
   };
 
-  const handleEmailChange = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setEmailError(null);
-    setEmailStatus(null);
-
-    if (!newEmail.includes('@')) {
-      setEmailError('Please enter a valid email address.');
-      return;
-    }
-
-    try {
-      const { error } = await supabase.auth.updateUser({ email: newEmail });
-      if (error) {
-        setEmailError(error.message || 'Failed to request email change.');
-      } else {
-        setEmailStatus('Check your new email for a verification confirmation link.');
-        setNewEmail('');
-      }
-    } catch {
-      setEmailError('Something went wrong. Please try again.');
-    }
+  const handleLogoutCurrentDevice = async () => {
+    await signOut('en');
   };
 
   const handleLogoutAllDevices = async () => {
@@ -203,67 +181,35 @@ export default function SecuritySettingsPage() {
           </form>
         </div>
 
-        {/* Section 2: Change Email */}
-        <div className="almanac-card bg-[var(--kc-cream)] border border-[var(--kc-moss)] p-6">
-          <h2 className="text-base font-bold text-[var(--kc-charcoal)] border-b border-[var(--kc-moss)] pb-2 mb-4">
-            Change Email Address
-          </h2>
-          {emailStatus && (
-            <div className="mb-4 p-3 border border-[var(--kc-basil)] bg-green-50 text-xs font-mono text-[var(--kc-basil)]">
-              ✓ {emailStatus}
-            </div>
-          )}
-          {emailError && (
-            <div className="mb-4 p-3 border border-[var(--kc-chilli)] bg-red-50 text-xs font-mono text-[var(--kc-chilli)]">
-              {emailError}
-            </div>
-          )}
-          <form onSubmit={handleEmailChange} className="space-y-4 max-w-md">
-            <div>
-              <label className="block text-xs font-mono uppercase tracking-wider text-[var(--kc-moss)] mb-1">
-                New Email Address *
-              </label>
-              <input
-                type="email"
-                required
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
-                placeholder="newaddress@example.com"
-                className="w-full px-3 py-2 text-sm border border-[var(--kc-moss)] bg-[var(--kc-parchment)] text-[var(--kc-charcoal)] focus:outline-none focus:border-[var(--kc-basil)]"
-              />
-              <span className="text-[11px] text-[var(--kc-moss)] mt-1 block">
-                Your current email remains active until the new address is verified.
-              </span>
-            </div>
-            <button
-              type="submit"
-              className="px-5 py-2 text-xs font-bold uppercase tracking-wider bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil)]/90 transition-colors"
-            >
-              Request Email Change
-            </button>
-          </form>
-        </div>
-
-        {/* Section 3: Sessions */}
+        {/* Section 2: Active Device Sessions */}
         <div className="almanac-card bg-[var(--kc-cream)] border border-[var(--kc-moss)] p-6">
           <h2 className="text-base font-bold text-[var(--kc-charcoal)] border-b border-[var(--kc-moss)] pb-2 mb-3">
-            Active Device Sessions
+            Active Device Sessions & Sign Out
           </h2>
           <p className="text-xs text-[var(--kc-moss)] mb-4 leading-relaxed">
-            If you suspect unauthorized activity or have logged in from a shared computer, you can terminate all other active browser sessions immediately.
+            Manage your kitchen ledger session across devices. You can sign out from this current browser or terminate all other active remote sessions.
           </p>
           {logoutStatus && (
             <div className="mb-4 p-3 border border-[var(--kc-basil)] bg-green-50 text-xs font-mono text-[var(--kc-basil)]">
               ✓ {logoutStatus}
             </div>
           )}
-          <button
-            type="button"
-            onClick={handleLogoutAllDevices}
-            className="px-4 py-2 text-xs font-mono border border-[var(--kc-moss)] bg-[var(--kc-parchment)] hover:bg-[var(--kc-cream)] text-[var(--kc-charcoal)] transition-colors"
-          >
-            Log Out of All Other Devices
-          </button>
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={handleLogoutCurrentDevice}
+              className="px-5 py-2 text-xs font-bold uppercase tracking-wider bg-[var(--kc-chilli)] text-white hover:bg-[var(--kc-chilli)]/90 transition-colors shadow-sm"
+            >
+              Sign Out of This Device ⎋
+            </button>
+            <button
+              type="button"
+              onClick={handleLogoutAllDevices}
+              className="px-4 py-2 text-xs font-mono border border-[var(--kc-moss)] bg-[var(--kc-parchment)] hover:bg-[var(--kc-cream)] text-[var(--kc-charcoal)] transition-colors"
+            >
+              Log Out of All Other Devices
+            </button>
+          </div>
         </div>
 
         {/* Section 4: Danger Zone (Delete Account) */}

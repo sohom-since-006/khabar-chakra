@@ -46,9 +46,48 @@ export function useUserSession() {
         .toUpperCase()
     : 'KC';
 
-  const signOut = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+  const signOut = async (locale: string = 'en') => {
+    try {
+      const supabase = createClient();
+      await supabase.auth.signOut({ scope: 'global' });
+    } catch (e) {
+      console.error('Client signOut error:', e);
+    }
+
+    try {
+      await fetch('/api/auth/signout', { method: 'POST' });
+    } catch {
+      // Ignore
+    }
+
+    if (typeof window !== 'undefined') {
+      try {
+        const keysToRemove: string[] = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.startsWith('sb-') || key.includes('supabase') || key.includes('auth-token'))) {
+            keysToRemove.push(key);
+          }
+        }
+        keysToRemove.forEach((k) => localStorage.removeItem(k));
+      } catch {
+        // Ignore
+      }
+
+      try {
+        document.cookie.split(';').forEach((c) => {
+          const eqPos = c.indexOf('=');
+          const name = eqPos > -1 ? c.substring(0, eqPos).trim() : c.trim();
+          if (name.startsWith('sb-') || name.includes('supabase') || name.includes('auth-token')) {
+            document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0`;
+          }
+        });
+      } catch {
+        // Ignore
+      }
+
+      window.location.href = `/${locale}/login?logout=true`;
+    }
   };
 
   return {

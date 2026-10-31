@@ -1,10 +1,564 @@
-import { redirect } from 'next/navigation';
+'use client';
 
-export default async function RootLocalePage({
-  params,
-}: {
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
+import { AppSidebar } from '@/components/layout/AppSidebar';
+import { KhabarIcon } from '@/components/ui/KhabarIcon';
+import { useUserSession } from '@/hooks/useUserSession';
+import { InventoryItem } from '@/domain/types';
+import { getCleanInventory } from '@/utils/inventoryStorage';
+
+interface LandingPageProps {
   params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
-  redirect(`/${locale}/home`);
+}
+
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.04,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 360,
+      damping: 26,
+    },
+  },
+};
+
+const cardHoverProps = {
+  whileHover: {
+    y: -4,
+    transition: { type: 'spring' as const, stiffness: 400, damping: 25 },
+  },
+  whileTap: { scale: 0.985 },
+};
+
+export default function LandingPage({ params }: LandingPageProps) {
+  const router = useRouter();
+  const [locale, setLocale] = useState('en');
+  const { user, displayName, isLoggedIn } = useUserSession();
+  const [shelfStats, setShelfStats] = useState({
+    activeCount: 0,
+    urgentCount: 0,
+    freshCount: 0,
+    savedCount: 0,
+  });
+  const [urgentItems, setUrgentItems] = useState<Array<{
+    id: string;
+    name: string;
+    hoursLeft: number;
+    storage: string;
+    category: string;
+  }>>([]);
+
+  useEffect(() => {
+    params.then((p) => setLocale(p.locale));
+  }, [params]);
+
+  useEffect(() => {
+    try {
+      const items: InventoryItem[] = getCleanInventory();
+      const active = items.filter((i) => i.status === 'active');
+      const now = Date.now();
+      const urgent = active
+        .filter((i) => {
+          if (!i.expiryDate) return false;
+          const hoursLeft = (new Date(i.expiryDate).getTime() - now) / 3600000;
+          return hoursLeft <= 48;
+        })
+        .map((i) => {
+          const hoursLeft = Math.max(0, Math.round((new Date(i.expiryDate!).getTime() - now) / 3600000));
+          return {
+            id: i.id,
+            name: i.name,
+            hoursLeft,
+            storage: i.storage === 'fridge' ? 'Fridge' : i.storage === 'freezer' ? 'Freezer' : 'Pantry',
+            category: i.category,
+          };
+        })
+        .sort((a, b) => a.hoursLeft - b.hoursLeft);
+
+      setUrgentItems(urgent);
+      const closed = items.filter((i) => i.status === 'closed');
+      setShelfStats({
+        activeCount: active.length,
+        urgentCount: urgent.length,
+        freshCount: Math.max(0, active.length - urgent.length),
+        savedCount: closed.length,
+      });
+    } catch {
+      // storage quota fallback
+    }
+  }, []);
+
+  const userGreeting = isLoggedIn
+    ? displayName || user?.email?.split('@')[0] || 'Home Chef'
+    : 'Home Chef';
+
+  return (
+    <div className="max-w-[1440px] mx-auto flex w-full">
+      {/* Left Navigation Sidebar */}
+      <AppSidebar locale={locale} />
+
+      {/* Main Sanctuary Dashboard View */}
+      <motion.main
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 max-w-full overflow-hidden transition-colors"
+      >
+        {/* Top Hero Welcome Banner */}
+        <motion.section
+          variants={itemVariants}
+          className="relative rounded-2xl bg-[var(--kc-card)] border border-[var(--kc-card-border)] shadow-sm dark:shadow-[0_0_25px_rgba(34,178,130,0.08)] overflow-hidden flex flex-col md:flex-row items-center justify-between min-h-[140px] p-4 sm:p-6 lg:p-8 group transition-all"
+        >
+          <div className="z-10 space-y-2 max-w-xl">
+            <div className="leading-tight">
+              <span className="font-cursive-sacramento text-2xl sm:text-4xl text-[var(--kc-basil)] font-bold block">
+                Welcome back,
+              </span>
+              <h1 className="font-montserrat text-2xl sm:text-4xl md:text-5xl font-black text-[var(--kc-ink)] tracking-tight block -mt-1">
+                {userGreeting}!
+              </h1>
+            </div>
+            <p className="text-[10px] sm:text-xs font-bold font-mono tracking-widest text-[var(--kc-muted)] uppercase">
+              SMART TRACKING · ZERO WASTE · HOUSEHOLD SAVINGS
+            </p>
+            <div className="pt-0.5 sm:pt-1">
+              <span className="font-cursive-vibes text-xl sm:text-2xl md:text-3xl text-[var(--kc-basil)] italic block">
+                &ldquo;Track freshness. Cook creatively. Eliminate waste.&rdquo; ♡
+              </span>
+            </div>
+          </div>
+
+          {/* Right Fresh Produce Bowl Image */}
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
+            className="relative w-full md:w-80 h-36 sm:h-44 md:h-48 shrink-0 mt-3 md:mt-0 rounded-xl overflow-hidden shadow-sm border border-[var(--kc-card-border)] cursor-pointer"
+          >
+            <Image
+              src="/images/fresh_produce_bowl.jpg"
+              alt="Fresh vibrant organic vegetables"
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-700"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-[var(--kc-card)] via-transparent to-transparent md:block hidden opacity-30" />
+          </motion.div>
+        </motion.section>
+
+        {/* Middle Section: Hero Proclamation Card + Kitchen Shelf Radar */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
+          {/* Left: Forest Green Proclamation Banner (7 cols) */}
+          <motion.section
+            variants={itemVariants}
+            className="lg:col-span-7 rounded-2xl bg-gradient-to-br from-[#0B3728] via-[#0D382B] to-[#08261C] dark:from-[#061C14] dark:via-[#09291D] dark:to-[#04140E] p-5 sm:p-7 lg:p-8 text-white shadow-md relative overflow-hidden flex flex-col justify-between border border-[#144737] dark:border-[#1C4D3A]"
+          >
+            <div className="relative z-10 space-y-2.5 sm:space-y-3">
+              <div className="flex items-center gap-2 text-xs font-mono text-[#7BD4A8] tracking-widest uppercase">
+                <KhabarIcon name="plant-based" size={15} />
+                <span>KITCHEN INTELLIGENCE · PROCLAMATION NO. 01</span>
+              </div>
+
+              <h2 className="font-cursive-vibes text-2xl sm:text-4xl md:text-5xl text-[#FFD56B] leading-tight font-bold">
+                Never let good food go to waste.
+              </h2>
+
+              <p className="text-xs sm:text-sm text-[#D3E8DE] leading-relaxed max-w-lg font-montserrat font-normal">
+                Track pantry and fridge freshness before the expiration clock runs out.
+                Parse grocery receipts instantly via OCR, organize your shelves by urgency,
+                and turn expiring ingredients into delicious home recipes while saving thousands in domestic groceries.
+              </p>
+            </div>
+
+            <div className="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-5 sm:pt-6">
+              {isLoggedIn ? (
+                <>
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
+                    <Link
+                      href={`/${locale}/inventory/add`}
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#FFC93C] text-[#0A281E] font-bold text-xs sm:text-sm hover:bg-[#FFD56B] transition-colors shadow-sm w-full sm:w-auto min-h-[44px]"
+                    >
+                      <KhabarIcon name="scan" size={16} />
+                      <span>Scan Food or Receipt (OCR) →</span>
+                    </Link>
+                  </motion.div>
+
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
+                    <Link
+                      href={`/${locale}/inventory`}
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-[#217056] text-[#E0F3EB] font-semibold text-xs sm:text-sm hover:bg-[#144737] transition-colors w-full sm:w-auto min-h-[44px]"
+                    >
+                      <KhabarIcon name="expiring" size={16} />
+                      <span>Open &ldquo;Use This First&rdquo; Shelf</span>
+                    </Link>
+                  </motion.div>
+                </>
+              ) : (
+                <>
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
+                    <Link
+                      href={`/${locale}/login`}
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#FFC93C] text-[#0A281E] font-bold text-xs sm:text-sm hover:bg-[#FFD56B] transition-colors shadow-sm w-full sm:w-auto min-h-[44px]"
+                    >
+                      <span>Continue with Google / Login →</span>
+                    </Link>
+                  </motion.div>
+
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
+                    <Link
+                      href={`/${locale}/signup`}
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-[#217056] text-[#E0F3EB] font-semibold text-xs sm:text-sm hover:bg-[#144737] transition-colors w-full sm:w-auto min-h-[44px]"
+                    >
+                      <span>Create Free Kitchen Account</span>
+                    </Link>
+                  </motion.div>
+                </>
+              )}
+            </div>
+
+            {/* Background subtle art / photo thumbnail accent */}
+            <div className="absolute -bottom-6 -right-6 w-44 sm:w-52 h-44 sm:h-52 opacity-25 rounded-full overflow-hidden pointer-events-none">
+              <Image
+                src="/images/vegetables_basket.jpg"
+                alt="Fresh Food Happy Homes"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </motion.section>
+
+          {/* Right: Real Household Kitchen Status Radar (Zero Mock Graphs or Fake Indexes) */}
+          <motion.section
+            variants={itemVariants}
+            className="lg:col-span-5 rounded-2xl bg-[var(--kc-card)] border border-[var(--kc-card-border)] p-5 sm:p-6 shadow-sm flex flex-col justify-between space-y-4 sm:space-y-5 transition-colors"
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-[var(--kc-hairline)]">
+              <div className="flex items-center gap-2">
+                <span className="text-lg">🌿</span>
+                <h3 className="font-cursive-sacramento text-2xl sm:text-3xl font-bold text-[var(--kc-ink)]">
+                  Kitchen Shelf Radar
+                </h3>
+              </div>
+              <span className="text-[10px] font-mono text-[var(--kc-basil)] bg-[var(--kc-mint)] px-2.5 py-1 rounded-full flex items-center gap-1.5 font-bold">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
+                Live Household Sync
+              </span>
+            </div>
+
+            {/* Clean Real Stats Grid (Zero mock circular graphs, zero fake indexes) */}
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3 py-1">
+              <div className="p-3 sm:p-3.5 rounded-xl bg-neutral-50 dark:bg-[#132A20] border border-[var(--kc-hairline)] flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] font-mono text-[var(--kc-muted)] uppercase tracking-wider">Active Items</span>
+                  <KhabarIcon name="fridge" size={15} className="text-[var(--kc-basil)]" />
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl sm:text-3xl font-bold font-mono text-[var(--kc-ink)]">{shelfStats.activeCount}</span>
+                  <span className="text-[10px] font-mono text-[var(--kc-muted)]">tracked</span>
+                </div>
+              </div>
+
+              <div className="p-3 sm:p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/60 flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] font-mono text-amber-700 dark:text-amber-400 uppercase tracking-wider">Urgent (&lt;48h)</span>
+                  <KhabarIcon name="expiring" size={15} className="text-[#D6381F]" />
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl sm:text-3xl font-bold font-mono text-[#D6381F]">{shelfStats.urgentCount}</span>
+                  <span className="text-[10px] font-mono text-amber-700 dark:text-amber-400">priority</span>
+                </div>
+              </div>
+
+              <div className="p-3 sm:p-3.5 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-900/60 flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] font-mono text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Fresh &amp; Safe</span>
+                  <KhabarIcon name="plant-based" size={15} className="text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl sm:text-3xl font-bold font-mono text-emerald-800 dark:text-emerald-300">{shelfStats.freshCount}</span>
+                  <span className="text-[10px] font-mono text-emerald-700 dark:text-emerald-400">stable</span>
+                </div>
+              </div>
+
+              <div className="p-3 sm:p-3.5 rounded-xl bg-blue-50/70 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-900/60 flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] font-mono text-blue-700 dark:text-blue-400 uppercase tracking-wider">Meals Rescued</span>
+                  <KhabarIcon name="meal" size={15} className="text-blue-600 dark:text-blue-400" />
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl sm:text-3xl font-bold font-mono text-blue-800 dark:text-blue-300">{shelfStats.savedCount}</span>
+                  <span className="text-[10px] font-mono text-blue-700 dark:text-blue-400">consumed</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Contextual Status Ribbon & Fast Action */}
+            <div className="pt-3 border-t border-[var(--kc-hairline)] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+              <div className="flex items-center gap-2 text-xs">
+                {shelfStats.urgentCount > 0 ? (
+                  <span className="font-semibold text-amber-700 dark:text-amber-400 flex items-center gap-1.5 text-xs">
+                    <span className="w-2 h-2 rounded-full bg-[#D6381F] animate-ping shrink-0" />
+                    <span>{shelfStats.urgentCount} item(s) require priority cooking</span>
+                  </span>
+                ) : (
+                  <span className="font-semibold text-[var(--kc-basil)] flex items-center gap-1.5 text-xs">
+                    <span>✨</span>
+                    <span>All kitchen items are fresh &amp; stable</span>
+                  </span>
+                )}
+              </div>
+
+              <Link
+                href={`/${locale}/inventory`}
+                className="px-3.5 py-2 text-xs font-bold rounded-xl bg-[var(--kc-basil)] hover:bg-[var(--kc-basil-hover)] text-white text-center transition-colors shadow-sm min-h-[44px] flex items-center justify-center shrink-0"
+              >
+                Open Priority Shelf →
+              </Link>
+            </div>
+          </motion.section>
+        </div>
+
+        {/* 4 Core Pillars: Quick-Action Feature Cards */}
+        <motion.section
+          variants={itemVariants}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5"
+        >
+          {/* Card 1: Scan & OCR Receipts */}
+          <motion.div {...cardHoverProps}>
+            <Link
+              href={`/${locale}/inventory/add`}
+              className="p-5 rounded-2xl bg-[#EBF7EE] dark:bg-[#0D261B] border border-[#CCE7D4] dark:border-[#1E4D36] hover:border-[#96D2A8] transition-colors flex items-center justify-between group shadow-sm h-full"
+            >
+              <div className="flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#163B2C] shadow-sm flex items-center justify-center text-[#16583E] dark:text-[#2BD697] group-hover:scale-110 transition-transform">
+                  <KhabarIcon name="scan" size={22} />
+                </div>
+                <div>
+                  <h4 className="font-cursive-sacramento text-2xl font-bold text-[#16583E] dark:text-[#2BD697] block leading-none">
+                    Scan & OCR
+                  </h4>
+                  <p className="text-[11px] text-[#4F7565] dark:text-[#8BBDA6] mt-1 line-clamp-1 font-medium">
+                    Instant receipt & expiry intake.
+                  </p>
+                </div>
+              </div>
+              <div className="w-8 h-8 rounded-full bg-[#1E7050] text-white flex items-center justify-center text-xs group-hover:translate-x-1 transition-transform shrink-0">
+                →
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Card 2: My Pantry & Fridge */}
+          <motion.div {...cardHoverProps}>
+            <Link
+              href={`/${locale}/home`}
+              className="p-5 rounded-2xl bg-[#EBF3FC] dark:bg-[#0E2033] border border-[#CDE1F8] dark:border-[#1D3E61] hover:border-[#96C2F2] transition-colors flex items-center justify-between group shadow-sm h-full"
+            >
+              <div className="flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#17304C] shadow-sm flex items-center justify-center text-[#1E5698] dark:text-[#5B9EEA] group-hover:scale-110 transition-transform">
+                  <KhabarIcon name="fridge" size={22} />
+                </div>
+                <div>
+                  <h4 className="font-cursive-sacramento text-2xl font-bold text-[#1E5698] dark:text-[#5B9EEA] block leading-none">
+                    My Inventory
+                  </h4>
+                  <p className="text-[11px] text-[#557396] dark:text-[#8EABC9] mt-1 line-clamp-1 font-medium">
+                    Multi-zone freshness tracker.
+                  </p>
+                </div>
+              </div>
+              <div className="w-8 h-8 rounded-full bg-[#245FAC] text-white flex items-center justify-center text-xs group-hover:translate-x-1 transition-transform shrink-0">
+                →
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Card 3: "Use This First" Smart Shelf */}
+          <motion.div {...cardHoverProps}>
+            <Link
+              href={`/${locale}/inventory`}
+              className="p-5 rounded-2xl bg-[#FDF1EC] dark:bg-[#301A14] border border-[#F8D6C9] dark:border-[#52291E] hover:border-[#F1AB94] transition-colors flex items-center justify-between group shadow-sm h-full"
+            >
+              <div className="flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#42221A] shadow-sm flex items-center justify-center text-[#BA442B] dark:text-[#F3765A] group-hover:scale-110 transition-transform">
+                  <KhabarIcon name="expiring" size={22} />
+                </div>
+                <div>
+                  <h4 className="font-cursive-sacramento text-2xl font-bold text-[#BA442B] dark:text-[#F3765A] block leading-none">
+                    Use This First
+                  </h4>
+                  <p className="text-[11px] text-[#8C5D53] dark:text-[#C5978E] mt-1 line-clamp-1 font-medium">
+                    Urgent 24–48h expiry shelf.
+                  </p>
+                </div>
+              </div>
+              <div className="w-8 h-8 rounded-full bg-[#D14F30] text-white flex items-center justify-center text-xs group-hover:translate-x-1 transition-transform shrink-0">
+                →
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Card 4: "Before You Buy" Shopping Assistant */}
+          <motion.div {...cardHoverProps}>
+            <Link
+              href={`/${locale}/shopping-list`}
+              className="p-5 rounded-2xl bg-[#FFFBEB] dark:bg-[#2B230C] border border-[#FDE68A] dark:border-[#534212] hover:border-[#FCD34D] transition-colors flex items-center justify-between group shadow-sm h-full"
+            >
+              <div className="flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#3F3312] shadow-sm flex items-center justify-center text-[#B45309] dark:text-[#FBBF24] group-hover:scale-110 transition-transform">
+                  <KhabarIcon name="shopping-list" size={22} />
+                </div>
+                <div>
+                  <h4 className="font-cursive-sacramento text-2xl font-bold text-[#B45309] dark:text-[#FBBF24] block leading-none">
+                    Before You Buy
+                  </h4>
+                  <p className="text-[11px] text-[#78350F] dark:text-[#D4A953] mt-1 line-clamp-1 font-medium">
+                    Prevents duplicate purchases.
+                  </p>
+                </div>
+              </div>
+              <div className="w-8 h-8 rounded-full bg-[#D97706] text-white flex items-center justify-center text-xs group-hover:translate-x-1 transition-transform shrink-0">
+                →
+              </div>
+            </Link>
+          </motion.div>
+        </motion.section>
+
+        {/* Live "Use This First" Smart Shelf Preview */}
+        <motion.section
+          variants={itemVariants}
+          className="p-6 rounded-2xl bg-[var(--kc-card)] border border-[var(--kc-card-border)] shadow-sm space-y-4 transition-colors"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">⚡</span>
+              <div>
+                <h3 className="text-lg font-bold text-[var(--kc-ink)]">
+                  &ldquo;Use This First&rdquo; Priority Shelf
+                </h3>
+                <p className="text-xs text-[var(--kc-muted)]">
+                  Items expiring soonest in your kitchen. Cook these first to keep your waste at ₹0.
+                </p>
+              </div>
+            </div>
+            <Link
+              href={`/${locale}/recipes`}
+              className="text-xs font-bold text-[var(--kc-basil)] hover:underline flex items-center gap-1 group"
+            >
+              <span>Auto-Generate Recipe</span>
+              <span className="group-hover:translate-x-1 transition-transform">→</span>
+            </Link>
+          </div>
+
+          {urgentItems.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+              {urgentItems.slice(0, 3).map((item) => {
+                const isCritical = item.hoursLeft <= 24;
+                const emoji =
+                  item.category.includes('dairy') ? '🥛' :
+                  item.category.includes('cooked') ? '🍲' :
+                  item.category.includes('veg') ? '🥬' :
+                  item.category.includes('fruit') ? '🍎' :
+                  item.category.includes('meat') ? '🥩' : '🥫';
+
+                return (
+                  <motion.div
+                    key={item.id}
+                    whileHover={{ y: -3, scale: 1.01 }}
+                    className={`p-3.5 sm:p-4 rounded-xl border flex items-center justify-between gap-3 shadow-sm ${
+                      isCritical
+                        ? 'border-red-200 dark:border-red-900/60 bg-red-50/50 dark:bg-red-950/20'
+                        : 'border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#1A2620] flex items-center justify-center text-xl shadow-inner shrink-0">
+                        {emoji}
+                      </div>
+                      <div className="min-w-0">
+                        <h5 className="text-sm font-bold text-[var(--kc-ink)] truncate">{item.name}</h5>
+                        <span className={`text-[11px] font-mono font-semibold flex items-center gap-1 ${
+                          isCritical ? 'text-[#D6381F]' : 'text-amber-600 dark:text-amber-400'
+                        }`}>
+                          {isCritical && <span className="w-2 h-2 rounded-full bg-[#D6381F] animate-ping shrink-0" />}
+                          <span>~{item.hoursLeft}h left · {item.storage}</span>
+                        </span>
+                      </div>
+                    </div>
+                    <Link
+                      href={`/${locale}/recipes?ingredient=${encodeURIComponent(item.name)}`}
+                      className={`px-3.5 py-1.5 rounded-lg text-white text-xs font-bold hover:opacity-90 shadow-sm shrink-0 min-h-[36px] flex items-center justify-center ${
+                        isCritical ? 'bg-[#D6381F]' : 'bg-[#F59E0B]'
+                      }`}
+                    >
+                      Cook
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+          ) : !isLoggedIn ? (
+            <div className="p-6 sm:p-8 rounded-xl border border-dashed border-[var(--kc-card-border)] bg-neutral-50/50 dark:bg-[#0E2219]/40 text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-[var(--kc-mint)] text-[var(--kc-basil)] flex items-center justify-center mx-auto text-xl shadow-inner">
+                🔐
+              </div>
+              <div className="max-w-md mx-auto space-y-1">
+                <h4 className="text-base font-bold text-[var(--kc-ink)]">
+                  Connect Your Kitchen Shelves
+                </h4>
+                <p className="text-xs text-[var(--kc-muted)] leading-relaxed">
+                  Sign in with Google to track your domestic fridge and pantry, view items expiring within 48h, and turn potential waste into complete meals.
+                </p>
+              </div>
+              <div className="pt-2">
+                <Link
+                  href={`/${locale}/login`}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--kc-basil)] text-white text-xs font-bold hover:bg-[var(--kc-basil-hover)] transition-all shadow-sm"
+                >
+                  <span>Sign In with Google to Open Kitchen</span>
+                  <span>→</span>
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="p-6 sm:p-8 rounded-xl border border-dashed border-emerald-200 dark:border-emerald-900/40 bg-emerald-50/30 dark:bg-emerald-950/10 text-center space-y-2">
+              <span className="text-2xl">✨</span>
+              <h4 className="text-base font-bold text-[var(--kc-ink)]">
+                All Kitchen Shelves Stable &amp; Fresh
+              </h4>
+              <p className="text-xs text-[var(--kc-muted)] max-w-md mx-auto leading-relaxed">
+                {shelfStats.activeCount === 0
+                  ? 'No kitchen items logged yet. Scan a grocery receipt or add ingredients to start tracking shelf-life urgency.'
+                  : 'Zero ingredients are expiring within 48 hours. Your domestic food waste risk is currently at ₹0.'}
+              </p>
+              <div className="pt-2">
+                <Link
+                  href={`/${locale}/inventory/add`}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--kc-basil)] text-white text-xs font-bold hover:bg-[var(--kc-basil-hover)] transition-colors"
+                >
+                  <span>+ Add Food Item</span>
+                </Link>
+              </div>
+            </div>
+          )}
+        </motion.section>
+      </motion.main>
+    </div>
+  );
 }

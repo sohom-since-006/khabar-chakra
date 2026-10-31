@@ -15,10 +15,10 @@ interface HeaderProps {
 export function Header({ locale }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const { user, displayName, avatarUrl, initials, isLoggedIn } = useUserSession();
+  const { user, displayName, avatarUrl, initials, isLoggedIn, signOut } = useUserSession();
 
   const navLinks = [
-    { label: 'Home', href: `/${locale}/home`, icon: 'household' as const },
+    { label: 'Home', href: isLoggedIn ? `/${locale}/home` : `/${locale}`, icon: 'household' as const },
     { label: 'Scan Receipt', href: `/${locale}/inventory/add`, icon: 'scan' as const },
     { label: 'Use First', href: `/${locale}/inventory`, icon: 'expiring' as const },
     { label: 'Before You Buy', href: `/${locale}/shopping-list`, icon: 'shopping-list' as const },
@@ -31,7 +31,7 @@ export function Header({ locale }: HeaderProps) {
     <header className="sticky top-0 bg-[#0B3326] dark:bg-[#071F17] text-white z-50 border-b border-[#144737] dark:border-[#134232] shadow-sm transition-colors">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Left: Brand Logo & Cursive Typography */}
-        <Link href={`/${locale}/home`} className="flex items-center gap-3 group">
+        <Link href={isLoggedIn ? `/${locale}/home` : `/${locale}`} className="flex items-center gap-3 group">
           <div className="relative w-9 h-9 rounded-full bg-[#164D3B] p-1 flex items-center justify-center border border-[#217056] shadow-inner">
             <Image
               src="/branding/app-logo.png"
@@ -96,31 +96,42 @@ export function Header({ locale }: HeaderProps) {
 
           {/* Real User Profile Chip or Sign In Button (Zero Fake Users) */}
           {isLoggedIn ? (
-            <Link
-              href={`/${locale}/profile`}
-              className="hidden sm:flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-[#0E3E2F] hover:bg-[#165842] border border-[#195A44] transition-colors group"
-            >
-              {avatarUrl ? (
-                <div className="relative w-7 h-7 rounded-full overflow-hidden border border-[#2EB286]">
-                  <Image
-                    src={avatarUrl}
-                    alt={displayName || 'User Avatar'}
-                    fill
-                    className="object-cover"
-                  />
+            <div className="hidden sm:flex items-center gap-2">
+              <Link
+                href={`/${locale}/profile`}
+                className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full bg-[#0E3E2F] hover:bg-[#165842] border border-[#195A44] transition-colors group"
+                title="Kitchen Profile"
+              >
+                {avatarUrl ? (
+                  <div className="relative w-7 h-7 rounded-full overflow-hidden border border-[#2EB286]">
+                    <Image
+                      src={avatarUrl}
+                      alt={displayName || 'User Avatar'}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-7 h-7 rounded-full bg-[#207357] text-[#D5F5E3] font-bold text-xs flex items-center justify-center border border-[#2EB286]">
+                    {initials}
+                  </div>
+                )}
+                <div className="text-left leading-tight max-w-[120px] truncate">
+                  <span className="text-xs font-semibold text-[#F2FBF6] group-hover:text-white block truncate">
+                    {displayName || user?.email?.split('@')[0]}
+                  </span>
                 </div>
-              ) : (
-                <div className="w-7 h-7 rounded-full bg-[#207357] text-[#D5F5E3] font-bold text-xs flex items-center justify-center border border-[#2EB286]">
-                  {initials}
-                </div>
-              )}
-              <div className="text-left leading-tight max-w-[120px] truncate">
-                <span className="text-xs font-semibold text-[#F2FBF6] group-hover:text-white block truncate">
-                  {displayName || user?.email?.split('@')[0]}
-                </span>
-              </div>
-              <span className="text-[#8FB7A3] text-[10px]">▼</span>
-            </Link>
+              </Link>
+              <button
+                type="button"
+                onClick={() => signOut(locale)}
+                className="px-2.5 py-1.5 rounded-full bg-[#8A2416] hover:bg-[#A82B1B] text-white text-xs font-bold transition-colors shadow-sm focus-visible:ring-2 focus-visible:ring-red-400"
+                title="Sign Out"
+                aria-label="Sign Out"
+              >
+                Sign Out ⎋
+              </button>
+            </div>
           ) : (
             <Link
               href={`/${locale}/login`}
@@ -157,15 +168,27 @@ export function Header({ locale }: HeaderProps) {
               <span>{item.label}</span>
             </Link>
           ))}
-          <div className="pt-3 border-t border-[#164F3B] flex gap-2">
+          <div className="pt-3 border-t border-[#164F3B] flex flex-wrap gap-2">
             {isLoggedIn ? (
-              <Link
-                href={`/${locale}/profile`}
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex-1 text-center py-2 text-xs font-semibold bg-[#164F3B] text-white rounded-lg"
-              >
-                My Kitchen Profile
-              </Link>
+              <>
+                <Link
+                  href={`/${locale}/profile`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex-1 text-center py-2 text-xs font-semibold bg-[#164F3B] text-white rounded-lg"
+                >
+                  My Kitchen Profile
+                </Link>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setMobileMenuOpen(false);
+                    await signOut(locale);
+                  }}
+                  className="flex-1 text-center py-2 text-xs font-semibold bg-[#8A2416] hover:bg-[#A82B1B] text-white rounded-lg"
+                >
+                  Sign Out ⎋
+                </button>
+              </>
             ) : (
               <Link
                 href={`/${locale}/login`}
@@ -178,7 +201,7 @@ export function Header({ locale }: HeaderProps) {
             <Link
               href={`/${locale}/inventory/add`}
               onClick={() => setMobileMenuOpen(false)}
-              className="flex-1 text-center py-2 text-xs font-semibold bg-[#165842] text-white rounded-lg"
+              className="w-full text-center py-2 text-xs font-semibold bg-[#165842] text-white rounded-lg"
             >
               + Add Food
             </Link>
