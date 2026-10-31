@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
+import { getCleanInventory } from '@/utils/inventoryStorage';
 
 interface LoginPageProps {
   params: Promise<{ locale: string }>;
@@ -14,6 +15,8 @@ export default function LoginPage({ params }: LoginPageProps) {
   const [locale, setLocale] = useState('en');
   React.useEffect(() => {
     params.then((p) => setLocale(p.locale));
+    // Immediately purge any old stale mock items from browser storage
+    getCleanInventory();
   }, [params]);
 
   const router = useRouter();

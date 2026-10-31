@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { generateFreshnessAlerts, AlertUrgency } from '@/domain/freshnessAlerts';
 import { InventoryItem } from '@/domain/types';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
+import { getCleanInventory } from '@/utils/inventoryStorage';
 
 export default function NotificationsPage() {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
@@ -16,8 +17,7 @@ export default function NotificationsPage() {
 
   useEffect(() => {
     try {
-      const storedInv = localStorage.getItem('kc-inventory');
-      if (storedInv) setInventory(JSON.parse(storedInv));
+      setInventory(getCleanInventory());
 
       const storedDismissed = localStorage.getItem('kc-alerts-dismissed');
       if (storedDismissed) setDismissedIds(JSON.parse(storedDismissed));
@@ -124,8 +124,8 @@ export default function NotificationsPage() {
   const handleTestAlert = () => {
     playAlertChime();
     if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
-      new Notification('⚠️ Food Expiry Notice: Amul Milk & Spinach', {
-        body: 'Expires in less than 24 hours. Cook Paneer Bhurji or Palak Khichuri to avoid waste!',
+      new Notification('⚠️ Food Expiry Notice (Test Alert)', {
+        body: 'Freshness monitoring is active for your household kitchen inventory.',
         icon: '/branding/app-logo.png',
       });
       setPushStatusMessage('✓ Sent live test push notification to your device!');

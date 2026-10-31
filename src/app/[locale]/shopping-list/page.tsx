@@ -15,6 +15,7 @@ interface ShoppingItem {
 
 import { InventoryItem } from '@/domain/types';
 import { calculateFreshness } from '@/domain/freshness';
+import { getCleanInventory } from '@/utils/inventoryStorage';
 
 export default function BeforeYouBuyPage({
   params,
@@ -43,11 +44,9 @@ export default function BeforeYouBuyPage({
   useEffect(() => {
     try {
       // 1. Load active kitchen inventory for cross-checking
-      const storedInv = localStorage.getItem('kc-inventory');
-      if (storedInv) {
-        const items: InventoryItem[] = JSON.parse(storedInv);
-        const mapped = items
-          .filter((i) => i.status === 'active')
+      const items: InventoryItem[] = getCleanInventory();
+      const mapped = items
+        .filter((i) => i.status === 'active')
           .map((i) => {
             const f = calculateFreshness({
               category: i.category,
@@ -65,7 +64,6 @@ export default function BeforeYouBuyPage({
             };
           });
         setInventoryStock(mapped);
-      }
 
       // 2. Load verified shopping list
       const saved = localStorage.getItem('kc_shopping_list');
@@ -75,7 +73,7 @@ export default function BeforeYouBuyPage({
           setShoppingList(parsed);
         }
       }
-    } catch {
+    } catch (_err) {
       // LocalStorage unavailable
     }
   }, []);
@@ -85,7 +83,7 @@ export default function BeforeYouBuyPage({
     setShoppingList(newList);
     try {
       localStorage.setItem('kc_shopping_list', JSON.stringify(newList));
-    } catch {
+    } catch (_e) {
       // Ignore
     }
   };

@@ -8,24 +8,12 @@ const handleI18n = createIntlMiddleware({
   localePrefix: 'always',
 });
 
-// Domestic kitchen routes strictly private to the authenticated household
-const isProtectedKitchenRoute = (path: string) => {
-  return (
-    path.startsWith('/home') ||
-    path.startsWith('/inventory') ||
-    path.startsWith('/recipes') ||
-    path.startsWith('/planner') ||
-    path.startsWith('/shopping-list') ||
-    path.startsWith('/waste') ||
-    path.startsWith('/nutrition') ||
-    path.startsWith('/notifications') ||
-    path.startsWith('/settings') ||
-    path.startsWith('/profile')
-  );
-};
-
 const isAuthRoute = (path: string) => {
-  return path.startsWith('/login') || path.startsWith('/signup');
+  return (
+    path.startsWith('/login') ||
+    path.startsWith('/signup') ||
+    path.startsWith('/auth')
+  );
 };
 
 export async function proxy(request: NextRequest) {
@@ -59,10 +47,12 @@ export async function proxy(request: NextRequest) {
   const locale = ['en', 'bn', 'hi'].includes(segments[0]) ? segments[0] : 'en';
   const subPath = segments.length > 1 ? `/${segments.slice(1).join('/')}` : '/';
 
-  // 4. Auth Gate: If unauthenticated, redirect to login with intended destination
-  if (!user && isProtectedKitchenRoute(subPath)) {
+  // 4. Mandatory Auth Gate: Unauthenticated users must log in first before doing anything
+  if (!user && !isAuthRoute(subPath)) {
     const loginUrl = new URL(`/${locale}/login`, request.url);
-    loginUrl.searchParams.set('next', pathname);
+    if (subPath !== '/' && subPath !== '') {
+      loginUrl.searchParams.set('next', pathname);
+    }
     const redirectResponse = NextResponse.redirect(loginUrl);
     if (sessionResponse) {
       sessionResponse.cookies.getAll().forEach((cookie) => {
@@ -72,8 +62,8 @@ export async function proxy(request: NextRequest) {
     return redirectResponse;
   }
 
-  // 5. If already authenticated and visiting login/signup, redirect straight to kitchen home
-  if (user && isAuthRoute(subPath)) {
+  // 5. If already authenticated and visiting login/signup or the root landing page, redirect straight to kitchen home
+  if (user && (isAuthRoute(subPath) || subPath === '/' || subPath === '')) {
     const homeUrl = new URL(`/${locale}/home`, request.url);
     const redirectResponse = NextResponse.redirect(homeUrl);
     if (sessionResponse) {

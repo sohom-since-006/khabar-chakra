@@ -47,8 +47,8 @@ describe('Domestic Food Intelligence & Kitchen Ingestion', () => {
   it('determines complete pantry and nutritional metadata from an image upload scan', async () => {
     const { POST } = await import('@/app/api/inventory/scan/route');
 
-    // Create a 1x1 red pixel sample base64 jpeg
-    const sampleImage = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=';
+    // Create a 1x1 transparent pixel sample base64 png
+    const sampleImage = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 
     const req = new Request('http://localhost:3000/api/inventory/scan', {
       method: 'POST',

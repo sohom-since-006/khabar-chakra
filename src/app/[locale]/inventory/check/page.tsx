@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
 import { lookupBarcode } from '@/lib/openFoodFacts';
+import { getCleanInventory } from '@/utils/inventoryStorage';
 
 interface MatchItem {
   id: string;
@@ -50,41 +51,15 @@ export default function BeforeYouBuyPage() {
       expiryDate: string;
     }> = [];
 
-    try {
-      pantryItems = JSON.parse(localStorage.getItem('kc-inventory') || '[]');
-    } catch {
-      pantryItems = [];
-    }
-
-    // Default seeded samples if user just started
-    if (pantryItems.length === 0) {
-      pantryItems = [
-        {
-          id: 'seed_1',
-          name: 'Toned Milk',
-          quantityValue: 1,
-          quantityUnit: 'L',
-          storage: 'fridge',
-          expiryDate: new Date(Date.now() + 18 * 3600000).toISOString(),
-        },
-        {
-          id: 'seed_2',
-          name: 'Basmati Rice',
-          quantityValue: 5,
-          quantityUnit: 'kg',
-          storage: 'room',
-          expiryDate: new Date(Date.now() + 720 * 3600000).toISOString(),
-        },
-        {
-          id: 'seed_3',
-          name: 'Fresh Tomatoes',
-          quantityValue: 1.5,
-          quantityUnit: 'kg',
-          storage: 'fridge',
-          expiryDate: new Date(Date.now() + 36 * 3600000).toISOString(),
-        },
-      ];
-    }
+    const cleanInventory = getCleanInventory();
+    pantryItems = cleanInventory.map((item) => ({
+      id: item.id,
+      name: item.name,
+      quantityValue: item.quantityValue,
+      quantityUnit: item.quantityUnit,
+      storage: item.storage,
+      expiryDate: item.expiryDate || '',
+    }));
 
     const matched = pantryItems.filter((item) =>
       item.name.toLowerCase().includes(searchName) || searchName.includes(item.name.toLowerCase())

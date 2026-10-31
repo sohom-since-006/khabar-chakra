@@ -9,6 +9,7 @@ import { KhabarIcon } from '@/components/ui/KhabarIcon';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { useUserSession } from '@/hooks/useUserSession';
 import { InventoryItem } from '@/domain/types';
+import { getCleanInventory } from '@/utils/inventoryStorage';
 
 // Types for culinary recipes and planning
 interface RecipeItem {
@@ -93,7 +94,7 @@ const RECIPES_DATA: RecipeItem[] = [
     ingredients: [
       { name: 'Artisan Flour', icon: '🌾' },
       { name: 'Dark Cocoa', icon: '🍫' },
-      { name: 'Red Cow Milk', icon: '🥛' },
+      { name: 'Organic Milk', icon: '🥛' },
       { name: 'Wild Berries', icon: '🫐' },
       { name: 'Cinnamon', icon: '🪵' },
     ],
@@ -165,20 +166,17 @@ export default function CulinaryPlannerPage() {
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('kc-inventory');
-      if (stored) {
-        const parsed: InventoryItem[] = JSON.parse(stored);
-        setPantryItems(parsed);
-        const urgent = parsed.filter((item) => {
-          if (!item.expiryDate || item.status !== 'active') return false;
-          const hrs = (new Date(item.expiryDate).getTime() - Date.now()) / 3600000;
-          return hrs <= 48;
-        });
-        if (urgent.length > 0) {
-          setExpiringNotice(
-            `${urgent.length} shelf item(s) (${urgent.map((u) => u.name).join(', ')}) should be cooked first!`
-          );
-        }
+      const parsed: InventoryItem[] = getCleanInventory();
+      setPantryItems(parsed);
+      const urgent = parsed.filter((item) => {
+        if (!item.expiryDate || item.status !== 'active') return false;
+        const hrs = (new Date(item.expiryDate).getTime() - Date.now()) / 3600000;
+        return hrs <= 48;
+      });
+      if (urgent.length > 0) {
+        setExpiringNotice(
+          `${urgent.length} shelf item(s) (${urgent.map((u) => u.name).join(', ')}) should be cooked first!`
+        );
       }
     } catch {
       // safe fallback

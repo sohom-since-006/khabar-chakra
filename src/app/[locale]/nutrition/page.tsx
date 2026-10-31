@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { calculateHouseholdNutrition, HouseholdProfile, MANDATORY_MEDICAL_DISCLAIMER } from '@/domain/nutrition';
 import { InventoryItem } from '@/domain/types';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
+import { getCleanInventory } from '@/utils/inventoryStorage';
 
 export default function NutritionPage() {
   const [profile, setProfile] = useState<HouseholdProfile>({
@@ -18,12 +19,7 @@ export default function NutritionPage() {
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('kc-inventory');
-      if (stored) setInventory(JSON.parse(stored));
-    } catch {
-      // fallback
-    }
+    setInventory(getCleanInventory());
   }, []);
 
   const targets = calculateHouseholdNutrition(profile);

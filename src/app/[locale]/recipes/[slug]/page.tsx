@@ -6,6 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { RECIPES_CATALOG } from '@/data/recipes';
 import { InventoryItem } from '@/domain/types';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
+import { getCleanInventory, saveCleanInventory } from '@/utils/inventoryStorage';
 
 export default function RecipeDetailPage() {
   const params = useParams();
@@ -17,12 +18,7 @@ export default function RecipeDetailPage() {
   const [addedToShopping, setAddedToShopping] = useState(false);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('kc-inventory');
-      if (stored) setInventory(JSON.parse(stored));
-    } catch {
-      // fallback
-    }
+    setInventory(getCleanInventory());
   }, []);
 
   const recipe = RECIPES_CATALOG.find((r) => r.slug === slug);
@@ -57,11 +53,7 @@ export default function RecipeDetailPage() {
       return item;
     });
 
-    try {
-      localStorage.setItem('kc-inventory', JSON.stringify(updatedInventory));
-    } catch {
-      // fallback
-    }
+    saveCleanInventory(updatedInventory);
 
     setCookedSuccess(true);
     setTimeout(() => {

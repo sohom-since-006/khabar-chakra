@@ -5,21 +5,10 @@ import Link from 'next/link';
 import { InventoryItem, ItemOutcome } from '@/domain/types';
 import { calculateFreshness } from '@/domain/freshness';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
+import { getCleanInventory, saveCleanInventory } from '@/utils/inventoryStorage';
 
 export default function KitchenLedgerPage() {
-  const [items, setItems] = useState<InventoryItem[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem('kc-inventory');
-        if (stored) {
-          return JSON.parse(stored);
-        }
-      } catch {
-        // storage quota fallback
-      }
-    }
-    return [];
-  });
+  const [items, setItems] = useState<InventoryItem[]>(() => getCleanInventory());
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [bandFilter, setBandFilter] = useState<string>('all');
@@ -32,11 +21,7 @@ export default function KitchenLedgerPage() {
 
   const saveItems = (updated: InventoryItem[]) => {
     setItems(updated);
-    try {
-      localStorage.setItem('kc-inventory', JSON.stringify(updated));
-    } catch {
-      // fallback
-    }
+    saveCleanInventory(updated);
   };
 
   const showToast = (msg: string) => {

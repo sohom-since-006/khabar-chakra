@@ -6,19 +6,14 @@ import { matchRecipesToPantry } from '@/domain/recipeRescue';
 import { InventoryItem, DietType } from '@/domain/types';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
 
+import { getCleanInventory } from '@/utils/inventoryStorage';
+
 export default function RecipesPage() {
   const [dietFilter, setDietFilter] = useState<DietType | 'all'>('all');
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem('kc-inventory');
-      if (stored) {
-        setInventory(JSON.parse(stored));
-      }
-    } catch {
-      // fallback
-    }
+    setInventory(getCleanInventory());
   }, []);
 
   const matches = matchRecipesToPantry({

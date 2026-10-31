@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { calculateImpact, ImpactReport, IMPACT_FACTORS } from '@/domain/impact';
 import { InventoryItem } from '@/domain/types';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
+import { getCleanInventory } from '@/utils/inventoryStorage';
 
 export default function ImpactPage() {
   const [report, setReport] = useState<ImpactReport>(() => calculateImpact([]));
@@ -12,73 +13,7 @@ export default function ImpactPage() {
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('kc-inventory');
-      let items: InventoryItem[] = stored ? JSON.parse(stored) : [];
-
-      // Include community seed items if user inventory is small
-      if (items.length < 5) {
-        items = [
-          ...items,
-          {
-            id: 'seed-imp-1',
-            ownerId: 'u1',
-            name: 'Puri Sabzi Leftovers',
-            category: 'cooked_food',
-            dietType: 'veg',
-            quantityValue: 6,
-            quantityUnit: 'kg',
-            purchaseDate: '2026-10-01',
-            expiryDate: '2026-10-02',
-            expirySource: 'user_provided',
-            storage: 'room',
-            fssaiStatus: 'verified',
-            isFlagged: false,
-            status: 'closed',
-            outcome: 'consumed',
-            createdAt: '2026-10-01',
-            updatedAt: '2026-10-02',
-          },
-          {
-            id: 'seed-imp-2',
-            ownerId: 'u1',
-            name: 'Overripe Bananas',
-            category: 'fruits',
-            dietType: 'vegan',
-            quantityValue: 2,
-            quantityUnit: 'kg',
-            purchaseDate: '2026-10-02',
-            expiryDate: '2026-10-04',
-            expirySource: 'user_provided',
-            storage: 'room',
-            fssaiStatus: 'verified',
-            isFlagged: false,
-            status: 'closed',
-            outcome: 'composted',
-            createdAt: '2026-10-02',
-            updatedAt: '2026-10-04',
-          },
-          {
-            id: 'seed-imp-3',
-            ownerId: 'u1',
-            name: 'Dal Makhani Batch',
-            category: 'cooked_food',
-            dietType: 'veg',
-            quantityValue: 4,
-            quantityUnit: 'portions',
-            purchaseDate: '2026-10-03',
-            expiryDate: '2026-10-04',
-            expirySource: 'user_provided',
-            storage: 'fridge',
-            fssaiStatus: 'verified',
-            isFlagged: false,
-            status: 'closed',
-            outcome: 'cooked',
-            createdAt: '2026-10-03',
-            updatedAt: '2026-10-04',
-          },
-        ];
-      }
-
+      const items: InventoryItem[] = getCleanInventory();
       setReport(calculateImpact(items));
     } catch {
       // fallback

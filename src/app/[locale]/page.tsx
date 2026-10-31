@@ -3,11 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { AppSidebar } from '@/components/layout/AppSidebar';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
 import { useUserSession } from '@/hooks/useUserSession';
 import { InventoryItem } from '@/domain/types';
+import { getCleanInventory } from '@/utils/inventoryStorage';
 
 interface LandingPageProps {
   params: Promise<{ locale: string }>;
@@ -46,6 +48,7 @@ const cardHoverProps = {
 };
 
 export default function LandingPage({ params }: LandingPageProps) {
+  const router = useRouter();
   const [locale, setLocale] = useState('en');
   const { user, displayName, isLoggedIn } = useUserSession();
   const [shelfStats, setShelfStats] = useState({
@@ -66,48 +69,46 @@ export default function LandingPage({ params }: LandingPageProps) {
     params.then((p) => setLocale(p.locale));
   }, [params]);
 
+  // Enforce Login First: Unauthenticated visitors are routed to login; authenticated users to /home
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.replace(`/${locale}/login`);
+    } else {
+      router.replace(`/${locale}/home`);
+    }
+  }, [isLoggedIn, locale, router]);
+
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('kc-inventory');
-      if (stored) {
-        const items: InventoryItem[] = JSON.parse(stored);
-        const active = items.filter((i) => i.status === 'active');
-        const now = Date.now();
-        const urgent = active
-          .filter((i) => {
-            if (!i.expiryDate) return false;
-            const hoursLeft = (new Date(i.expiryDate).getTime() - now) / 3600000;
-            return hoursLeft <= 48;
-          })
-          .map((i) => {
-            const hoursLeft = Math.max(0, Math.round((new Date(i.expiryDate!).getTime() - now) / 3600000));
-            return {
-              id: i.id,
-              name: i.name,
-              hoursLeft,
-              storage: i.storage === 'fridge' ? 'Fridge' : i.storage === 'freezer' ? 'Freezer' : 'Pantry',
-              category: i.category,
-            };
-          })
-          .sort((a, b) => a.hoursLeft - b.hoursLeft);
+      const items: InventoryItem[] = getCleanInventory();
+      const active = items.filter((i) => i.status === 'active');
+      const now = Date.now();
+      const urgent = active
+        .filter((i) => {
+          if (!i.expiryDate) return false;
+          const hoursLeft = (new Date(i.expiryDate).getTime() - now) / 3600000;
+          return hoursLeft <= 48;
+        })
+        .map((i) => {
+          const hoursLeft = Math.max(0, Math.round((new Date(i.expiryDate!).getTime() - now) / 3600000));
+          return {
+            id: i.id,
+            name: i.name,
+            hoursLeft,
+            storage: i.storage === 'fridge' ? 'Fridge' : i.storage === 'freezer' ? 'Freezer' : 'Pantry',
+            category: i.category,
+          };
+        })
+        .sort((a, b) => a.hoursLeft - b.hoursLeft);
 
-        setUrgentItems(urgent);
-        const closed = items.filter((i) => i.status === 'closed');
-        setShelfStats({
-          activeCount: active.length,
-          urgentCount: urgent.length,
-          freshCount: Math.max(0, active.length - urgent.length),
-          savedCount: closed.length,
-        });
-      } else {
-        setUrgentItems([]);
-        setShelfStats({
-          activeCount: 0,
-          urgentCount: 0,
-          freshCount: 0,
-          savedCount: 0,
-        });
-      }
+      setUrgentItems(urgent);
+      const closed = items.filter((i) => i.status === 'closed');
+      setShelfStats({
+        activeCount: active.length,
+        urgentCount: urgent.length,
+        freshCount: Math.max(0, active.length - urgent.length),
+        savedCount: closed.length,
+      });
     } catch {
       // storage quota fallback
     }

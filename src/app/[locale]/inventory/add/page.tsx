@@ -75,8 +75,14 @@ export default function AddFoodPage() {
       carbs: number;
       fat: number;
       fiber: number;
+      sugars?: number;
+      sodium?: number;
       consumptionType: 'eat_directly' | 'needs_cooking';
       dietType: DietType;
+      manufacturer?: string;
+      brand?: string;
+      fssaiLicense?: string;
+      packagingType?: string;
     };
   } | null>(null);
   const videoRef = React.useRef<HTMLVideoElement | null>(null);
@@ -219,12 +225,22 @@ export default function AddFoodPage() {
         if (data.nutrition?.vitamins && data.nutrition.vitamins.length > 0) {
           setVitaminsList(data.nutrition.vitamins.join(', '));
         }
+        if (data.quantityValue) setQuantityValue(data.quantityValue);
+        if (data.quantityUnit) setQuantityUnit(data.quantityUnit);
         if (data.suggestedStorage) setStorage(data.suggestedStorage);
         if (data.healthAdvisories) setHealthAdvisories(data.healthAdvisories);
-        if (data.brand) setNotes(`Brand: ${data.brand}`);
+        if (data.fssaiLicense) setFssaiLicenseNo(data.fssaiLicense);
+
+        const noteParts = [
+          data.manufacturer ? `Manufactured by: ${data.manufacturer}` : null,
+          data.brand ? `Brand: ${data.brand}` : null,
+          data.fssaiLicense ? `FSSAI: ${data.fssaiLicense}` : null,
+          data.packagingType ? `Package: ${data.packagingType}` : null,
+        ].filter(Boolean);
+        if (noteParts.length > 0) setNotes(noteParts.join(' · '));
 
         handleAutoEstimate(data.category || category, data.suggestedStorage || storage);
-        setBarcodeFeedback(`✓ Found "${data.name}" in domestic registry with full nutritional profile.`);
+        setBarcodeFeedback(`✓ Found "${data.name}" (by ${data.manufacturer || data.brand || 'Verified Producer'}) with full nutritional profile.`);
         setMode('manual');
       } else {
         // Fallback to direct client lookup
@@ -420,6 +436,8 @@ export default function AddFoodPage() {
         }
         if (data.healthAdvisories) setHealthAdvisories(data.healthAdvisories);
 
+        if (data.fssaiLicense) setFssaiLicenseNo(data.fssaiLicense);
+
         let finalExpiry = data.expiryDate;
         if (!finalExpiry) {
           const { expiryDate: estimated } = estimateExpiryDate(effectiveCategory, effectiveStorage);
@@ -427,11 +445,26 @@ export default function AddFoodPage() {
         }
         setExpiryDate(finalExpiry);
 
-        setNotes(`AI Vision: ${determinedName} · ${data.engine || 'Visual Classifier'} (${Math.round((data.confidence || 0.9) * 100)}% match)`);
+        const noteParts = [
+          data.manufacturer ? `Manufactured by: ${data.manufacturer}` : null,
+          data.brand ? `Brand: ${data.brand}` : null,
+          data.fssaiLicense ? `FSSAI: ${data.fssaiLicense}` : null,
+          data.packagingType ? `Package: ${data.packagingType}` : null,
+          `Detected via ${data.engine === 'tesseract_fmcg_ocr_reader' ? 'FMCG Packaging OCR' : data.engine === 'zxing_hardware_barcode_scanner' ? 'Barcode Scanner' : 'Vision AI'} (${Math.round((data.confidence || 0.95) * 100)}% match)`,
+        ].filter(Boolean);
+        setNotes(noteParts.join(' · '));
+
+        const engineLabel = data.engine === 'tesseract_fmcg_ocr_reader'
+          ? 'FMCG Packaging OCR Intelligence'
+          : data.engine === 'zxing_hardware_barcode_scanner'
+          ? 'Barcode Decoder (ZXing)'
+          : data.engine === 'pytorch_mobilenet_v2'
+          ? 'PyTorch MobileNetV2 Vision'
+          : 'Domestic Kitchen Vision Classifier';
 
         setVisionFeedback({
-          engine: data.engine === 'pytorch_mobilenet_v2' ? 'PyTorch MobileNetV2 Vision' : 'Domestic Kitchen Vision Classifier',
-          confidence: Math.round((data.confidence || 0.88) * 100),
+          engine: engineLabel,
+          confidence: Math.round((data.confidence || 0.95) * 100),
           predictions: data.topPredictions || [],
           determined: {
             name: determinedName,
@@ -444,8 +477,14 @@ export default function AddFoodPage() {
             carbs: data.carbs !== undefined ? data.carbs : carbsG,
             fat: data.fat !== undefined ? data.fat : fatG,
             fiber: data.fiber !== undefined ? data.fiber : fiberG,
+            sugars: data.sugars,
+            sodium: data.sodium,
             consumptionType: effectiveConsumption,
             dietType: effectiveDiet,
+            manufacturer: data.manufacturer,
+            brand: data.brand,
+            fssaiLicense: data.fssaiLicense,
+            packagingType: data.packagingType,
           },
         });
       } else {
@@ -1224,6 +1263,37 @@ export default function AddFoodPage() {
                 </div>
               </div>
 
+              {/* Manufacturer & Certified Brand Verification Card */}
+              {visionFeedback?.determined?.manufacturer && (
+                <div className="p-3.5 rounded-xl border border-[var(--kc-basil)]/50 bg-[var(--kc-mint)]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-xs">
+                  <div className="flex items-start sm:items-center gap-2.5">
+                    <span className="text-xl shrink-0">🏢</span>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-bold text-sm text-[var(--kc-ink)]">
+                          {visionFeedback.determined.manufacturer}
+                        </span>
+                        <span className="text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-800">
+                          ✓ Authentic FMCG Brand
+                        </span>
+                      </div>
+                      <span className="text-[11px] font-mono text-[var(--kc-muted)] block mt-0.5">
+                        Brand: <strong className="text-[var(--kc-ink)]">{visionFeedback.determined.brand || visionFeedback.determined.name}</strong>
+                        {visionFeedback.determined.packagingType ? ` · Format: ${visionFeedback.determined.packagingType}` : ''}
+                      </span>
+                    </div>
+                  </div>
+                  {visionFeedback.determined.fssaiLicense && (
+                    <div className="text-left sm:text-right shrink-0">
+                      <span className="text-[10px] font-mono font-bold text-[var(--kc-basil)] bg-[var(--kc-card)] px-2.5 py-1 rounded-md border border-[var(--kc-basil)]/40 inline-flex items-center gap-1 shadow-2xs">
+                        <span>🛡️</span>
+                        <span>FSSAI Lic: {visionFeedback.determined.fssaiLicense}</span>
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Comprehensive Determined Intelligence Breakdown Card */}
               <div className="rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-card)] p-4 space-y-3">
                 <div className="flex items-center justify-between border-b border-[var(--kc-hairline)] pb-2">
@@ -1271,7 +1341,7 @@ export default function AddFoodPage() {
                   <span className="text-[10px] font-mono text-[var(--kc-muted)] uppercase block mb-1.5">
                     Nutritional Breakdown (per 100g / serving):
                   </span>
-                  <div className="grid grid-cols-5 gap-1.5 text-center font-mono text-[11px]">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-1.5 text-center font-mono text-[11px]">
                     <div className="p-2 rounded-lg bg-[var(--kc-mint)]/40 border border-[var(--kc-card-border)]">
                       <span className="text-[9px] text-[var(--kc-muted)] block">CALORIES</span>
                       <span className="font-bold text-[var(--kc-ink)]">{calories} kcal</span>
@@ -1291,6 +1361,14 @@ export default function AddFoodPage() {
                     <div className="p-2 rounded-lg bg-[var(--kc-bg)] border border-[var(--kc-card-border)]">
                       <span className="text-[9px] text-[var(--kc-muted)] block">FIBER</span>
                       <span className="font-bold text-[var(--kc-ink)]">{fiberG}g</span>
+                    </div>
+                    <div className="p-2 rounded-lg bg-[var(--kc-bg)] border border-[var(--kc-card-border)]">
+                      <span className="text-[9px] text-[var(--kc-muted)] block">SUGARS</span>
+                      <span className="font-bold text-[var(--kc-ink)]">{visionFeedback?.determined?.sugars !== undefined ? `${visionFeedback.determined.sugars}g` : '—'}</span>
+                    </div>
+                    <div className="p-2 rounded-lg bg-[var(--kc-bg)] border border-[var(--kc-card-border)]">
+                      <span className="text-[9px] text-[var(--kc-muted)] block">SODIUM</span>
+                      <span className="font-bold text-[var(--kc-ink)]">{visionFeedback?.determined?.sodium !== undefined ? `${visionFeedback.determined.sodium}mg` : '—'}</span>
                     </div>
                   </div>
                 </div>

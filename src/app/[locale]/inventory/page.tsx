@@ -18,6 +18,7 @@ interface ShelfItem {
 
 import { InventoryItem } from '@/domain/types';
 import { calculateFreshness } from '@/domain/freshness';
+import { getCleanInventory } from '@/utils/inventoryStorage';
 
 export default function UseThisFirstPage({
   params,
@@ -34,11 +35,9 @@ export default function UseThisFirstPage({
 
   React.useEffect(() => {
     try {
-      const stored = localStorage.getItem('kc-inventory');
-      if (stored) {
-        const parsed: InventoryItem[] = JSON.parse(stored);
-        const mapped: ShelfItem[] = parsed
-          .filter((item) => item.status === 'active')
+      const parsed: InventoryItem[] = getCleanInventory();
+      const mapped: ShelfItem[] = parsed
+        .filter((item) => item.status === 'active')
           .map((item) => {
             const freshness = calculateFreshness({
               category: item.category,
@@ -66,8 +65,7 @@ export default function UseThisFirstPage({
             };
           });
         setItems(mapped);
-      }
-    } catch {
+    } catch (_err) {
       // storage quota fallback
     } finally {
       setIsLoaded(true);
