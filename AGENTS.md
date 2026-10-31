@@ -13,6 +13,7 @@
 3. **Privacy by Default:** A user's pantry and fridge inventory is strictly private to their account, enforced via Supabase Row-Level Security (`auth.uid() = owner_id`).
 4. **Real Authentication, No Fake Data:** Connect directly to Supabase Google OAuth and email sessions. Never display hardcoded user names or mock identities; use real user metadata or an explicit placeholder (`eg. Home Chef`).
 5. **Every change ships with tests and updated docs.**
+6. **Continuous GitHub Deployment:** After every change or fix, run verification (`npm test`, `npm run lint:design`, `npm run typecheck`), then immediately commit and push to `origin main` so the repository and Vercel stay continuously synced.
 
 ---
 
