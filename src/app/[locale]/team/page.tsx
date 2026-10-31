@@ -14,9 +14,9 @@ const teamMembers: TeamMember[] = [
     bio: "I'm a CSE student driven by building functional, visually engaging web applications and crafting compelling video content. Combining a foundation in full-stack web development and creative storytelling as a freelance video editor. Just bringing visual polish to every project I build.",
   },
   {
-    name: 'Snehasish Kundu',
-    role: '2nd-Year CSE Student at AEC · C Programmer & Emerging Full-Stack Developer',
-    bio: "I'm a CSE student passionate about building functional and practical software projects while continuously exploring web development and emerging technologies. With a foundation in C and an interest in Python, AI, and full-stack development, I enjoy turning ideas into real-world projects and learning something new with every build.",
+    name: 'Shuvangi Dutta',
+    role: 'CSE Student · Emerging UI/UX designer, Dancer, Creative Content Creator',
+    bio: "I'm a CSE student who loves combining technologies. I enjoy expressing myself through creating and crafting things with my own ideas. I'm passionate about working on personal projects as well as collaborating with others on group projects. Always exploring new ideas, creating meaningful Projects, and bringing a creative touch to everything I do.",
   },
   {
     name: 'Shreyasi Acharya',
@@ -24,9 +24,9 @@ const teamMembers: TeamMember[] = [
     bio: "I'm a Computer Science student interested in programming, logical problem-solving, and exploring how technology can be used to create useful solutions. I work with C and Python and am developing a strong understanding of Data Structures and Algorithms. I enjoy practicing new programming concepts, working on projects, and continuously improving my technical skills through hands-on learning.",
   },
   {
-    name: 'Shuvangi Dutta',
-    role: 'CSE Student · Emerging UI/UX designer, Dancer, Creative Content Creator',
-    bio: "I'm a CSE student who loves combining technologies. I enjoy expressing myself through creating and crafting things with my own ideas. I'm passionate about working on personal projects as well as collaborating with others on group projects. Always exploring new ideas, creating meaningful Projects, and bringing a creative touch to everything I do.",
+    name: 'Snehasish Kundu',
+    role: '2nd-Year CSE Student at AEC · C Programmer & Emerging Full-Stack Developer',
+    bio: "I'm a CSE student passionate about building functional and practical software projects while continuously exploring web development and emerging technologies. With a foundation in C and an interest in Python, AI, and full-stack development, I enjoy turning ideas into real-world projects and learning something new with every build.",
   },
 ];
 
