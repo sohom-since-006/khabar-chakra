@@ -42,8 +42,8 @@ export default function TeamPage() {
         <p className="text-sm font-mono uppercase tracking-wider text-[var(--kc-moss)] mt-1">
           Asansol Engineering College (AEC), West Bengal
         </p>
-        <p className="text-base text-[var(--kc-charcoal)] leading-relaxed mt-6 font-sans">
-          &ldquo;We are students who saw how much good food goes to waste — at home, in hostels and at big family events — and decided to build a free tool to help. Khabar Chakra is our way of closing the food cycle.&rdquo;
+        <p className="text-base text-[var(--kc-charcoal)] leading-relaxed mt-6 font-sans max-w-2xl mx-auto">
+          &ldquo;We are students who saw how much fresh food and hard-earned money quietly go to waste in everyday homes — forgotten in fridge corners and pantry shelves. We built Khabar Chakra as a 100% free kitchen intelligence companion to help every household track freshness, prevent duplicate grocery spend, and turn expiring ingredients into nourishing home meals.&rdquo;
         </p>
       </div>
 

@@ -242,7 +242,7 @@ Slugs are the question text in lower-case with hyphens (for example `is-it-free`
 Getting started: create an account, verify email, set up your kitchen profile. Kitchen inventory / Smart freshness / Recipe rescue / Waste guide: how domestic tracking and recipes work with links to the FAQ. Troubleshooting: verification email missing, password reset, signing in on a new device, contacting us.
 
 ### 6.7 Team page (use exactly; plain-text names)
-**Team name:** The S-QUAD · **College:** Asansol Engineering College · **Story:** "We are students who saw how much good food goes to waste — at home, in hostels and at big family events — and decided to build a free tool to help. Khabar Chakra is our way of closing the food cycle."
+**Team name:** The S-QUAD · **College:** Asansol Engineering College · **Story:** "We are students who saw how much fresh food and hard-earned money quietly go to waste in everyday homes — forgotten in fridge corners and pantry shelves. We built Khabar Chakra as a 100% free kitchen intelligence companion to help every household track freshness, prevent duplicate grocery spend, and turn expiring ingredients into nourishing home meals."
 | Name | Title | Bio |
 |------|-------|-----|
 | Sohom Paul | 2nd-Year CSE Student at AEC | Full-Stack Developer & Video Editor. "I'm a CSE student driven by building functional, visually engaging web applications and crafting compelling video content. Combining a foundation in full-stack web development and creative storytelling as a freelance video editor. Just bringing visual polish to every project I build." |
