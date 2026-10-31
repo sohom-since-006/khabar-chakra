@@ -22,6 +22,23 @@
   --kc-moss: #4B685C;
   --kc-cream: #FFFFFF;
   --kc-parchment: #F7FAF7;
+
+  /* Bento Culinary Pastel Palette - Light Mode */
+  --bento-rose-bg: #FDE8EF;
+  --bento-rose-border: #F8B4C9;
+  --bento-rose-text: #6A1A37;
+  --bento-butter-bg: #FFF4D0;
+  --bento-butter-border: #FCE182;
+  --bento-butter-text: #664B00;
+  --bento-sky-bg: #E1F1F6;
+  --bento-sky-border: #B2DDE6;
+  --bento-sky-text: #104C56;
+  --bento-sage-bg: #E3F6E7;
+  --bento-sage-border: #BCE7C7;
+  --bento-sage-text: #165624;
+  --bento-peach-bg: #FFEAE1;
+  --bento-peach-border: #FDC7B3;
+  --bento-peach-text: #7A2807;
 }
 
 .dark {
@@ -45,6 +62,23 @@
   --kc-moss: #9BB8AB;
   --kc-cream: #0E2219;
   --kc-parchment: #07150F;
+
+  /* Bento Culinary Jewel/Obsidian Palette - Dark Mode */
+  --bento-rose-bg: #2B121D;
+  --bento-rose-border: #5C223C;
+  --bento-rose-text: #FFB5CE;
+  --bento-butter-bg: #2B210B;
+  --bento-butter-border: #5C4617;
+  --bento-butter-text: #FFE680;
+  --bento-sky-bg: #0F232E;
+  --bento-sky-border: #1D4B63;
+  --bento-sky-text: #A5DCED;
+  --bento-sage-bg: #10261B;
+  --bento-sage-border: #21543A;
+  --bento-sage-text: #B7E8C8;
+  --bento-peach-bg: #2B1610;
+  --bento-peach-border: #5C2D1E;
+  --bento-peach-text: #FFCCBC;
 }
 
 body {

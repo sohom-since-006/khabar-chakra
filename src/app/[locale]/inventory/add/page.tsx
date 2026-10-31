@@ -246,27 +246,60 @@ export default function AddFoodPage() {
     }
   };
 
-  // Start Live Camera
-  const startCamera = async () => {
+  const [cameraFacing, setCameraFacing] = useState<'user' | 'environment'>('environment');
+
+  // Start Live Camera with robust mobile & desktop webcam fallback
+  const startCamera = async (facing: 'user' | 'environment' = cameraFacing) => {
     setCameraError(null);
     try {
       if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
-        setCameraError('Camera API is unavailable on this device/browser. Please upload an image.');
+        setCameraError('Camera API is unavailable on this device/browser. Please check permissions or ensure connection is HTTPS/localhost.');
         return;
       }
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } },
-      });
-      if (videoRef.current) {
+
+      // Stop any active stream first
+      if (videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach((track) => track.stop());
+        videoRef.current.srcObject = null;
+      }
+
+      let stream: MediaStream | null = null;
+      try {
+        // Try requested facingMode non-strictly with ideal constraint
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: facing },
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+          },
+          audio: false,
+        });
+      } catch {
+        // Fallback for laptop webcams / desktop USB cameras where environment mode does not exist
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        });
+      }
+
+      if (videoRef.current && stream) {
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
       }
       setCameraActive(true);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : '';
-      setCameraError(`Camera permission blocked (${msg || 'Denied'}). Please upload a photo instead.`);
+      setCameraError(`Camera could not open (${msg || 'Denied or not detected'}). Please allow camera access in browser permissions or upload a photo.`);
       setCameraActive(false);
     }
+  };
+
+  // Flip between front (user) and rear (environment) cameras
+  const flipCamera = async () => {
+    const nextFacing = cameraFacing === 'environment' ? 'user' : 'environment';
+    setCameraFacing(nextFacing);
+    await startCamera(nextFacing);
   };
 
   // Stop Live Camera
@@ -861,7 +894,7 @@ export default function AddFoodPage() {
           {/* Preset Demos for quick test */}
           <div>
             <span className="text-[11px] font-mono uppercase tracking-wider text-[var(--kc-muted)] block mb-2">
-              Or Try One-Click Preset Receipts:
+              ⚡ Demo Test Presets (Instant mock test without taking a real photo):
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <button
@@ -1029,35 +1062,26 @@ export default function AddFoodPage() {
                 </span>
               </div>
 
-              {/* Action Buttons: Mobile Camera Snap & File Browsing */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 w-full max-w-lg pt-2">
-                {/* 1. Mobile Camera Snap */}
+              {/* Action Buttons: Open Camera & File Browsing */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-md pt-2">
+                {/* 1. Direct Live Camera Viewfinder */}
                 <button
                   type="button"
-                  onClick={() => mobileCameraInputRef.current?.click()}
-                  className="px-3.5 py-2.5 rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-card)] hover:border-[var(--kc-basil)] hover:bg-[var(--kc-mint)]/20 transition-all flex items-center justify-center gap-2 cursor-pointer text-xs font-bold text-[var(--kc-ink)]"
-                  title="Direct camera snap for mobile devices"
+                  onClick={() => startCamera()}
+                  className="px-4 py-3 rounded-xl bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil-hover)] transition-all flex items-center justify-center gap-2 cursor-pointer text-xs font-bold shadow-md"
                 >
-                  <span className="text-base">📷</span>
-                  <span>Snap Photo</span>
+                  <span className="text-base">📸</span>
+                  <span>Open Live Camera</span>
                 </button>
-                <input
-                  type="file"
-                  ref={mobileCameraInputRef}
-                  accept="image/*"
-                  capture="environment"
-                  onChange={handlePhotoFileUpload}
-                  className="hidden"
-                />
 
                 {/* 2. Photo Library / Gallery Browse */}
                 <button
                   type="button"
                   onClick={() => photoInputRef.current?.click()}
-                  className="px-3.5 py-2.5 rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-card)] hover:border-[var(--kc-basil)] hover:bg-[var(--kc-mint)]/20 transition-all flex items-center justify-center gap-2 cursor-pointer text-xs font-bold text-[var(--kc-ink)]"
+                  className="px-4 py-3 rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-card)] hover:border-[var(--kc-basil)] hover:bg-[var(--kc-mint)]/20 transition-all flex items-center justify-center gap-2 cursor-pointer text-xs font-bold text-[var(--kc-ink)]"
                 >
                   <span className="text-base">📁</span>
-                  <span>Browse Files</span>
+                  <span>Upload from Files</span>
                 </button>
                 <input
                   type="file"
@@ -1067,15 +1091,14 @@ export default function AddFoodPage() {
                   className="hidden"
                 />
 
-                {/* 3. Live Webcam Viewfinder */}
-                <button
-                  type="button"
-                  onClick={startCamera}
-                  className="px-3.5 py-2.5 rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-card)] hover:border-[var(--kc-basil)] hover:bg-[var(--kc-mint)]/20 transition-all flex items-center justify-center gap-2 cursor-pointer text-xs font-bold text-[var(--kc-ink)]"
-                >
-                  <span className="text-base">🎥</span>
-                  <span>Live Webcam</span>
-                </button>
+                <input
+                  type="file"
+                  ref={mobileCameraInputRef}
+                  accept="image/*"
+                  capture="environment"
+                  onChange={handlePhotoFileUpload}
+                  className="hidden"
+                />
               </div>
             </div>
           )}
@@ -1101,14 +1124,23 @@ export default function AddFoodPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-center gap-3">
+              <div className="flex flex-wrap items-center justify-center gap-3">
                 <button
                   type="button"
                   onClick={handleCaptureFromCamera}
                   className="px-6 py-2.5 text-xs font-bold uppercase tracking-wider rounded-xl bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil-hover)] shadow-md flex items-center gap-2 cursor-pointer"
                 >
                   <span>📸</span>
-                  <span>Capture &amp; Determine Everything</span>
+                  <span>Take Photo &amp; Analyze</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={flipCamera}
+                  className="px-3.5 py-2.5 text-xs font-mono font-semibold rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-card)] text-[var(--kc-ink)] hover:border-[var(--kc-basil)] flex items-center gap-1.5 cursor-pointer"
+                  title="Switch between front and back camera"
+                >
+                  <span>🔄</span>
+                  <span>Flip Camera</span>
                 </button>
                 <button
                   type="button"

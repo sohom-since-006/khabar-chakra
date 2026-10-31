@@ -23,6 +23,7 @@ export function Header({ locale }: HeaderProps) {
     { label: 'Scan & Add', href: `/${locale}/inventory/add`, icon: 'scan' as const },
     { label: 'Use First', href: `/${locale}/inventory`, icon: 'expiring' as const },
     { label: 'Recipes', href: `/${locale}/recipes`, icon: 'cook' as const },
+    { label: 'Planner', href: `/${locale}/planner`, icon: 'calendar' as const },
     { label: 'Shopping', href: `/${locale}/shopping-list`, icon: 'shopping-list' as const },
     { label: 'Waste & ₹', href: `/${locale}/waste`, icon: 'recycle' as const },
   ];

@@ -23,6 +23,7 @@ export function AppSidebar({ locale }: AppSidebarProps) {
     { label: 'Use This First', href: `/${locale}/inventory`, icon: 'expiring' as const },
     { label: 'Before You Buy', href: `/${locale}/shopping-list`, icon: 'shopping-list' as const },
     { label: 'Recipe Rescue', href: `/${locale}/recipes`, icon: 'cook' as const },
+    { label: 'Meal Planner & Studio', href: `/${locale}/planner`, icon: 'calendar' as const },
     { label: 'Nutrition & Macros', href: `/${locale}/nutrition`, icon: 'portion' as const },
     { label: 'Waste & ₹ Impact', href: `/${locale}/waste`, icon: 'recycle' as const },
     { label: 'Settings', href: `/${locale}/settings`, icon: 'sliders' as const },
