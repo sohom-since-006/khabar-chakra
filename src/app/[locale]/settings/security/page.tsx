@@ -18,8 +18,8 @@ export default function SecuritySettingsPage() {
   const [pwStatus, setPwStatus] = useState<string | null>(null);
   const [pwError, setPwError] = useState<string | null>(null);
 
-  // Logout devices
-  const [logoutStatus, setLogoutStatus] = useState<string | null>(null);
+  // Sign out state
+  const [loggingOut, setLoggingOut] = useState(false);
 
   // Danger zone delete
   const [deletePassword, setDeletePassword] = useState('');
@@ -56,17 +56,9 @@ export default function SecuritySettingsPage() {
     }
   };
 
-  const handleLogoutCurrentDevice = async () => {
+  const handleLogout = async () => {
+    setLoggingOut(true);
     await signOut('en');
-  };
-
-  const handleLogoutAllDevices = async () => {
-    try {
-      await supabase.auth.signOut({ scope: 'others' });
-      setLogoutStatus('Successfully terminated all other active sessions.');
-    } catch {
-      setLogoutStatus('Failed to revoke other sessions. Please retry.');
-    }
   };
 
   const handleDeleteAccount = async (e: React.FormEvent) => {
@@ -181,33 +173,22 @@ export default function SecuritySettingsPage() {
           </form>
         </div>
 
-        {/* Section 2: Active Device Sessions */}
+        {/* Section 2: Account Sign Out */}
         <div className="almanac-card bg-[var(--kc-cream)] border border-[var(--kc-moss)] p-6">
           <h2 className="text-base font-bold text-[var(--kc-charcoal)] border-b border-[var(--kc-moss)] pb-2 mb-3">
-            Active Device Sessions & Sign Out
+            Account Sign Out
           </h2>
-          <p className="text-xs text-[var(--kc-moss)] mb-4 leading-relaxed">
-            Manage your kitchen ledger session across devices. You can sign out from this current browser or terminate all other active remote sessions.
+          <p className="text-xs text-[var(--kc-charcoal)] mb-4 leading-relaxed">
+            Safely end your session on this browser. You can sign back in anytime with your Google account or email to access your kitchen pantry and household analytics.
           </p>
-          {logoutStatus && (
-            <div className="mb-4 p-3 border border-[var(--kc-basil)] bg-green-50 text-xs font-mono text-[var(--kc-basil)]">
-              ✓ {logoutStatus}
-            </div>
-          )}
-          <div className="flex flex-wrap items-center gap-3">
+          <div>
             <button
               type="button"
-              onClick={handleLogoutCurrentDevice}
-              className="px-5 py-2 text-xs font-bold uppercase tracking-wider bg-[var(--kc-chilli)] text-white hover:bg-[var(--kc-chilli)]/90 transition-colors shadow-sm"
+              disabled={loggingOut}
+              onClick={handleLogout}
+              className="px-6 py-2.5 text-xs font-bold uppercase tracking-wider bg-[#8A2416] hover:bg-[#A82B1B] text-white transition-colors shadow-sm disabled:opacity-50"
             >
-              Sign Out of This Device ⎋
-            </button>
-            <button
-              type="button"
-              onClick={handleLogoutAllDevices}
-              className="px-4 py-2 text-xs font-mono border border-[var(--kc-moss)] bg-[var(--kc-parchment)] hover:bg-[var(--kc-cream)] text-[var(--kc-charcoal)] transition-colors"
-            >
-              Log Out of All Other Devices
+              {loggingOut ? 'Signing Out...' : 'Sign Out of Khabar Chakra ⎋'}
             </button>
           </div>
         </div>
