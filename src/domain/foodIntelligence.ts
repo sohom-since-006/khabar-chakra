@@ -1,5 +1,6 @@
 import { FoodCategory, StorageLocation, DietType } from './types';
 import { estimateExpiryDate } from './shelfLife';
+import { findPackagedProduct } from './packagedFoodDatabase';
 
 export interface FoodHealthAdvisory {
   condition: string;
@@ -24,6 +25,10 @@ export interface FoodDetails {
   suggestedStorage: StorageLocation;
   shelfLifeDays: number;
   source: 'open_food_facts' | 'culinary_knowledge_base';
+  brand?: string;
+  manufacturer?: string;
+  packagingType?: string;
+  defaultQuantity?: string;
 }
 
 // Built-in offline culinary intelligence dictionary (ICMR-NIN & Indian Kitchen Reference)
@@ -927,7 +932,35 @@ export async function queryFoodIntelligence(
     }
   }
 
-  // 1. Check local culinary dictionary first
+  // 0. Check verified Packaged Products Database (Britannia, Parle, ITC, Cadbury, Nestlé, Haldiram's, Amul, etc.)
+  const isStapleWord = Object.keys(ALIASES).includes(cleanRaw) || Object.values(ALIASES).includes(cleanRaw);
+  const packagedMatch = !isStapleWord ? findPackagedProduct(cleanRaw, barcode) : null;
+  if (packagedMatch) {
+    return {
+      name: packagedMatch.name,
+      category: packagedMatch.category,
+      dietType: packagedMatch.dietType,
+      caloriesKcal: packagedMatch.caloriesKcal,
+      proteinG: packagedMatch.proteinG,
+      carbsG: packagedMatch.carbsG,
+      fatG: packagedMatch.fatG,
+      fiberG: packagedMatch.fiberG,
+      sugarsG: packagedMatch.sugarsG,
+      sodiumMg: packagedMatch.sodiumMg,
+      vitamins: packagedMatch.vitamins,
+      consumptionType: packagedMatch.consumptionType,
+      healthAdvisories: packagedMatch.healthAdvisories,
+      suggestedStorage: packagedMatch.suggestedStorage,
+      shelfLifeDays: packagedMatch.shelfLifeDays,
+      source: 'culinary_knowledge_base',
+      brand: packagedMatch.brand,
+      manufacturer: packagedMatch.manufacturer,
+      packagingType: packagedMatch.packagingType,
+      defaultQuantity: packagedMatch.defaultQuantity,
+    };
+  }
+
+  // 1. Check local culinary dictionary
   for (const [key, base] of Object.entries(CULINARY_KNOWLEDGE_BASE)) {
     if (clean.includes(key)) {
       const cat = base.category || 'vegetables';
@@ -955,11 +988,136 @@ export async function queryFoodIntelligence(
     }
   }
 
-  // 2. Fallback heuristic for any user entered food
-  const isFruit = clean.includes('mango') || clean.includes('berry') || clean.includes('orange') || clean.includes('guava') || clean.includes('papaya');
-  const isDairy = clean.includes('butter') || clean.includes('cheese') || clean.includes('ghee') || clean.includes('yogurt') || clean.includes('lassi');
-  const isMeat = clean.includes('fish') || clean.includes('mutton') || clean.includes('prawn') || clean.includes('meat');
+  // 2. Intelligent Category Heuristics (Ensures cakes, biscuits, snacks, chocolates are NEVER treated as raw vegetables)
+  const isCakeOrBakery = clean.includes('cake') || clean.includes('biscuit') || clean.includes('cookie') || clean.includes('croissant') || clean.includes('pastry') || clean.includes('muffin') || clean.includes('rusk') || clean.includes('bread') || clean.includes('bun') || clean.includes('roll');
+  const isChocolateOrConfectionery = clean.includes('choco') || clean.includes('chocolate') || clean.includes('candy') || clean.includes('toffee') || clean.includes('fudge') || clean.includes('sweet') || clean.includes('mithai');
+  const isSnackOrCrisps = clean.includes('chip') || clean.includes('crisp') || clean.includes('namkeen') || clean.includes('bhujia') || clean.includes('sev') || clean.includes('puff') || clean.includes('kurkure') || clean.includes('snack') || clean.includes('cracker');
+  const isNoodlesOrPasta = clean.includes('noodle') || clean.includes('maggi') || clean.includes('pasta') || clean.includes('macaroni') || clean.includes('ramen');
+  const isBeverage = clean.includes('juice') || clean.includes('cola') || clean.includes('soda') || clean.includes('drink') || clean.includes('tea') || clean.includes('coffee') || clean.includes('sharbat');
+  const isFruit = clean.includes('mango') || clean.includes('berry') || clean.includes('orange') || clean.includes('guava') || clean.includes('papaya') || clean.includes('apple') || clean.includes('banana');
+  const isDairy = clean.includes('butter') || clean.includes('cheese') || clean.includes('ghee') || clean.includes('yogurt') || clean.includes('curd') || clean.includes('milk') || clean.includes('paneer') || clean.includes('dahi');
+  const isMeat = clean.includes('fish') || clean.includes('mutton') || clean.includes('prawn') || clean.includes('meat') || clean.includes('chicken') || clean.includes('egg');
 
+  if (isCakeOrBakery) {
+    const advisories = generateHealthAdvisoriesFromNutrients({ category: 'bread_bakery', carbsG: 64, sugarsG: 28 });
+    return {
+      name: query.trim(),
+      category: 'bread_bakery',
+      dietType: 'veg',
+      caloriesKcal: 420,
+      proteinG: 6.0,
+      carbsG: 64.0,
+      fatG: 16.0,
+      fiberG: 1.8,
+      sugarsG: 28.0,
+      sodiumMg: 220,
+      vitamins: ['Wheat Gluten', 'B-Vitamins'],
+      consumptionType: 'eat_directly',
+      healthAdvisories: advisories,
+      suggestedStorage: 'room',
+      shelfLifeDays: 90,
+      source: 'culinary_knowledge_base',
+      packagingType: 'Packaged Bakery Product',
+      defaultQuantity: '1 pack',
+    };
+  }
+
+  if (isChocolateOrConfectionery) {
+    const advisories = generateHealthAdvisoriesFromNutrients({ category: 'packaged', carbsG: 60, sugarsG: 50 });
+    return {
+      name: query.trim(),
+      category: 'packaged',
+      dietType: 'veg',
+      caloriesKcal: 520,
+      proteinG: 6.5,
+      carbsG: 60.0,
+      fatG: 29.0,
+      fiberG: 2.2,
+      sugarsG: 52.0,
+      sodiumMg: 120,
+      vitamins: ['Cocoa', 'Milk Solids'],
+      consumptionType: 'eat_directly',
+      healthAdvisories: advisories,
+      suggestedStorage: 'room',
+      shelfLifeDays: 270,
+      source: 'culinary_knowledge_base',
+      packagingType: 'Confectionery Pack',
+      defaultQuantity: '1 unit',
+    };
+  }
+
+  if (isSnackOrCrisps) {
+    const advisories = generateHealthAdvisoriesFromNutrients({ category: 'packaged', sodiumMg: 750, fatG: 34 });
+    return {
+      name: query.trim(),
+      category: 'packaged',
+      dietType: 'veg',
+      caloriesKcal: 545,
+      proteinG: 6.8,
+      carbsG: 53.0,
+      fatG: 34.0,
+      fiberG: 3.5,
+      sugarsG: 3.0,
+      sodiumMg: 750,
+      vitamins: ['Indian Spices'],
+      consumptionType: 'eat_directly',
+      healthAdvisories: advisories,
+      suggestedStorage: 'room',
+      shelfLifeDays: 120,
+      source: 'culinary_knowledge_base',
+      packagingType: 'Sealed Snack Pouch',
+      defaultQuantity: '1 pouch',
+    };
+  }
+
+  if (isNoodlesOrPasta) {
+    const advisories = generateHealthAdvisoriesFromNutrients({ category: 'packaged', sodiumMg: 1000, carbsG: 64 });
+    return {
+      name: query.trim(),
+      category: 'packaged',
+      dietType: 'veg',
+      caloriesKcal: 440,
+      proteinG: 9.0,
+      carbsG: 64.0,
+      fatG: 16.5,
+      fiberG: 3.5,
+      sugarsG: 3.0,
+      sodiumMg: 1000,
+      vitamins: ['Fortified Iron'],
+      consumptionType: 'needs_cooking',
+      healthAdvisories: advisories,
+      suggestedStorage: 'room',
+      shelfLifeDays: 270,
+      source: 'culinary_knowledge_base',
+      packagingType: 'Packaged Instant Noodles',
+      defaultQuantity: '1 pack',
+    };
+  }
+
+  if (isBeverage) {
+    return {
+      name: query.trim(),
+      category: 'beverages',
+      dietType: 'vegan',
+      caloriesKcal: 48,
+      proteinG: 0.1,
+      carbsG: 12.0,
+      fatG: 0.0,
+      fiberG: 0.2,
+      sugarsG: 11.5,
+      sodiumMg: 15,
+      vitamins: ['Vitamin C'],
+      consumptionType: 'eat_directly',
+      healthAdvisories: generateHealthAdvisoriesFromNutrients({ category: 'beverages', sugarsG: 11.5 }),
+      suggestedStorage: 'room',
+      shelfLifeDays: 180,
+      source: 'culinary_knowledge_base',
+      packagingType: 'Bottled/Canned Beverage',
+      defaultQuantity: '1 bottle',
+    };
+  }
+
+  // 3. Fallback for produce / cooking staples
   const cat: FoodCategory = isFruit ? 'fruits' : isDairy ? 'dairy' : isMeat ? 'meat_fish_egg' : 'vegetables';
   const stor: StorageLocation = isFruit ? 'room' : 'fridge';
   const { rule } = estimateExpiryDate(cat, stor);
