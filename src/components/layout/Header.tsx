@@ -18,13 +18,12 @@ export function Header({ locale }: HeaderProps) {
   const { user, displayName, avatarUrl, initials, isLoggedIn } = useUserSession();
 
   const navLinks = [
-    { label: 'Home', href: `/${locale}`, icon: 'household' as const },
-    { label: 'Inventory', href: `/${locale}/home`, icon: 'fridge' as const },
-    { label: 'Scan & Add', href: `/${locale}/inventory/add`, icon: 'scan' as const },
+    { label: 'Home', href: `/${locale}/home`, icon: 'household' as const },
+    { label: 'Scan Receipt', href: `/${locale}/inventory/add`, icon: 'scan' as const },
     { label: 'Use First', href: `/${locale}/inventory`, icon: 'expiring' as const },
+    { label: 'Before You Buy', href: `/${locale}/shopping-list`, icon: 'shopping-list' as const },
     { label: 'Recipes', href: `/${locale}/recipes`, icon: 'cook' as const },
     { label: 'Planner', href: `/${locale}/planner`, icon: 'calendar' as const },
-    { label: 'Shopping', href: `/${locale}/shopping-list`, icon: 'shopping-list' as const },
     { label: 'Waste & ₹', href: `/${locale}/waste`, icon: 'recycle' as const },
   ];
 
@@ -32,7 +31,7 @@ export function Header({ locale }: HeaderProps) {
     <header className="sticky top-0 bg-[#0B3326] dark:bg-[#071F17] text-white z-50 border-b border-[#144737] dark:border-[#134232] shadow-sm transition-colors">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Left: Brand Logo & Cursive Typography */}
-        <Link href={`/${locale}`} className="flex items-center gap-3 group">
+        <Link href={`/${locale}/home`} className="flex items-center gap-3 group">
           <div className="relative w-9 h-9 rounded-full bg-[#164D3B] p-1 flex items-center justify-center border border-[#217056] shadow-inner">
             <Image
               src="/branding/app-logo.png"

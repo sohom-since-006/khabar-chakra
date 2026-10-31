@@ -17,9 +17,8 @@ export function AppSidebar({ locale }: AppSidebarProps) {
   const { user, displayName, avatarUrl, initials, isLoggedIn } = useUserSession();
 
   const menuItems = [
-    { label: 'Dashboard', href: `/${locale}`, icon: 'household' as const },
+    { label: 'Kitchen Home', href: `/${locale}/home`, icon: 'household' as const },
     { label: 'Scan & OCR Receipt', href: `/${locale}/inventory/add`, icon: 'scan' as const },
-    { label: 'My Inventory', href: `/${locale}/home`, icon: 'fridge' as const },
     { label: 'Use This First', href: `/${locale}/inventory`, icon: 'expiring' as const },
     { label: 'Before You Buy', href: `/${locale}/shopping-list`, icon: 'shopping-list' as const },
     { label: 'Recipe Rescue', href: `/${locale}/recipes`, icon: 'cook' as const },
