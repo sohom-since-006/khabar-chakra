@@ -91,16 +91,16 @@ export default function SecuritySettingsPage() {
             Security & Authentication
           </h1>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <Link
             href="/en/settings"
-            className="px-3 py-1.5 text-xs font-mono border border-[var(--kc-moss)] bg-[var(--kc-cream)] hover:bg-[var(--kc-parchment)] text-[var(--kc-charcoal)]"
+            className="px-3.5 py-2 text-xs font-mono border border-[var(--kc-moss)] bg-[var(--kc-cream)] hover:bg-[var(--kc-parchment)] text-[var(--kc-charcoal)] min-h-[40px] flex items-center rounded-lg transition-colors"
           >
             Preferences
           </Link>
           <Link
             href="/en/profile"
-            className="px-3 py-1.5 text-xs font-mono border border-[var(--kc-moss)] bg-[var(--kc-cream)] hover:bg-[var(--kc-parchment)] text-[var(--kc-charcoal)]"
+            className="px-3.5 py-2 text-xs font-mono border border-[var(--kc-moss)] bg-[var(--kc-cream)] hover:bg-[var(--kc-parchment)] text-[var(--kc-charcoal)] min-h-[40px] flex items-center rounded-lg transition-colors"
           >
             Profile
           </Link>

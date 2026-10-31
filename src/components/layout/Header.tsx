@@ -142,6 +142,28 @@ export function Header({ locale }: HeaderProps) {
             </Link>
           )}
 
+          {/* Mobile user avatar chip or Sign In button */}
+          {isLoggedIn ? (
+            <Link
+              href={`/${locale}/profile`}
+              className="sm:hidden w-8 h-8 rounded-full overflow-hidden border border-[#2EB286] flex items-center justify-center bg-[#207357] text-[#D5F5E3] font-bold text-xs shrink-0 shadow-sm"
+              title="Kitchen Profile"
+            >
+              {avatarUrl ? (
+                <Image src={avatarUrl} alt="Avatar" width={32} height={32} className="object-cover w-full h-full" />
+              ) : (
+                initials
+              )}
+            </Link>
+          ) : (
+            <Link
+              href={`/${locale}/login`}
+              className="sm:hidden px-2.5 py-1 rounded-full bg-[#FFC93C] text-[#0A281E] text-xs font-bold shrink-0 shadow-sm"
+            >
+              Sign In
+            </Link>
+          )}
+
           {/* Mobile hamburger button */}
           <button
             type="button"
@@ -156,54 +178,118 @@ export function Header({ locale }: HeaderProps) {
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#0A2E22] dark:bg-[#051A13] border-t border-[#144737] px-4 py-4 space-y-2">
-          {navLinks.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-[#C8E8D9] hover:bg-[#144D39] hover:text-white"
-            >
-              <KhabarIcon name={item.icon} size={16} />
-              <span>{item.label}</span>
-            </Link>
-          ))}
-          <div className="pt-3 border-t border-[#164F3B] flex flex-wrap gap-2">
-            {isLoggedIn ? (
-              <>
-                <Link
-                  href={`/${locale}/profile`}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex-1 text-center py-2 text-xs font-semibold bg-[#164F3B] text-white rounded-lg"
-                >
-                  My Kitchen Profile
-                </Link>
-                <button
-                  type="button"
-                  onClick={async () => {
-                    setMobileMenuOpen(false);
-                    await signOut(locale);
-                  }}
-                  className="flex-1 text-center py-2 text-xs font-semibold bg-[#8A2416] hover:bg-[#A82B1B] text-white rounded-lg"
-                >
-                  Sign Out ⎋
-                </button>
-              </>
-            ) : (
+        <div className="lg:hidden bg-[#0A2E22] dark:bg-[#051A13] border-t border-[#144737] px-4 py-4 space-y-3 max-h-[calc(100vh-64px)] overflow-y-auto">
+          {/* Mobile User Profile Card */}
+          {isLoggedIn ? (
+            <div className="p-3.5 rounded-xl bg-[#0E3E2F] border border-[#195A44] flex items-center justify-between gap-3 shadow-sm">
+              <Link
+                href={`/${locale}/profile`}
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-3 overflow-hidden group"
+              >
+                {avatarUrl ? (
+                  <div className="relative w-10 h-10 rounded-full overflow-hidden border border-[#2EB286] shrink-0">
+                    <Image src={avatarUrl} alt={displayName || 'User Avatar'} fill className="object-cover" />
+                  </div>
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-[#207357] text-[#D5F5E3] font-bold text-xs flex items-center justify-center border border-[#2EB286] shrink-0">
+                    {initials}
+                  </div>
+                )}
+                <div className="text-left leading-tight truncate">
+                  <span className="text-sm font-bold text-white block truncate">
+                    {displayName || user?.email?.split('@')[0]}
+                  </span>
+                  <span className="text-[11px] text-[#2EB286] font-medium block">
+                    Kitchen Steward 🌿
+                  </span>
+                </div>
+              </Link>
+              <button
+                type="button"
+                onClick={async () => {
+                  setMobileMenuOpen(false);
+                  await signOut(locale);
+                }}
+                className="px-3 py-1.5 rounded-lg bg-[#8A2416] hover:bg-[#A82B1B] text-white text-xs font-bold shrink-0 transition-colors shadow-sm"
+                title="Sign Out"
+              >
+                Sign Out ⎋
+              </button>
+            </div>
+          ) : (
+            <div className="p-3.5 rounded-xl bg-[#0E3E2F] border border-[#195A44] flex items-center justify-between gap-3 shadow-sm">
+              <div className="leading-tight">
+                <span className="text-xs font-bold text-white block">Domestic Kitchen Ledger</span>
+                <span className="text-[11px] text-[#8FB7A3] block">Sign in to sync your inventory</span>
+              </div>
               <Link
                 href={`/${locale}/login`}
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex-1 text-center py-2 text-xs font-semibold bg-[#FFC93C] text-[#0A281E] rounded-lg"
+                className="px-3 py-1.5 rounded-full bg-[#FFC93C] text-[#0A281E] text-xs font-bold shadow-sm"
               >
-                Sign In with Google
+                Sign In
               </Link>
-            )}
+            </div>
+          )}
+
+          {/* Navigation Links Grid / List */}
+          <nav className="space-y-1">
+            {navLinks.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                    isActive
+                      ? 'bg-[#185A43] text-white font-bold shadow-sm'
+                      : 'text-[#C8E8D9] hover:bg-[#144D39] hover:text-white'
+                  }`}
+                >
+                  <KhabarIcon name={item.icon} size={18} />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+
+            {/* Additional Secondary Links on Mobile */}
+            <Link
+              href={`/${locale}/nutrition`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-[#C8E8D9] hover:bg-[#144D39] hover:text-white font-medium"
+            >
+              <KhabarIcon name="portion" size={18} />
+              <span>Nutrition & Macros</span>
+            </Link>
+            <Link
+              href={`/${locale}/settings/security`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-[#C8E8D9] hover:bg-[#144D39] hover:text-white font-medium"
+            >
+              <KhabarIcon name="sliders" size={18} />
+              <span>Security & Password</span>
+            </Link>
+            <Link
+              href={`/${locale}/team`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-[#C8E8D9] hover:bg-[#144D39] hover:text-white font-medium"
+            >
+              <KhabarIcon name="volunteer" size={18} />
+              <span>Colophon & S-QUAD Team</span>
+            </Link>
+          </nav>
+
+          {/* Bottom Fast Action in Drawer */}
+          <div className="pt-3 border-t border-[#164F3B]">
             <Link
               href={`/${locale}/inventory/add`}
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full text-center py-2 text-xs font-semibold bg-[#165842] text-white rounded-lg"
+              className="w-full text-center py-2.5 text-xs font-bold uppercase tracking-wider bg-[#165842] hover:bg-[#1d6d53] text-white rounded-xl min-h-[44px] flex items-center justify-center gap-2 shadow-sm"
             >
-              + Add Food
+              <KhabarIcon name="scan" size={16} />
+              <span>+ Log Food / Scan Receipt</span>
             </Link>
           </div>
         </div>
