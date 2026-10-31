@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -366,11 +367,10 @@ export default function CulinaryPlannerPage() {
                   key={item.name}
                   type="button"
                   onClick={() => handleCuisineSelect(item.name)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all shadow-xs ${
-                    isSelected
-                      ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 scale-105 shadow-md'
-                      : 'bg-white dark:bg-[#10241A] text-neutral-700 dark:text-neutral-200 border border-neutral-200 dark:border-[#1E4331] hover:border-neutral-400 dark:hover:border-neutral-500'
-                  }`}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all shadow-xs ${isSelected
+                    ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 scale-105 shadow-md'
+                    : 'bg-white dark:bg-[#10241A] text-neutral-700 dark:text-neutral-200 border border-neutral-200 dark:border-[#1E4331] hover:border-neutral-400 dark:hover:border-neutral-500'
+                    }`}
                 >
                   <span className="text-base">{item.flag}</span>
                   <span>{item.name}</span>
@@ -443,13 +443,12 @@ export default function CulinaryPlannerPage() {
                       key={idx}
                       type="button"
                       onClick={() => !d.isOtherMonth && setSelectedDay(d.day)}
-                      className={`relative h-10 w-full rounded-full flex flex-col items-center justify-center text-xs font-semibold transition-all ${
-                        d.isOtherMonth
-                          ? 'text-neutral-300 dark:text-neutral-600'
-                          : isSelected
+                      className={`relative h-10 w-full rounded-full flex flex-col items-center justify-center text-xs font-semibold transition-all ${d.isOtherMonth
+                        ? 'text-neutral-300 dark:text-neutral-600'
+                        : isSelected
                           ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 font-bold scale-105 shadow-sm'
                           : 'text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-[#163628]'
-                      }`}
+                        }`}
                     >
                       {d.badge ? (
                         <div
@@ -649,11 +648,10 @@ export default function CulinaryPlannerPage() {
                   key={s}
                   type="button"
                   onClick={() => setActiveStep(s)}
-                  className={`flex-1 py-2 px-3 rounded-full text-xs font-bold transition-all text-center ${
-                    activeStep === s
-                      ? 'bg-[var(--bento-sage-bg)] text-[var(--bento-sage-text)] border border-[var(--bento-sage-border)] shadow-xs scale-102'
-                      : 'border border-dashed border-neutral-300 dark:border-[#22503A] text-neutral-500 dark:text-neutral-400 hover:border-neutral-500'
-                  }`}
+                  className={`flex-1 py-2 px-3 rounded-full text-xs font-bold transition-all text-center ${activeStep === s
+                    ? 'bg-[var(--bento-sage-bg)] text-[var(--bento-sage-text)] border border-[var(--bento-sage-border)] shadow-xs scale-102'
+                    : 'border border-dashed border-neutral-300 dark:border-[#22503A] text-neutral-500 dark:text-neutral-400 hover:border-neutral-500'
+                    }`}
                 >
                   {s} Step
                 </button>
@@ -975,22 +973,20 @@ export default function CulinaryPlannerPage() {
                 <button
                   type="button"
                   onClick={() => setPortionUnit('EU')}
-                  className={`px-3 py-1 rounded-full transition-all ${
-                    portionUnit === 'EU'
-                      ? 'bg-white dark:bg-[#1C4230] text-[var(--kc-ink)] shadow-2xs'
-                      : 'hover:text-neutral-900 dark:hover:text-white'
-                  }`}
+                  className={`px-3 py-1 rounded-full transition-all ${portionUnit === 'EU'
+                    ? 'bg-white dark:bg-[#1C4230] text-[var(--kc-ink)] shadow-2xs'
+                    : 'hover:text-neutral-900 dark:hover:text-white'
+                    }`}
                 >
                   EU
                 </button>
                 <button
                   type="button"
                   onClick={() => setPortionUnit('Mtr')}
-                  className={`px-3 py-1 rounded-full transition-all ${
-                    portionUnit === 'Mtr'
-                      ? 'bg-white dark:bg-[#1C4230] text-[var(--kc-ink)] shadow-2xs'
-                      : 'hover:text-neutral-900 dark:hover:text-white'
-                  }`}
+                  className={`px-3 py-1 rounded-full transition-all ${portionUnit === 'Mtr'
+                    ? 'bg-white dark:bg-[#1C4230] text-[var(--kc-ink)] shadow-2xs'
+                    : 'hover:text-neutral-900 dark:hover:text-white'
+                    }`}
                 >
                   Mtr
                 </button>
@@ -1040,9 +1036,8 @@ export default function CulinaryPlannerPage() {
                   <div
                     key={recipe.id}
                     onClick={() => setActiveRecipeId(recipe.id)}
-                    className={`cursor-pointer flex items-center justify-between p-2.5 sm:p-3 rounded-full border shadow-2xs hover:scale-102 transition-all ${colorClasses} ${
-                      isActive ? 'ring-2 ring-neutral-900 dark:ring-white scale-102 shadow-sm' : ''
-                    }`}
+                    className={`cursor-pointer flex items-center justify-between p-2.5 sm:p-3 rounded-full border shadow-2xs hover:scale-102 transition-all ${colorClasses} ${isActive ? 'ring-2 ring-neutral-900 dark:ring-white scale-102 shadow-sm' : ''
+                      }`}
                   >
                     <div className="pl-3 truncate leading-tight">
                       <h4 className="font-extrabold text-xs truncate max-w-[150px]">

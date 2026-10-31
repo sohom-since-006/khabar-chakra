@@ -16,58 +16,8 @@ interface ShelfItem {
   diet: 'veg' | 'non_veg';
 }
 
-const SHELF_ITEMS: ShelfItem[] = [
-  {
-    id: '1',
-    name: 'Red Cow Toned Milk',
-    category: 'Dairy',
-    storage: 'Fridge',
-    quantity: '1 L',
-    hoursRemaining: 10,
-    urgency: 'critical',
-    diet: 'veg',
-  },
-  {
-    id: '2',
-    name: 'Cooked Chholar Dal with Coconut',
-    category: 'Cooked Food',
-    storage: 'Fridge',
-    quantity: '4 servings',
-    hoursRemaining: 18,
-    urgency: 'critical',
-    diet: 'veg',
-  },
-  {
-    id: '3',
-    name: 'Fresh Spinach (Palak)',
-    category: 'Vegetables',
-    storage: 'Fridge',
-    quantity: '500 g',
-    hoursRemaining: 36,
-    urgency: 'warning',
-    diet: 'veg',
-  },
-  {
-    id: '4',
-    name: 'Ripe Bananas (Robusta)',
-    category: 'Fruits',
-    storage: 'Pantry',
-    quantity: '4 pcs',
-    hoursRemaining: 42,
-    urgency: 'warning',
-    diet: 'veg',
-  },
-  {
-    id: '5',
-    name: 'Gobindobhog Rice',
-    category: 'Grains & Pulses',
-    storage: 'Pantry',
-    quantity: '5 kg',
-    hoursRemaining: 1800,
-    urgency: 'safe',
-    diet: 'veg',
-  },
-];
+import { InventoryItem } from '@/domain/types';
+import { calculateFreshness } from '@/domain/freshness';
 
 export default function UseThisFirstPage({
   params,
@@ -75,15 +25,60 @@ export default function UseThisFirstPage({
   params: Promise<{ locale: string }>;
 }) {
   const [locale, setLocale] = useState('en');
+  const [items, setItems] = useState<ShelfItem[]>([]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
   React.useEffect(() => {
     params.then((p) => setLocale(p.locale));
   }, [params]);
 
+  React.useEffect(() => {
+    try {
+      const stored = localStorage.getItem('kc-inventory');
+      if (stored) {
+        const parsed: InventoryItem[] = JSON.parse(stored);
+        const mapped: ShelfItem[] = parsed
+          .filter((item) => item.status === 'active')
+          .map((item) => {
+            const freshness = calculateFreshness({
+              category: item.category,
+              storage: item.storage,
+              expiryDate: item.expiryDate,
+              isFlagged: item.isFlagged,
+            });
+
+            let urgency: 'critical' | 'warning' | 'safe' = 'safe';
+            if (freshness.hoursRemaining <= 24) urgency = 'critical';
+            else if (freshness.hoursRemaining <= 48) urgency = 'warning';
+
+            const storageName =
+              item.storage === 'fridge' ? 'Fridge' : item.storage === 'freezer' ? 'Freezer' : 'Pantry';
+
+            return {
+              id: item.id,
+              name: item.name,
+              category: item.category.replace(/_/g, ' '),
+              storage: storageName as 'Fridge' | 'Pantry' | 'Freezer',
+              quantity: `${item.quantityValue} ${item.quantityUnit}`,
+              hoursRemaining: freshness.hoursRemaining,
+              urgency,
+              diet: item.dietType === 'non_veg' ? 'non_veg' : 'veg',
+            };
+          });
+        setItems(mapped);
+      }
+    } catch {
+      // storage quota fallback
+    } finally {
+      setIsLoaded(true);
+    }
+  }, []);
+
   const [activeZone, setActiveZone] = useState<'all' | 'Fridge' | 'Pantry' | 'Freezer'>('all');
 
   const filteredItems = activeZone === 'all'
-    ? SHELF_ITEMS
-    : SHELF_ITEMS.filter((item) => item.storage === activeZone);
+    ? items
+    : items.filter((item) => item.storage === activeZone);
 
   const criticalItems = filteredItems.filter((i) => i.urgency === 'critical');
   const warningItems = filteredItems.filter((i) => i.urgency === 'warning');
@@ -247,6 +242,41 @@ export default function UseThisFirstPage({
               ))}
             </div>
           </section>
+        )}
+
+        {/* Zero-Waste All-Clear Empty State */}
+        {isLoaded && filteredItems.length === 0 && (
+          <div className="p-8 sm:p-14 rounded-2xl bg-[var(--kc-card)] border border-[var(--kc-card-border)] text-center shadow-sm space-y-4">
+            <div className="w-16 h-16 rounded-2xl bg-[var(--kc-mint)] text-[var(--kc-basil)] flex items-center justify-center mx-auto text-3xl shadow-inner">
+              ⚡
+            </div>
+            <div className="max-w-md mx-auto space-y-2">
+              <h3 className="text-xl sm:text-2xl font-bold text-[var(--kc-ink)] font-montserrat">
+                All Clear! Zero Food Waste Urgency
+              </h3>
+              <p className="text-xs sm:text-sm text-[var(--kc-muted)] leading-relaxed">
+                {items.length === 0
+                  ? 'Your kitchen inventory is currently empty. Scan a grocery receipt or log ingredients to activate automated shelf-life urgency triage.'
+                  : `No ingredients in ${activeZone === 'all' ? 'any storage zone' : activeZone} are expiring in the next 48 hours.`}
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-3 pt-2">
+              <Link
+                href={`/${locale}/inventory/add`}
+                className="w-full sm:w-auto px-5 py-3 text-xs font-bold uppercase tracking-wider rounded-xl bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil-hover)] transition-all shadow-sm flex items-center justify-center gap-2"
+              >
+                <KhabarIcon name="scan" size={16} />
+                <span>Scan Food or Receipt (OCR)</span>
+              </Link>
+              <Link
+                href={`/${locale}/recipes`}
+                className="w-full sm:w-auto px-5 py-3 text-xs font-bold uppercase tracking-wider rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-bg)] text-[var(--kc-ink)] hover:bg-[var(--kc-card)] transition-colors flex items-center justify-center gap-2"
+              >
+                <KhabarIcon name="cook" size={16} />
+                <span>Explore Recipe Rescue</span>
+              </Link>
+            </div>
+          </div>
         )}
       </main>
     </div>

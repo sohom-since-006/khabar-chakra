@@ -26,7 +26,7 @@ describe('Culinary Bento Planner & Studio Domain', () => {
   it('determines domestic inventory expiry alerts for planned meal slots', () => {
     const now = Date.now();
     const mockPantry = [
-      { name: 'Red Cow Toned Milk', expiryDate: new Date(now + 10 * 3600000).toISOString() },
+      { name: 'Toned Milk', expiryDate: new Date(now + 10 * 3600000).toISOString() },
       { name: 'Fresh Spinach', expiryDate: new Date(now + 36 * 3600000).toISOString() },
       { name: 'Gobindobhog Rice', expiryDate: new Date(now + 1800 * 3600000).toISOString() },
     ];
@@ -37,7 +37,7 @@ describe('Culinary Bento Planner & Studio Domain', () => {
     });
 
     expect(urgentItems).toHaveLength(2);
-    expect(urgentItems.map((i) => i.name)).toContain('Red Cow Toned Milk');
+    expect(urgentItems.map((i) => i.name)).toContain('Toned Milk');
     expect(urgentItems.map((i) => i.name)).toContain('Fresh Spinach');
   });
 });

@@ -13,14 +13,8 @@ interface ShoppingItem {
   checked: boolean;
 }
 
-// Current simulated pantry stock for instant cross-checking
-const INVENTORY_STOCK = [
-  { name: 'Red Cow Toned Milk', category: 'Dairy', storage: 'Fridge', qty: '1 L', hoursLeft: 10, status: 'Expiring Soon' },
-  { name: 'Cooked Chholar Dal', category: 'Cooked Food', storage: 'Fridge', qty: '4 servings', hoursLeft: 18, status: 'Consume Soon' },
-  { name: 'Fresh Spinach (Palak)', category: 'Vegetables', storage: 'Fridge Crisper', qty: '500 g', hoursLeft: 48, status: 'Fresh' },
-  { name: 'Gobindobhog Rice', category: 'Grains', storage: 'Pantry', qty: '5 kg', hoursLeft: 1800, status: 'Plentiful' },
-  { name: 'Mustard Oil (Kachi Ghani)', category: 'Pantry Staples', storage: 'Pantry', qty: '2 L', hoursLeft: 7200, status: 'Plentiful' },
-];
+import { InventoryItem } from '@/domain/types';
+import { calculateFreshness } from '@/domain/freshness';
 
 export default function BeforeYouBuyPage({
   params,
@@ -33,21 +27,51 @@ export default function BeforeYouBuyPage({
   }, [params]);
 
   const [query, setQuery] = useState('');
-  const [shoppingList, setShoppingList] = useState<ShoppingItem[]>([
-    { id: '1', name: 'Fresh Tomatoes', quantity: '1 kg', category: 'Vegetables', checked: false },
-    { id: '2', name: 'Eggs (Brown)', quantity: '6 pcs', category: 'Dairy & Poultry', checked: false },
-    { id: '3', name: 'Ginger & Garlic', quantity: '250 g', category: 'Spices & Aromatics', checked: true },
-  ]);
+  const [shoppingList, setShoppingList] = useState<ShoppingItem[]>([]);
+  const [inventoryStock, setInventoryStock] = useState<Array<{
+    name: string;
+    category: string;
+    storage: string;
+    qty: string;
+    hoursLeft: number;
+    status: string;
+  }>>([]);
   const [newItemName, setNewItemName] = useState('');
   const [newItemQty, setNewItemQty] = useState('1 kg');
 
   // Load from localStorage on mount
   useEffect(() => {
     try {
+      // 1. Load active kitchen inventory for cross-checking
+      const storedInv = localStorage.getItem('kc-inventory');
+      if (storedInv) {
+        const items: InventoryItem[] = JSON.parse(storedInv);
+        const mapped = items
+          .filter((i) => i.status === 'active')
+          .map((i) => {
+            const f = calculateFreshness({
+              category: i.category,
+              storage: i.storage,
+              expiryDate: i.expiryDate,
+              isFlagged: i.isFlagged,
+            });
+            return {
+              name: i.name,
+              category: i.category.replace(/_/g, ' '),
+              storage: i.storage,
+              qty: `${i.quantityValue} ${i.quantityUnit}`,
+              hoursLeft: f.hoursRemaining,
+              status: f.bandBadgeLabel,
+            };
+          });
+        setInventoryStock(mapped);
+      }
+
+      // 2. Load verified shopping list
       const saved = localStorage.getItem('kc_shopping_list');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (Array.isArray(parsed)) {
           setShoppingList(parsed);
         }
       }
@@ -68,7 +92,7 @@ export default function BeforeYouBuyPage({
 
   // Real-time stock matching
   const matchingStock = query.trim()
-    ? INVENTORY_STOCK.filter((item) =>
+    ? inventoryStock.filter((item) =>
         item.name.toLowerCase().includes(query.toLowerCase()) ||
         item.category.toLowerCase().includes(query.toLowerCase())
       )
@@ -322,15 +346,25 @@ export default function BeforeYouBuyPage({
 
           {/* Checklist items */}
           <div className="space-y-2 pt-2">
-            {shoppingList.map((item) => (
-              <div
-                key={item.id}
-                className={`p-3.5 rounded-xl border transition-all flex items-center justify-between ${
-                  item.checked
-                    ? 'bg-neutral-50 dark:bg-[#12241C] border-[var(--kc-hairline)] opacity-60'
-                    : 'bg-white dark:bg-[#0E2219] border-[var(--kc-card-border)] shadow-sm'
-                }`}
-              >
+            {shoppingList.length === 0 ? (
+              <div className="py-8 text-center border border-dashed border-[var(--kc-card-border)] rounded-xl bg-neutral-50/50 dark:bg-[#0D2017]/40 space-y-1.5">
+                <p className="text-sm font-semibold text-[var(--kc-ink)]">
+                  Your shopping checklist is clear
+                </p>
+                <p className="text-xs text-[var(--kc-muted)]">
+                  Tap any quick staple above or enter items to build your verified grocery list.
+                </p>
+              </div>
+            ) : (
+              shoppingList.map((item) => (
+                <div
+                  key={item.id}
+                  className={`p-3.5 rounded-xl border transition-all flex items-center justify-between ${
+                    item.checked
+                      ? 'bg-neutral-50 dark:bg-[#12241C] border-[var(--kc-hairline)] opacity-60'
+                      : 'bg-white dark:bg-[#0E2219] border-[var(--kc-card-border)] shadow-sm'
+                  }`}
+                >
                 <div className="flex items-center gap-3">
                   <input
                     type="checkbox"
@@ -369,7 +403,7 @@ export default function BeforeYouBuyPage({
                   </button>
                 </div>
               </div>
-            ))}
+            )))}
           </div>
         </section>
       </main>

@@ -18,7 +18,7 @@ export async function GET(
       if (next && next.startsWith('/') && !next.startsWith('//')) {
         return NextResponse.redirect(new URL(next, requestUrl.origin));
       }
-      return NextResponse.redirect(new URL(`/${locale}`, requestUrl.origin));
+      return NextResponse.redirect(new URL(`/${locale}/home`, requestUrl.origin));
     }
   }
 

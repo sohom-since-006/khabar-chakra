@@ -6,126 +6,6 @@ import { InventoryItem, ItemOutcome } from '@/domain/types';
 import { calculateFreshness } from '@/domain/freshness';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
 
-// Default starter items for an Indian household kitchen ledger
-const SEED_ITEMS: InventoryItem[] = [
-  {
-    id: 'seed_milk',
-    ownerId: 'local_user',
-    name: 'Red Cow Toned Milk',
-    category: 'dairy',
-    dietType: 'veg',
-    quantityValue: 1,
-    quantityUnit: 'L',
-    purchaseDate: new Date(Date.now() - 48 * 3600000).toISOString(),
-    expiryDate: new Date(Date.now() + 10 * 3600000).toISOString(), // ~10h left (expiring)
-    expirySource: 'user_provided',
-    storage: 'fridge',
-    calories: 62,
-    consumptionType: 'eat_directly',
-    healthAdvisories: [
-      { condition: 'Lactose Intolerance', warning: 'Contains dairy lactose.', severity: 'avoid' },
-    ],
-    fssaiStatus: 'verified',
-    fssaiLicenseNo: '10014022002598',
-    isFlagged: false,
-    notes: 'Opened yesterday morning. Kept on top shelf.',
-    status: 'active',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'seed_dal',
-    ownerId: 'local_user',
-    name: 'Cooked Chholar Dal with Coconut',
-    category: 'cooked_food',
-    dietType: 'veg',
-    quantityValue: 4,
-    quantityUnit: 'servings',
-    purchaseDate: new Date(Date.now() - 14 * 3600000).toISOString(),
-    cookedAt: new Date(Date.now() - 14 * 3600000).toISOString(),
-    expiryDate: new Date(Date.now() + 18 * 3600000).toISOString(), // ~18h left (consume soon)
-    expirySource: 'auto_estimated',
-    storage: 'fridge',
-    calories: 145,
-    consumptionType: 'eat_directly',
-    fssaiStatus: 'exempt',
-    isFlagged: false,
-    notes: 'Prepared for dinner. In airtight steel dabba.',
-    status: 'active',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'seed_palak',
-    ownerId: 'local_user',
-    name: 'Fresh Spinach (Palak)',
-    category: 'vegetables',
-    dietType: 'veg',
-    quantityValue: 500,
-    quantityUnit: 'g',
-    purchaseDate: new Date(Date.now() - 24 * 3600000).toISOString(),
-    expiryDate: new Date(Date.now() + 48 * 3600000).toISOString(), // ~48h left (fresh)
-    expirySource: 'auto_estimated',
-    storage: 'fridge',
-    calories: 23,
-    consumptionType: 'needs_cooking',
-    healthAdvisories: [
-      { condition: 'Kidney Stones', warning: 'High in oxalates.', severity: 'caution' },
-    ],
-    fssaiStatus: 'exempt',
-    isFlagged: false,
-    notes: 'Bought from local market.',
-    status: 'active',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'seed_mutton',
-    ownerId: 'local_user',
-    name: 'Raw Mutton Cutlets',
-    category: 'meat_fish_egg',
-    dietType: 'non_veg',
-    quantityValue: 750,
-    quantityUnit: 'g',
-    purchaseDate: new Date(Date.now() - 12 * 3600000).toISOString(),
-    expiryDate: new Date(Date.now() + 24 * 3600000).toISOString(),
-    expirySource: 'auto_estimated',
-    storage: 'fridge',
-    calories: 240,
-    consumptionType: 'needs_cooking',
-    fssaiStatus: 'exempt',
-    isFlagged: false,
-    notes: '[Private Track Only] Freshly butchered cuts.',
-    status: 'active',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 'seed_rice',
-    ownerId: 'local_user',
-    name: 'Gobindobhog Rice',
-    category: 'grains_pulses',
-    dietType: 'veg',
-    quantityValue: 5,
-    quantityUnit: 'kg',
-    purchaseDate: new Date(Date.now() - 120 * 3600000).toISOString(),
-    expiryDate: new Date(Date.now() + 1800 * 3600000).toISOString(),
-    expirySource: 'auto_estimated',
-    storage: 'room',
-    calories: 130,
-    consumptionType: 'needs_cooking',
-    healthAdvisories: [
-      { condition: 'Type 2 Diabetes', warning: 'High GI carbs.', severity: 'caution' },
-    ],
-    fssaiStatus: 'verified',
-    isFlagged: false,
-    notes: 'Dry pantry storage container.',
-    status: 'active',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
-
 export default function KitchenLedgerPage() {
   const [items, setItems] = useState<InventoryItem[]>(() => {
     if (typeof window !== 'undefined') {
@@ -134,12 +14,11 @@ export default function KitchenLedgerPage() {
         if (stored) {
           return JSON.parse(stored);
         }
-        localStorage.setItem('kc-inventory', JSON.stringify(SEED_ITEMS));
       } catch {
         // storage quota fallback
       }
     }
-    return SEED_ITEMS;
+    return [];
   });
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
@@ -186,9 +65,10 @@ export default function KitchenLedgerPage() {
     showToast(`✓ "${closingItem.name}" marked as ${selectedOutcome}. Ledger updated.`);
   };
 
-  const handleResetSeeds = () => {
-    saveItems(SEED_ITEMS);
-    showToast('✓ Ledger reset to sample kitchen items.');
+  const handleClearFilters = () => {
+    setSearch('');
+    setCategoryFilter('all');
+    setBandFilter('all');
   };
 
   // Active items and computed metadata
@@ -407,7 +287,37 @@ export default function KitchenLedgerPage() {
       </div>
 
       {/* Main Ruled Ledger View */}
-      {filteredItems.length === 0 ? (
+      {items.length === 0 ? (
+        <div className="almanac-card bg-[var(--kc-card)] border border-[var(--kc-card-border)] p-8 sm:p-14 text-center rounded-2xl shadow-sm space-y-4">
+          <div className="w-16 h-16 rounded-2xl bg-[var(--kc-mint)] text-[var(--kc-basil)] flex items-center justify-center mx-auto text-3xl shadow-inner">
+            🌿
+          </div>
+          <div className="max-w-md mx-auto space-y-2">
+            <h3 className="text-xl sm:text-2xl font-bold text-[var(--kc-ink)] font-montserrat">
+              Your Kitchen Shelf is Fresh &amp; Ready
+            </h3>
+            <p className="text-xs sm:text-sm text-[var(--kc-muted)] leading-relaxed">
+              No food items logged yet. Scan a grocery receipt or package barcode with on-device OCR,
+              or add fresh ingredients manually to start tracking freshness and eliminating waste.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-3 pt-2">
+            <Link
+              href="/en/inventory/add"
+              className="w-full sm:w-auto px-5 py-3 text-xs font-bold uppercase tracking-wider rounded-xl bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil-hover)] transition-all shadow-sm flex items-center justify-center gap-2"
+            >
+              <KhabarIcon name="scan" size={16} />
+              <span>Scan Grocery Receipt / Barcode</span>
+            </Link>
+            <Link
+              href="/en/inventory/add"
+              className="w-full sm:w-auto px-5 py-3 text-xs font-bold uppercase tracking-wider rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-bg)] text-[var(--kc-ink)] hover:bg-[var(--kc-card)] transition-colors flex items-center justify-center gap-2"
+            >
+              <span>+ Add Item Manually</span>
+            </Link>
+          </div>
+        </div>
+      ) : filteredItems.length === 0 ? (
         <div className="almanac-card bg-[var(--kc-card)] border border-[var(--kc-card-border)] p-12 text-center rounded-2xl">
           <h3 className="text-base font-bold text-[var(--kc-ink)] mb-2">
             No items matching your shelf filter
@@ -418,10 +328,10 @@ export default function KitchenLedgerPage() {
           <div className="flex justify-center gap-3">
             <button
               type="button"
-              onClick={handleResetSeeds}
+              onClick={handleClearFilters}
               className="px-4 py-2 text-xs font-mono rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-bg)] text-[var(--kc-ink)] hover:bg-[var(--kc-card)] cursor-pointer"
             >
-              Load Sample Pantry
+              Clear Filters
             </button>
             <Link
               href="/en/inventory/add"

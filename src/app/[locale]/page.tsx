@@ -54,6 +54,13 @@ export default function LandingPage({ params }: LandingPageProps) {
     freshCount: 0,
     savedCount: 0,
   });
+  const [urgentItems, setUrgentItems] = useState<Array<{
+    id: string;
+    name: string;
+    hoursLeft: number;
+    storage: string;
+    category: string;
+  }>>([]);
 
   useEffect(() => {
     params.then((p) => setLocale(p.locale));
@@ -66,11 +73,25 @@ export default function LandingPage({ params }: LandingPageProps) {
         const items: InventoryItem[] = JSON.parse(stored);
         const active = items.filter((i) => i.status === 'active');
         const now = Date.now();
-        const urgent = active.filter((i) => {
-          if (!i.expiryDate) return false;
-          const hoursLeft = (new Date(i.expiryDate).getTime() - now) / 3600000;
-          return hoursLeft <= 48;
-        });
+        const urgent = active
+          .filter((i) => {
+            if (!i.expiryDate) return false;
+            const hoursLeft = (new Date(i.expiryDate).getTime() - now) / 3600000;
+            return hoursLeft <= 48;
+          })
+          .map((i) => {
+            const hoursLeft = Math.max(0, Math.round((new Date(i.expiryDate!).getTime() - now) / 3600000));
+            return {
+              id: i.id,
+              name: i.name,
+              hoursLeft,
+              storage: i.storage === 'fridge' ? 'Fridge' : i.storage === 'freezer' ? 'Freezer' : 'Pantry',
+              category: i.category,
+            };
+          })
+          .sort((a, b) => a.hoursLeft - b.hoursLeft);
+
+        setUrgentItems(urgent);
         const closed = items.filter((i) => i.status === 'closed');
         setShelfStats({
           activeCount: active.length,
@@ -79,12 +100,12 @@ export default function LandingPage({ params }: LandingPageProps) {
           savedCount: closed.length,
         });
       } else {
-        // Sample baseline if user has not yet initialized localStorage
+        setUrgentItems([]);
         setShelfStats({
-          activeCount: 5,
-          urgentCount: 2,
-          freshCount: 3,
-          savedCount: 1,
+          activeCount: 0,
+          urgentCount: 0,
+          freshCount: 0,
+          savedCount: 0,
         });
       }
     } catch {
@@ -174,25 +195,49 @@ export default function LandingPage({ params }: LandingPageProps) {
             </div>
 
             <div className="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-5 sm:pt-6">
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
-                <Link
-                  href={`/${locale}/inventory/add`}
-                  className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#FFC93C] text-[#0A281E] font-bold text-xs sm:text-sm hover:bg-[#FFD56B] transition-colors shadow-sm w-full sm:w-auto min-h-[44px]"
-                >
-                  <KhabarIcon name="scan" size={16} />
-                  <span>Scan Food or Receipt (OCR) →</span>
-                </Link>
-              </motion.div>
+              {isLoggedIn ? (
+                <>
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
+                    <Link
+                      href={`/${locale}/inventory/add`}
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#FFC93C] text-[#0A281E] font-bold text-xs sm:text-sm hover:bg-[#FFD56B] transition-colors shadow-sm w-full sm:w-auto min-h-[44px]"
+                    >
+                      <KhabarIcon name="scan" size={16} />
+                      <span>Scan Food or Receipt (OCR) →</span>
+                    </Link>
+                  </motion.div>
 
-              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
-                <Link
-                  href={`/${locale}/inventory`}
-                  className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-[#217056] text-[#E0F3EB] font-semibold text-xs sm:text-sm hover:bg-[#144737] transition-colors w-full sm:w-auto min-h-[44px]"
-                >
-                  <KhabarIcon name="expiring" size={16} />
-                  <span>Open &ldquo;Use This First&rdquo; Shelf</span>
-                </Link>
-              </motion.div>
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
+                    <Link
+                      href={`/${locale}/inventory`}
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-[#217056] text-[#E0F3EB] font-semibold text-xs sm:text-sm hover:bg-[#144737] transition-colors w-full sm:w-auto min-h-[44px]"
+                    >
+                      <KhabarIcon name="expiring" size={16} />
+                      <span>Open &ldquo;Use This First&rdquo; Shelf</span>
+                    </Link>
+                  </motion.div>
+                </>
+              ) : (
+                <>
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
+                    <Link
+                      href={`/${locale}/login`}
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#FFC93C] text-[#0A281E] font-bold text-xs sm:text-sm hover:bg-[#FFD56B] transition-colors shadow-sm w-full sm:w-auto min-h-[44px]"
+                    >
+                      <span>Continue with Google / Login →</span>
+                    </Link>
+                  </motion.div>
+
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
+                    <Link
+                      href={`/${locale}/signup`}
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-[#217056] text-[#E0F3EB] font-semibold text-xs sm:text-sm hover:bg-[#144737] transition-colors w-full sm:w-auto min-h-[44px]"
+                    >
+                      <span>Create Free Kitchen Account</span>
+                    </Link>
+                  </motion.div>
+                </>
+              )}
             </div>
 
             {/* Background subtle art / photo thumbnail accent */}
@@ -429,80 +474,97 @@ export default function LandingPage({ params }: LandingPageProps) {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
-            {/* Item 1 */}
-            <motion.div
-              whileHover={{ y: -3, scale: 1.01 }}
-              className="p-3.5 sm:p-4 rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50/50 dark:bg-red-950/20 flex items-center justify-between gap-3 shadow-sm"
-            >
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#1A2620] flex items-center justify-center text-xl shadow-inner shrink-0">
-                  🥛
-                </div>
-                <div className="min-w-0">
-                  <h5 className="text-sm font-bold text-[var(--kc-ink)] truncate">Red Cow Toned Milk</h5>
-                  <span className="text-[11px] font-mono font-semibold text-[#D6381F] flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-[#D6381F] animate-ping shrink-0" />
-                    <span>~10h left · Fridge</span>
-                  </span>
-                </div>
-              </div>
-              <Link
-                href={`/${locale}/recipes`}
-                className="px-3.5 py-1.5 rounded-lg bg-[#D6381F] text-white text-xs font-bold hover:opacity-90 shadow-sm shrink-0 min-h-[36px] flex items-center justify-center"
-              >
-                Cook
-              </Link>
-            </motion.div>
+          {urgentItems.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+              {urgentItems.slice(0, 3).map((item) => {
+                const isCritical = item.hoursLeft <= 24;
+                const emoji =
+                  item.category.includes('dairy') ? '🥛' :
+                  item.category.includes('cooked') ? '🍲' :
+                  item.category.includes('veg') ? '🥬' :
+                  item.category.includes('fruit') ? '🍎' :
+                  item.category.includes('meat') ? '🥩' : '🥫';
 
-            {/* Item 2 */}
-            <motion.div
-              whileHover={{ y: -3, scale: 1.01 }}
-              className="p-3.5 sm:p-4 rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20 flex items-center justify-between gap-3 shadow-sm"
-            >
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#1A2620] flex items-center justify-center text-xl shadow-inner shrink-0">
-                  🍲
-                </div>
-                <div className="min-w-0">
-                  <h5 className="text-sm font-bold text-[var(--kc-ink)] truncate">Cooked Chholar Dal</h5>
-                  <span className="text-[11px] font-mono font-semibold text-amber-600 dark:text-amber-400 block truncate">
-                    ~18h left · Fridge
-                  </span>
-                </div>
+                return (
+                  <motion.div
+                    key={item.id}
+                    whileHover={{ y: -3, scale: 1.01 }}
+                    className={`p-3.5 sm:p-4 rounded-xl border flex items-center justify-between gap-3 shadow-sm ${
+                      isCritical
+                        ? 'border-red-200 dark:border-red-900/60 bg-red-50/50 dark:bg-red-950/20'
+                        : 'border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#1A2620] flex items-center justify-center text-xl shadow-inner shrink-0">
+                        {emoji}
+                      </div>
+                      <div className="min-w-0">
+                        <h5 className="text-sm font-bold text-[var(--kc-ink)] truncate">{item.name}</h5>
+                        <span className={`text-[11px] font-mono font-semibold flex items-center gap-1 ${
+                          isCritical ? 'text-[#D6381F]' : 'text-amber-600 dark:text-amber-400'
+                        }`}>
+                          {isCritical && <span className="w-2 h-2 rounded-full bg-[#D6381F] animate-ping shrink-0" />}
+                          <span>~{item.hoursLeft}h left · {item.storage}</span>
+                        </span>
+                      </div>
+                    </div>
+                    <Link
+                      href={`/${locale}/recipes?ingredient=${encodeURIComponent(item.name)}`}
+                      className={`px-3.5 py-1.5 rounded-lg text-white text-xs font-bold hover:opacity-90 shadow-sm shrink-0 min-h-[36px] flex items-center justify-center ${
+                        isCritical ? 'bg-[#D6381F]' : 'bg-[#F59E0B]'
+                      }`}
+                    >
+                      Cook
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+          ) : !isLoggedIn ? (
+            <div className="p-6 sm:p-8 rounded-xl border border-dashed border-[var(--kc-card-border)] bg-neutral-50/50 dark:bg-[#0E2219]/40 text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-[var(--kc-mint)] text-[var(--kc-basil)] flex items-center justify-center mx-auto text-xl shadow-inner">
+                🔐
               </div>
-              <Link
-                href={`/${locale}/recipes`}
-                className="px-3.5 py-1.5 rounded-lg bg-[#F59E0B] text-white text-xs font-bold hover:opacity-90 shadow-sm shrink-0 min-h-[36px] flex items-center justify-center"
-              >
-                Cook
-              </Link>
-            </motion.div>
-
-            {/* Item 3 */}
-            <motion.div
-              whileHover={{ y: -3, scale: 1.01 }}
-              className="p-3.5 sm:p-4 rounded-xl border border-emerald-200 dark:border-emerald-900/60 bg-emerald-50/50 dark:bg-emerald-950/20 flex items-center justify-between gap-3 shadow-sm"
-            >
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#1A2620] flex items-center justify-center text-xl shadow-inner shrink-0">
-                  🥬
-                </div>
-                <div className="min-w-0">
-                  <h5 className="text-sm font-bold text-[var(--kc-ink)] truncate">Fresh Spinach (Palak)</h5>
-                  <span className="text-[11px] font-mono font-semibold text-emerald-700 dark:text-emerald-400 block truncate">
-                    ~48h left · Crisper
-                  </span>
-                </div>
+              <div className="max-w-md mx-auto space-y-1">
+                <h4 className="text-base font-bold text-[var(--kc-ink)]">
+                  Connect Your Kitchen Shelves
+                </h4>
+                <p className="text-xs text-[var(--kc-muted)] leading-relaxed">
+                  Sign in with Google to track your domestic fridge and pantry, view items expiring within 48h, and turn potential waste into complete meals.
+                </p>
               </div>
-              <Link
-                href={`/${locale}/recipes`}
-                className="px-3.5 py-1.5 rounded-lg bg-[var(--kc-basil)] text-white text-xs font-bold hover:opacity-90 shadow-sm shrink-0 min-h-[36px] flex items-center justify-center"
-              >
-                Cook
-              </Link>
-            </motion.div>
-          </div>
+              <div className="pt-2">
+                <Link
+                  href={`/${locale}/login`}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--kc-basil)] text-white text-xs font-bold hover:bg-[var(--kc-basil-hover)] transition-all shadow-sm"
+                >
+                  <span>Sign In with Google to Open Kitchen</span>
+                  <span>→</span>
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="p-6 sm:p-8 rounded-xl border border-dashed border-emerald-200 dark:border-emerald-900/40 bg-emerald-50/30 dark:bg-emerald-950/10 text-center space-y-2">
+              <span className="text-2xl">✨</span>
+              <h4 className="text-base font-bold text-[var(--kc-ink)]">
+                All Kitchen Shelves Stable &amp; Fresh
+              </h4>
+              <p className="text-xs text-[var(--kc-muted)] max-w-md mx-auto leading-relaxed">
+                {shelfStats.activeCount === 0
+                  ? 'No kitchen items logged yet. Scan a grocery receipt or add ingredients to start tracking shelf-life urgency.'
+                  : 'Zero ingredients are expiring within 48 hours. Your domestic food waste risk is currently at ₹0.'}
+              </p>
+              <div className="pt-2">
+                <Link
+                  href={`/${locale}/inventory/add`}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--kc-basil)] text-white text-xs font-bold hover:bg-[var(--kc-basil-hover)] transition-colors"
+                >
+                  <span>+ Add Food Item</span>
+                </Link>
+              </div>
+            </div>
+          )}
         </motion.section>
       </motion.main>
     </div>

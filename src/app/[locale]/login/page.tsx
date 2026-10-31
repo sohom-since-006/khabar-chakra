@@ -18,7 +18,7 @@ export default function LoginPage({ params }: LoginPageProps) {
 
   const router = useRouter();
   const searchParams = useSearchParams();
-  const nextParam = searchParams.get('next') || `/${locale}`;
+  const nextParam = searchParams.get('next') || `/${locale}/home`;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,6 +26,13 @@ export default function LoginPage({ params }: LoginPageProps) {
   const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+
+  React.useEffect(() => {
+    const err = searchParams.get('error');
+    if (err === 'auth_failed') {
+      setErrorMsg('Authentication could not be completed. Please try again or sign in with email.');
+    }
+  }, [searchParams]);
 
   // Google OAuth Login
   const handleGoogleLogin = async () => {
@@ -35,7 +42,7 @@ export default function LoginPage({ params }: LoginPageProps) {
     try {
       const supabase = createClient();
       const origin = typeof window !== 'undefined' ? window.location.origin : '';
-      const redirectTarget = nextParam.startsWith('/') ? nextParam : `/${locale}`;
+      const redirectTarget = nextParam.startsWith('/') ? nextParam : `/${locale}/home`;
       const redirectTo = `${origin}/${locale}/auth/callback?next=${encodeURIComponent(redirectTarget)}`;
 
       const { error } = await supabase.auth.signInWithOAuth({
@@ -75,7 +82,7 @@ export default function LoginPage({ params }: LoginPageProps) {
       if (error) {
         setErrorMsg('Email or password is incorrect. Please verify your credentials.');
       } else {
-        const destination = nextParam.startsWith('/') ? nextParam : `/${locale}`;
+        const destination = nextParam.startsWith('/') ? nextParam : `/${locale}/home`;
         router.push(destination);
         router.refresh();
       }
