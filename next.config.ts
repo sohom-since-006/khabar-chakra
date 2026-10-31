@@ -50,6 +50,7 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
+  devIndicators: false,
   images: {
     remotePatterns: [
       {
