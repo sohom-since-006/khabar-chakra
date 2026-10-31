@@ -13,7 +13,7 @@ export function MobileBottomNav({ locale }: MobileBottomNavProps) {
   const pathname = usePathname();
 
   const navItems = [
-    { label: 'Sanctuary', href: `/${locale}`, icon: 'household' as const },
+    { label: 'Sanctuary', href: `/${locale}/home`, icon: 'household' as const },
     { label: 'Kitchen Shelf', href: `/${locale}/home`, icon: 'fridge' as const },
     { label: 'Add Food', href: `/${locale}/inventory/add`, icon: 'scan' as const, isCenter: true },
     { label: 'Recipes', href: `/${locale}/recipes`, icon: 'cook' as const },
