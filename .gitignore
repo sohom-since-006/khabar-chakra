@@ -48,3 +48,8 @@ next-env.d.ts
 # python
 __pycache__/
 *.pyc
+
+# binaries and agent engine executables
+*.exe
+.agents/skills/*/scripts/bin/
+
