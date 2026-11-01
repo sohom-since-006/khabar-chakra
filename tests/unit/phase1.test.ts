@@ -68,5 +68,14 @@ describe('Phase 1 Foundation · Validation & Security Gates', () => {
     expect(isSafeRedirect('javascript:alert(1)')).toBe(false);
   });
 
+  // 3. Health & System Version
+  it('reports system version 2.0.0 on health probe', async () => {
+    const { GET } = await import('@/app/api/health/route');
+    const res = await GET();
+    const data = await res.json();
+    expect(data.version).toBe('2.0.0');
+    expect(data.status).toBe('ok');
+  });
+
 
 });

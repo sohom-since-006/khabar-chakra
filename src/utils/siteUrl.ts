@@ -66,3 +66,4 @@ export function createSafeUrl(path: string, request?: NextRequest | Request): UR
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
   return new URL(cleanPath, origin);
 }
+

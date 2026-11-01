@@ -74,7 +74,7 @@ export default function TeamPage() {
             
             <div className="pt-6 mt-6 border-t border-[var(--kc-moss)]/50 text-[11px] font-mono text-[var(--kc-moss)] flex justify-between">
               <span>Plain-text Colophon</span>
-              <span>Khabar Chakra v1.0</span>
+              <span>Khabar Chakra v2.0</span>
             </div>
           </div>
         ))}
