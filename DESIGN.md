@@ -70,3 +70,4 @@ The typographic system uses **Plus Jakarta Sans / Outfit** for all structural el
 3. **Pills & Badges:** Compact glass capsules with circular status indicator lights (🟢 🟡 🔴).
 4. **Header:** Frosted glass navbar with backdrop blur (`backdrop-blur-xl bg-white/80 dark:bg-[#071610]/85`), delicate border divider, and responsive pill links.
 5. **Mobile Navigation:** Floating glass dock at the bottom of the viewport with haptic icons and active ambient pill indicators.
+

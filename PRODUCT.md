@@ -61,3 +61,4 @@ Unlike public surplus-donation networks or commercial restaurant inventory SaaS,
 - Trilingual support: English (`en`), Bengali (`bn`), and Hindi (`hi`).
 - Full reduced-motion media query support (`prefers-reduced-motion`).
 - Minimum 44×44px interactive tap targets for mobile usability.
+
