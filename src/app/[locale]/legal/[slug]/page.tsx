@@ -214,7 +214,7 @@ export default async function LegalPage({
             <div className="space-y-8">
               {doc.sections.map((section, idx) => (
                 <section key={idx} className="space-y-2">
-                  <h2 className="text-base font-bold text-[var(--kc-ink)] font-montserrat">
+                  <h2 className="text-base font-bold text-[var(--kc-ink)] font-heading">
                     {section.title}
                   </h2>
                   <p className="text-xs sm:text-sm text-[var(--kc-muted)] leading-relaxed">

@@ -112,25 +112,25 @@ export default function LoginPage({ params }: LoginPageProps) {
 
   return (
     <main className="max-w-md mx-auto px-4 py-12 sm:py-16">
-      <div className="p-6 sm:p-8 border border-[var(--kc-card-border)] bg-[var(--kc-card)] rounded-2xl shadow-lg space-y-6 transition-all">
+      <div className="p-6 sm:p-8 border border-black/[0.08] dark:border-white/[0.1] glass-card rounded-3xl shadow-xl space-y-6 transition-all">
         {/* Header Title */}
-        <div className="flex items-center justify-between border-b border-[var(--kc-hairline)] pb-4">
+        <div className="flex items-center justify-between border-b border-black/[0.06] dark:border-white/[0.08] pb-4">
           <div>
-            <span className="text-[11px] font-mono font-bold tracking-widest text-[var(--kc-basil)] uppercase block">
+            <span className="text-[11px] font-mono font-bold tracking-widest text-emerald-700 dark:text-emerald-400 uppercase block">
               HOUSEHOLD LEDGER · SECURE ACCESS
             </span>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--kc-ink)] mt-1 font-montserrat">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--kc-ink)] mt-1 font-heading">
               Kitchen Sign In
             </h1>
           </div>
-          <div className="w-10 h-10 rounded-full bg-[var(--kc-mint)] flex items-center justify-center text-[var(--kc-basil)]">
+          <div className="w-11 h-11 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/50 dark:border-emerald-900/50 flex items-center justify-center text-emerald-800 dark:text-emerald-300 shadow-inner">
             <KhabarIcon name="profile" size={22} />
           </div>
         </div>
 
         {/* Success notification (e.g. after logout) */}
         {successMsg && (
-          <div className="p-3.5 bg-green-50 dark:bg-emerald-950/40 border border-[var(--kc-basil)] text-[var(--kc-basil)] text-xs rounded-xl flex items-center gap-2">
+          <div className="p-3.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs rounded-2xl flex items-center gap-2 font-heading">
             <KhabarIcon name="success" size={16} />
             <span>{successMsg}</span>
           </div>
@@ -138,7 +138,7 @@ export default function LoginPage({ params }: LoginPageProps) {
 
         {/* Error notification */}
         {errorMsg && (
-          <div className="p-3.5 bg-red-50 dark:bg-red-950/40 border border-[var(--kc-chilli)] text-[var(--kc-chilli)] text-xs rounded-xl flex items-center gap-2">
+          <div className="p-3.5 bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-900 text-[#D6381F] text-xs rounded-2xl flex items-center gap-2 font-heading">
             <KhabarIcon name="error" size={16} />
             <span>{errorMsg}</span>
           </div>
@@ -150,7 +150,7 @@ export default function LoginPage({ params }: LoginPageProps) {
             type="button"
             onClick={handleGoogleLogin}
             disabled={googleLoading || loading}
-            className="w-full py-3 px-4 rounded-xl border border-[var(--kc-card-border)] bg-white dark:bg-[#143024] hover:bg-neutral-50 dark:hover:bg-[#1A3D2F] text-[var(--kc-ink)] font-semibold text-sm flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200 disabled:opacity-50 group hover:scale-[1.01]"
+            className="w-full py-3.5 px-5 rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-white dark:bg-[#143024] hover:bg-neutral-50 dark:hover:bg-[#1A3D2F] text-[var(--kc-ink)] font-heading font-semibold text-sm flex items-center justify-center shadow-sm hover:shadow-md transition-all duration-200 disabled:opacity-50 group hover:scale-[1.01] cursor-pointer"
           >
             {googleLoading ? (
               <span className="flex items-center gap-2 text-xs">
@@ -207,7 +207,7 @@ export default function LoginPage({ params }: LoginPageProps) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="chef@example.com"
-              className="w-full px-3.5 py-2.5 text-sm border border-[var(--kc-hairline)] bg-transparent rounded-xl text-[var(--kc-ink)] focus:outline-none focus:border-[var(--kc-basil)] focus:ring-1 focus:ring-[var(--kc-basil)] transition-colors"
+              className="w-full px-4 py-3 text-sm border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.01] dark:bg-white/[0.02] rounded-2xl text-[var(--kc-ink)] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 transition-colors font-heading"
             />
           </div>
 
@@ -218,7 +218,7 @@ export default function LoginPage({ params }: LoginPageProps) {
               </label>
               <Link
                 href={`/${locale}/forgot-password`}
-                className="text-xs text-[var(--kc-muted)] hover:text-[var(--kc-basil)] underline transition-colors"
+                className="text-xs text-[var(--kc-muted)] hover:text-emerald-700 dark:hover:text-emerald-400 underline transition-colors font-heading"
               >
                 Forgot password?
               </Link>
@@ -229,17 +229,17 @@ export default function LoginPage({ params }: LoginPageProps) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-3.5 py-2.5 text-sm border border-[var(--kc-hairline)] bg-transparent rounded-xl text-[var(--kc-ink)] focus:outline-none focus:border-[var(--kc-basil)] focus:ring-1 focus:ring-[var(--kc-basil)] transition-colors"
+              className="w-full px-4 py-3 text-sm border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.01] dark:bg-white/[0.02] rounded-2xl text-[var(--kc-ink)] focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 transition-colors font-heading"
             />
           </div>
 
           <div className="flex items-center justify-between text-xs pt-1">
-            <label className="flex items-center gap-2 cursor-pointer text-[var(--kc-muted)]">
+            <label className="flex items-center gap-2 cursor-pointer text-[var(--kc-muted)] font-heading">
               <input
                 type="checkbox"
                 checked={staySignedIn}
                 onChange={(e) => setStaySignedIn(e.target.checked)}
-                className="accent-[var(--kc-basil)] rounded"
+                className="accent-emerald-700 rounded"
               />
               <span>Remember this device</span>
             </label>
@@ -248,18 +248,18 @@ export default function LoginPage({ params }: LoginPageProps) {
           <button
             type="submit"
             disabled={loading || googleLoading}
-            className="w-full py-3 bg-[var(--kc-basil)] text-white text-sm font-bold rounded-xl hover:bg-[var(--kc-basil-hover)] disabled:opacity-50 transition-all shadow-sm hover:shadow"
+            className="w-full py-3.5 bg-emerald-800 text-white text-sm font-heading font-bold rounded-full hover:bg-emerald-900 disabled:opacity-50 transition-all shadow-md hover:shadow-lg cursor-pointer"
           >
             {loading ? 'Authenticating...' : 'Sign In with Password'}
           </button>
         </form>
 
         {/* Footer */}
-        <div className="pt-4 border-t border-[var(--kc-hairline)] text-center text-xs text-[var(--kc-muted)]">
+        <div className="pt-4 border-t border-black/[0.06] dark:border-white/[0.08] text-center text-xs text-[var(--kc-muted)] font-heading">
           Don&apos;t have a kitchen ledger account?{' '}
           <Link
             href={`/${locale}/signup`}
-            className="text-[var(--kc-basil)] font-bold hover:underline"
+            className="text-emerald-700 dark:text-emerald-400 font-bold hover:underline"
           >
             Create Free Account
           </Link>

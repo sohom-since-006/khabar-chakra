@@ -113,25 +113,29 @@ export default function SignupPage({ params }: SignupPageProps) {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
         {/* Left Typographic Poster Column */}
         <div className="md:col-span-5 space-y-4">
-          <span className="almanac-num">REGISTRATION · FORM 101</span>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[var(--kc-ink)] tracking-tight">
+          <span className="font-mono text-[11px] font-bold tracking-widest text-emerald-700 dark:text-emerald-400 uppercase block">
+            REGISTRATION · FORM 101
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[var(--kc-ink)] tracking-tight font-heading">
             Open Your Kitchen Ledger
           </h1>
-
+          <p className="font-heading text-xs sm:text-sm text-[var(--kc-muted)] leading-relaxed">
+            Join thousands of domestic kitchens saving money and eliminating food waste with smart freshness tracking and instant receipt OCR.
+          </p>
         </div>
 
         {/* Right Numbered Form Column */}
-        <div className="md:col-span-7 border border-[var(--kc-hairline)] bg-[var(--kc-card)] p-6 sm:p-8 rounded-sm">
+        <div className="md:col-span-7 border border-black/[0.08] dark:border-white/[0.1] glass-card p-6 sm:p-8 rounded-3xl shadow-xl">
           <form onSubmit={handleSubmit} className="space-y-5">
             {errorMsg && (
-              <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-[var(--kc-chilli)] text-[var(--kc-chilli)] text-xs rounded-sm">
+              <div className="p-3.5 bg-red-50 dark:bg-red-950/30 border border-red-300 dark:border-red-900 text-[#D6381F] text-xs rounded-2xl font-heading">
                 {errorMsg}
               </div>
             )}
 
             {/* 1. Name */}
             <div>
-              <label className="block text-xs font-mono uppercase text-[var(--kc-muted)] mb-1">
+              <label className="block text-xs font-mono uppercase text-[var(--kc-muted)] mb-1.5 font-semibold">
                 1. Full Name (2–60 characters)
               </label>
               <input
@@ -140,13 +144,13 @@ export default function SignupPage({ params }: SignupPageProps) {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="e.g. Ananya Sen"
-                className="w-full px-3 py-2 text-sm border border-[var(--kc-hairline)] bg-transparent rounded-sm focus:outline-none focus:border-[var(--kc-basil)]"
+                className="w-full px-4 py-3 text-sm border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.01] dark:bg-white/[0.02] rounded-2xl focus:outline-none focus:border-emerald-600 transition-colors font-heading text-[var(--kc-ink)]"
               />
             </div>
 
             {/* 2. Email */}
             <div>
-              <label className="block text-xs font-mono uppercase text-[var(--kc-muted)] mb-1">
+              <label className="block text-xs font-mono uppercase text-[var(--kc-muted)] mb-1.5 font-semibold">
                 2. Email Address
               </label>
               <input
@@ -155,13 +159,13 @@ export default function SignupPage({ params }: SignupPageProps) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.com"
-                className="w-full px-3 py-2 text-sm border border-[var(--kc-hairline)] bg-transparent rounded-sm focus:outline-none focus:border-[var(--kc-basil)]"
+                className="w-full px-4 py-3 text-sm border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.01] dark:bg-white/[0.02] rounded-2xl focus:outline-none focus:border-emerald-600 transition-colors font-heading text-[var(--kc-ink)]"
               />
             </div>
 
             {/* 3. Password */}
             <div>
-              <label className="block text-xs font-mono uppercase text-[var(--kc-muted)] mb-1">
+              <label className="block text-xs font-mono uppercase text-[var(--kc-muted)] mb-1.5 font-semibold">
                 3. Password (minimum 8 characters)
               </label>
               <input
@@ -170,38 +174,38 @@ export default function SignupPage({ params }: SignupPageProps) {
                 minLength={8}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 text-sm border border-[var(--kc-hairline)] bg-transparent rounded-sm focus:outline-none focus:border-[var(--kc-basil)]"
+                className="w-full px-4 py-3 text-sm border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.01] dark:bg-white/[0.02] rounded-2xl focus:outline-none focus:border-emerald-600 transition-colors font-heading text-[var(--kc-ink)]"
               />
             </div>
 
-            {/* 4. Age & Terms Checkboxes (Mandatory per PRD & D20) */}
-            <div className="space-y-2 pt-2 border-t border-[var(--kc-hairline)] text-xs">
-              <label className="flex items-start gap-2 cursor-pointer">
+            {/* 4. Age & Terms Checkboxes */}
+            <div className="space-y-2 pt-3 border-t border-black/[0.06] dark:border-white/[0.08] text-xs font-heading text-[var(--kc-muted)]">
+              <label className="flex items-start gap-2.5 cursor-pointer">
                 <input
                   type="checkbox"
                   required
                   checked={isAgeConfirmed}
                   onChange={(e) => setIsAgeConfirmed(e.target.checked)}
-                  className="mt-0.5 accent-[var(--kc-basil)]"
+                  className="mt-0.5 accent-emerald-700"
                 />
                 <span>I confirm that I am <strong>18 years of age or older</strong>.</span>
               </label>
 
-              <label className="flex items-start gap-2 cursor-pointer">
+              <label className="flex items-start gap-2.5 cursor-pointer">
                 <input
                   type="checkbox"
                   required
                   checked={isTermsAccepted}
                   onChange={(e) => setIsTermsAccepted(e.target.checked)}
-                  className="mt-0.5 accent-[var(--kc-basil)]"
+                  className="mt-0.5 accent-emerald-700"
                 />
                 <span>
                   I accept the{' '}
-                  <Link href={`/${locale}/legal/terms`} target="_blank" className="text-[var(--kc-basil)] underline">
+                  <Link href={`/${locale}/legal/terms`} target="_blank" className="text-emerald-700 dark:text-emerald-400 underline font-medium">
                     Terms of Service
                   </Link>{' '}
                   and{' '}
-                  <Link href={`/${locale}/legal/privacy`} target="_blank" className="text-[var(--kc-basil)] underline">
+                  <Link href={`/${locale}/legal/privacy`} target="_blank" className="text-emerald-700 dark:text-emerald-400 underline font-medium">
                     Privacy Policy
                   </Link>.
                 </span>
@@ -212,14 +216,14 @@ export default function SignupPage({ params }: SignupPageProps) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 bg-[var(--kc-basil)] text-white text-sm font-semibold rounded-sm hover:opacity-90 disabled:opacity-50 transition-opacity"
+              className="w-full py-3.5 bg-emerald-800 text-white text-sm font-heading font-bold rounded-full hover:bg-emerald-900 disabled:opacity-50 transition-all shadow-md hover:shadow-lg cursor-pointer"
             >
               {loading ? 'Registering Ledger...' : 'Complete Ledger Registration'}
             </button>
 
-            <div className="text-center text-xs text-[var(--kc-muted)] pt-2">
+            <div className="text-center text-xs text-[var(--kc-muted)] pt-2 font-heading">
               Already registered?{' '}
-              <Link href={`/${locale}/login`} className="text-[var(--kc-basil)] font-semibold hover:underline">
+              <Link href={`/${locale}/login`} className="text-emerald-700 dark:text-emerald-400 font-bold hover:underline">
                 Sign in here
               </Link>
             </div>

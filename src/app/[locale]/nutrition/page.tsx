@@ -31,37 +31,37 @@ export default function NutritionPage() {
   const proteinDairyItems = activeItems.filter((i) => i.category === 'dairy' || i.category === 'meat_fish_egg');
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Top Folio Header */}
-      <div className="border-b border-[var(--kc-moss)] pb-6 mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="border-b border-[var(--kc-card-border)] pb-6 mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="font-annotation text-[var(--kc-basil)] text-lg">Almanac Dietary Ledger · ICMR-NIN Reference</span>
-          <h1 className="text-3xl font-bold tracking-tight text-[var(--kc-charcoal)] mt-1">
-            Household Nutrition Journal &amp; Planner
+          <span className="font-cursive-sacramento text-[var(--kc-basil)] text-2xl">Dietary Ledger &amp; ICMR-NIN Targets</span>
+          <h1 className="text-3xl font-heading font-bold tracking-tight text-[var(--kc-ink)] mt-1">
+            Household Nutrition Journal &amp; Macro Guide
           </h1>
-          <p className="text-sm text-[var(--kc-moss)] mt-1 font-sans">
-            Reference dietary targets paired with your current kitchen pantry to maintain balanced, waste-free family meals.
+          <p className="text-sm font-heading text-[var(--kc-muted)] mt-1">
+            Reference dietary targets paired with your current kitchen pantry to maintain balanced, zero-waste family meals.
           </p>
         </div>
         <Link
           href="/en/home"
-          className="text-xs font-mono text-[var(--kc-moss)] hover:underline border border-[var(--kc-moss)] px-3 py-1.5 bg-[var(--kc-parchment)] flex items-center gap-1 shrink-0"
+          className="text-xs font-heading font-semibold text-[var(--kc-muted)] hover:text-[var(--kc-basil)] border border-[var(--kc-card-border)] px-3.5 py-2 rounded-xl bg-white/80 dark:bg-[#0D241B]/80 backdrop-blur-md flex items-center gap-1.5 shrink-0 transition-colors shadow-sm"
         >
           ← Return to Pantry Ledger
         </Link>
       </div>
 
-      {/* Mandatory Medical Disclaimer (AC-NUT-01) */}
-      <div className="p-4 border-l-4 border border-[var(--kc-blueberry)] bg-blue-50/50 mb-8 rounded-sm">
+      {/* Statutory Medical Disclaimer Card (Clean Luxury Pill, No Side-Tab Cliché) */}
+      <div className="p-4 sm:p-5 rounded-2xl bg-blue-500/[0.05] dark:bg-blue-500/[0.1] border border-blue-500/20 mb-8 backdrop-blur-md">
         <div className="flex items-start gap-3">
-          <div className="pt-0.5 text-[var(--kc-blueberry)]">
-            <KhabarIcon name="info" size={20} />
+          <div className="p-1.5 rounded-xl bg-blue-500/10 text-[var(--kc-blueberry)] shrink-0">
+            <KhabarIcon name="info" size={18} />
           </div>
           <div>
-            <span className="font-mono text-xs font-bold uppercase text-[var(--kc-blueberry)] tracking-wider block mb-1">
+            <span className="font-heading text-xs font-bold uppercase text-[var(--kc-blueberry)] tracking-wider block mb-1">
               Statutory Medical Guidance Disclaimer
             </span>
-            <p className="text-xs text-[var(--kc-charcoal)] font-sans leading-relaxed">
+            <p className="text-xs text-[var(--kc-ink)] leading-relaxed">
               {MANDATORY_MEDICAL_DISCLAIMER}
             </p>
           </div>
@@ -70,15 +70,15 @@ export default function NutritionPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
         {/* Household Profile Configuration */}
-        <div className="lg:col-span-1 almanac-card bg-[var(--kc-cream)] border border-[var(--kc-moss)] p-6">
-          <h2 className="text-base font-bold text-[var(--kc-charcoal)] border-b border-[var(--kc-moss)]/40 pb-3 mb-4 flex items-center gap-2">
+        <div className="lg:col-span-1 glass-card p-6 rounded-3xl border border-[var(--kc-card-border)]">
+          <h2 className="text-base font-heading font-bold text-[var(--kc-ink)] border-b border-[var(--kc-card-border)] pb-3 mb-5 flex items-center gap-2">
             <KhabarIcon name="household" size={18} />
             Household Profile
           </h2>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-mono text-[var(--kc-charcoal)] mb-1">
+              <label className="block text-xs font-heading font-semibold text-[var(--kc-ink)] mb-1.5">
                 Adult Men
               </label>
               <input
@@ -87,12 +87,12 @@ export default function NutritionPage() {
                 max="10"
                 value={profile.adultMen}
                 onChange={(e) => setProfile({ ...profile, adultMen: Math.max(0, parseInt(e.target.value) || 0) })}
-                className="w-full px-3 py-1.5 text-sm border border-[var(--kc-moss)] bg-white rounded-sm font-mono"
+                className="w-full px-3.5 py-2 text-sm border border-[var(--kc-card-border)] bg-neutral-50/80 dark:bg-[#071610]/80 rounded-xl font-heading text-[var(--kc-ink)] focus:outline-none focus:ring-2 focus:ring-[var(--kc-basil)]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-mono text-[var(--kc-charcoal)] mb-1">
+              <label className="block text-xs font-heading font-semibold text-[var(--kc-ink)] mb-1.5">
                 Adult Women
               </label>
               <input
@@ -101,12 +101,12 @@ export default function NutritionPage() {
                 max="10"
                 value={profile.adultWomen}
                 onChange={(e) => setProfile({ ...profile, adultWomen: Math.max(0, parseInt(e.target.value) || 0) })}
-                className="w-full px-3 py-1.5 text-sm border border-[var(--kc-moss)] bg-white rounded-sm font-mono"
+                className="w-full px-3.5 py-2 text-sm border border-[var(--kc-card-border)] bg-neutral-50/80 dark:bg-[#071610]/80 rounded-xl font-heading text-[var(--kc-ink)] focus:outline-none focus:ring-2 focus:ring-[var(--kc-basil)]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-mono text-[var(--kc-charcoal)] mb-1">
+              <label className="block text-xs font-heading font-semibold text-[var(--kc-ink)] mb-1.5">
                 Children (Ages 4–12)
               </label>
               <input
@@ -115,12 +115,12 @@ export default function NutritionPage() {
                 max="10"
                 value={profile.children}
                 onChange={(e) => setProfile({ ...profile, children: Math.max(0, parseInt(e.target.value) || 0) })}
-                className="w-full px-3 py-1.5 text-sm border border-[var(--kc-moss)] bg-white rounded-sm font-mono"
+                className="w-full px-3.5 py-2 text-sm border border-[var(--kc-card-border)] bg-neutral-50/80 dark:bg-[#071610]/80 rounded-xl font-heading text-[var(--kc-ink)] focus:outline-none focus:ring-2 focus:ring-[var(--kc-basil)]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-mono text-[var(--kc-charcoal)] mb-1">
+              <label className="block text-xs font-heading font-semibold text-[var(--kc-ink)] mb-1.5">
                 Elderly (60+ years)
               </label>
               <input
@@ -129,18 +129,18 @@ export default function NutritionPage() {
                 max="10"
                 value={profile.elderly}
                 onChange={(e) => setProfile({ ...profile, elderly: Math.max(0, parseInt(e.target.value) || 0) })}
-                className="w-full px-3 py-1.5 text-sm border border-[var(--kc-moss)] bg-white rounded-sm font-mono"
+                className="w-full px-3.5 py-2 text-sm border border-[var(--kc-card-border)] bg-neutral-50/80 dark:bg-[#071610]/80 rounded-xl font-heading text-[var(--kc-ink)] focus:outline-none focus:ring-2 focus:ring-[var(--kc-basil)]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-mono text-[var(--kc-charcoal)] mb-1">
+              <label className="block text-xs font-heading font-semibold text-[var(--kc-ink)] mb-1.5">
                 General Activity Level
               </label>
               <select
                 value={profile.activityLevel}
                 onChange={(e) => setProfile({ ...profile, activityLevel: e.target.value as HouseholdProfile['activityLevel'] })}
-                className="w-full px-3 py-1.5 text-sm border border-[var(--kc-moss)] bg-white rounded-sm font-sans"
+                className="w-full px-3.5 py-2 text-sm border border-[var(--kc-card-border)] bg-neutral-50/80 dark:bg-[#071610]/80 rounded-xl font-heading text-[var(--kc-ink)] focus:outline-none focus:ring-2 focus:ring-[var(--kc-basil)]"
               >
                 <option value="sedentary">Sedentary (Desk work / light household)</option>
                 <option value="moderate">Moderate (Active commute / regular walking)</option>
@@ -149,154 +149,142 @@ export default function NutritionPage() {
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-[var(--kc-moss)]/40 text-[11px] font-mono text-[var(--kc-moss)]">
+          <div className="mt-6 pt-4 border-t border-[var(--kc-card-border)] text-[11px] font-heading text-[var(--kc-muted)]">
             Reference standard: ICMR-NIN 2020 Recommended Dietary Allowances for Indians.
           </div>
         </div>
 
         {/* Target Cards & Macros */}
         <div className="lg:col-span-2 space-y-6">
-          <div className="almanac-card bg-[var(--kc-cream)] border border-[var(--kc-moss)] p-6">
-            <div className="flex justify-between items-center border-b border-[var(--kc-moss)]/40 pb-3 mb-6">
-              <h2 className="text-base font-bold text-[var(--kc-charcoal)]">
-                Daily Household Dietary Estimate
+          <div className="glass-card p-6 sm:p-7 rounded-3xl border border-[var(--kc-card-border)]">
+            <div className="flex justify-between items-center border-b border-[var(--kc-card-border)] pb-4 mb-6">
+              <h2 className="text-base font-heading font-bold text-[var(--kc-ink)]">
+                Daily Household Dietary Baseline
               </h2>
-              <span className="font-mono text-xs px-2 py-0.5 border border-[var(--kc-moss)] bg-[var(--kc-parchment)] text-[var(--kc-basil)] font-bold">
-                {profile.adultMen + profile.adultWomen + profile.children + profile.elderly} Household Members
+              <span className="font-heading text-xs px-3 py-1 rounded-full bg-[var(--kc-mint)] dark:bg-[#133527] text-[var(--kc-basil)] font-bold border border-[var(--kc-card-border)]">
+                {profile.adultMen + profile.adultWomen + profile.children + profile.elderly} Members Enrolled
               </span>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-              <div className="p-4 border border-[var(--kc-moss)] bg-white rounded-sm text-center">
-                <span className="text-[10px] font-mono text-[var(--kc-moss)] uppercase tracking-wider block">
+              <div className="p-4 rounded-2xl border border-[var(--kc-card-border)] bg-white/70 dark:bg-[#071610]/70 text-center shadow-sm">
+                <span className="text-[10px] font-heading text-[var(--kc-muted)] uppercase tracking-wider block">
                   Energy Target
                 </span>
-                <span className="text-2xl font-bold font-mono text-[var(--kc-charcoal)] block my-1">
+                <span className="text-2xl font-bold font-heading text-[var(--kc-ink)] block my-1">
                   {targets.dailyCalories}
                 </span>
-                <span className="text-[11px] font-mono text-[var(--kc-basil)] font-bold">kcal / day</span>
+                <span className="text-[11px] font-heading text-[var(--kc-basil)] font-semibold">kcal / day</span>
               </div>
 
-              <div className="p-4 border border-[var(--kc-moss)] bg-white rounded-sm text-center">
-                <span className="text-[10px] font-mono text-[var(--kc-moss)] uppercase tracking-wider block">
+              <div className="p-4 rounded-2xl border border-[var(--kc-card-border)] bg-white/70 dark:bg-[#071610]/70 text-center shadow-sm">
+                <span className="text-[10px] font-heading text-[var(--kc-muted)] uppercase tracking-wider block">
                   Protein
                 </span>
-                <span className="text-2xl font-bold font-mono text-[var(--kc-charcoal)] block my-1">
+                <span className="text-2xl font-bold font-heading text-[var(--kc-ink)] block my-1">
                   {targets.dailyProtein}g
                 </span>
-                <span className="text-[11px] font-mono text-[var(--kc-moss)]">Building &amp; repair</span>
+                <span className="text-[11px] font-heading text-[var(--kc-muted)]">Tissue repair</span>
               </div>
 
-              <div className="p-4 border border-[var(--kc-moss)] bg-white rounded-sm text-center">
-                <span className="text-[10px] font-mono text-[var(--kc-moss)] uppercase tracking-wider block">
+              <div className="p-4 rounded-2xl border border-[var(--kc-card-border)] bg-white/70 dark:bg-[#071610]/70 text-center shadow-sm">
+                <span className="text-[10px] font-heading text-[var(--kc-muted)] uppercase tracking-wider block">
                   Carbohydrates
                 </span>
-                <span className="text-2xl font-bold font-mono text-[var(--kc-charcoal)] block my-1">
+                <span className="text-2xl font-bold font-heading text-[var(--kc-ink)] block my-1">
                   {targets.dailyCarbs}g
                 </span>
-                <span className="text-[11px] font-mono text-[var(--kc-moss)]">Complex energy</span>
+                <span className="text-[11px] font-heading text-[var(--kc-muted)]">Complex fuel</span>
               </div>
 
-              <div className="p-4 border border-[var(--kc-moss)] bg-white rounded-sm text-center">
-                <span className="text-[10px] font-mono text-[var(--kc-moss)] uppercase tracking-wider block">
-                  Essential Fats
+              <div className="p-4 rounded-2xl border border-[var(--kc-card-border)] bg-white/70 dark:bg-[#071610]/70 text-center shadow-sm">
+                <span className="text-[10px] font-heading text-[var(--kc-muted)] uppercase tracking-wider block">
+                  Healthy Fats
                 </span>
-                <span className="text-2xl font-bold font-mono text-[var(--kc-charcoal)] block my-1">
+                <span className="text-2xl font-bold font-heading text-[var(--kc-ink)] block my-1">
                   {targets.dailyFats}g
                 </span>
-                <span className="text-[11px] font-mono text-[var(--kc-moss)]">Lipids &amp; absorption</span>
+                <span className="text-[11px] font-heading text-[var(--kc-muted)]">Absorption</span>
               </div>
             </div>
 
-            <div className="p-3 bg-[var(--kc-parchment)] border border-[var(--kc-moss)]/40 text-xs text-[var(--kc-charcoal)] font-sans">
-              <span className="font-bold">Meal Division Guide:</span> Allocate approximately 25% for morning breakfast, 35% for lunch, 15% for evening tea/snack, and 25% for dinner.
+            <div className="p-3.5 rounded-xl bg-neutral-100/70 dark:bg-[#071610]/70 border border-[var(--kc-card-border)] text-xs text-[var(--kc-ink)] font-heading">
+              <span className="font-bold text-[var(--kc-basil)]">Meal Division Guide:</span> Allocate approximately 25% for breakfast, 35% for lunch, 15% for evening tea/snack, and 25% for dinner.
             </div>
           </div>
 
           {/* Active Pantry Food Groups */}
-          <div className="almanac-card bg-[var(--kc-cream)] border border-[var(--kc-moss)] p-6">
-            <h3 className="text-base font-bold text-[var(--kc-charcoal)] border-b border-[var(--kc-moss)]/40 pb-3 mb-4 flex items-center justify-between">
+          <div className="glass-card p-6 sm:p-7 rounded-3xl border border-[var(--kc-card-border)]">
+            <h3 className="text-base font-heading font-bold text-[var(--kc-ink)] border-b border-[var(--kc-card-border)] pb-3 mb-5 flex items-center justify-between">
               <span>Pantry Food Group Audit</span>
-              <span className="text-xs font-mono font-normal text-[var(--kc-moss)]">
-                {activeItems.length} Active Items Tracked
+              <span className="text-xs font-heading font-normal text-[var(--kc-muted)]">
+                {activeItems.length} Active Items In Ledger
               </span>
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="p-4 border border-[var(--kc-moss)] bg-white rounded-sm">
+              <div className="p-4 rounded-2xl border border-[var(--kc-card-border)] bg-white/70 dark:bg-[#071610]/70 shadow-sm">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-bold text-[var(--kc-charcoal)]">Fresh Greens &amp; Fruit</span>
-                  <span className="font-mono text-xs px-2 py-0.5 bg-[var(--kc-basil)] text-white font-bold rounded-sm">
+                  <span className="text-xs font-heading font-bold text-[var(--kc-ink)]">Fresh Greens &amp; Fruit</span>
+                  <span className="text-xs px-2.5 py-0.5 bg-[var(--kc-mint)] dark:bg-[#123023] text-[var(--kc-basil)] font-bold rounded-full font-heading">
                     {produceItems.length}
                   </span>
                 </div>
-                <p className="text-[11px] text-[var(--kc-moss)] font-sans mb-3">
-                  Provides dietary fibre, Vitamin C, potassium, and antioxidants.
+                <p className="text-[11px] text-[var(--kc-muted)] font-heading mb-3 leading-relaxed">
+                  Dietary fibre, Vitamin C, potassium, and antioxidants.
                 </p>
                 {produceItems.length > 0 ? (
-                  <ul className="text-xs font-mono text-[var(--kc-charcoal)] space-y-1">
+                  <ul className="text-xs font-heading text-[var(--kc-ink)] space-y-1">
                     {produceItems.slice(0, 3).map((item) => (
-                      <li key={item.id} className="truncate">• {item.name}</li>
+                      <li key={item.id} className="truncate text-[var(--kc-muted)]">• {item.name}</li>
                     ))}
                   </ul>
                 ) : (
-                  <span className="text-xs font-mono text-[var(--kc-chilli)] block">None in active pantry</span>
+                  <span className="text-xs font-heading text-[var(--kc-chilli)] block">None in active pantry</span>
                 )}
               </div>
 
-              <div className="p-4 border border-[var(--kc-moss)] bg-white rounded-sm">
+              <div className="p-4 rounded-2xl border border-[var(--kc-card-border)] bg-white/70 dark:bg-[#071610]/70 shadow-sm">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-bold text-[var(--kc-charcoal)]">Grains &amp; Pulses</span>
-                  <span className="font-mono text-xs px-2 py-0.5 bg-[var(--kc-mango)] text-[var(--kc-charcoal)] font-bold rounded-sm">
+                  <span className="text-xs font-heading font-bold text-[var(--kc-ink)]">Grains &amp; Pulses</span>
+                  <span className="text-xs px-2.5 py-0.5 bg-amber-500/10 text-[var(--kc-mango)] font-bold rounded-full font-heading">
                     {grainPulseItems.length}
                   </span>
                 </div>
-                <p className="text-[11px] text-[var(--kc-moss)] font-sans mb-3">
-                  Primary source of sustained complex carbohydrates and plant proteins.
+                <p className="text-[11px] text-[var(--kc-muted)] font-heading mb-3 leading-relaxed">
+                  Complex carbs, B-complex vitamins, and plant protein.
                 </p>
                 {grainPulseItems.length > 0 ? (
-                  <ul className="text-xs font-mono text-[var(--kc-charcoal)] space-y-1">
+                  <ul className="text-xs font-heading text-[var(--kc-ink)] space-y-1">
                     {grainPulseItems.slice(0, 3).map((item) => (
-                      <li key={item.id} className="truncate">• {item.name}</li>
+                      <li key={item.id} className="truncate text-[var(--kc-muted)]">• {item.name}</li>
                     ))}
                   </ul>
                 ) : (
-                  <span className="text-xs font-mono text-[var(--kc-chilli)] block">None in active pantry</span>
+                  <span className="text-xs font-heading text-[var(--kc-chilli)] block">None in active pantry</span>
                 )}
               </div>
 
-              <div className="p-4 border border-[var(--kc-moss)] bg-white rounded-sm">
+              <div className="p-4 rounded-2xl border border-[var(--kc-card-border)] bg-white/70 dark:bg-[#071610]/70 shadow-sm">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-bold text-[var(--kc-charcoal)]">Proteins &amp; Dairy</span>
-                  <span className="font-mono text-xs px-2 py-0.5 bg-[var(--kc-blueberry)] text-white font-bold rounded-sm">
+                  <span className="text-xs font-heading font-bold text-[var(--kc-ink)]">Protein &amp; Dairy</span>
+                  <span className="text-xs px-2.5 py-0.5 bg-blue-500/10 text-[var(--kc-blueberry)] font-bold rounded-full font-heading">
                     {proteinDairyItems.length}
                   </span>
                 </div>
-                <p className="text-[11px] text-[var(--kc-moss)] font-sans mb-3">
-                  Calcium, Vitamin B12, and complete amino acids for tissue maintenance.
+                <p className="text-[11px] text-[var(--kc-muted)] font-heading mb-3 leading-relaxed">
+                  Complete amino acids, calcium, and bioavailable iron.
                 </p>
                 {proteinDairyItems.length > 0 ? (
-                  <ul className="text-xs font-mono text-[var(--kc-charcoal)] space-y-1">
+                  <ul className="text-xs font-heading text-[var(--kc-ink)] space-y-1">
                     {proteinDairyItems.slice(0, 3).map((item) => (
-                      <li key={item.id} className="truncate">• {item.name}</li>
+                      <li key={item.id} className="truncate text-[var(--kc-muted)]">• {item.name}</li>
                     ))}
                   </ul>
                 ) : (
-                  <span className="text-xs font-mono text-[var(--kc-chilli)] block">None in active pantry</span>
+                  <span className="text-xs font-heading text-[var(--kc-chilli)] block">None in active pantry</span>
                 )}
               </div>
-            </div>
-
-            <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-[var(--kc-moss)]/40">
-              <span className="text-xs font-sans text-[var(--kc-moss)]">
-                Ready to prepare a meal rescuing near-expiry items?
-              </span>
-              <Link
-                href="/en/recipes"
-                className="px-4 py-2 text-xs font-mono uppercase tracking-wider font-bold bg-[var(--kc-basil)] text-white hover:opacity-90 rounded-sm"
-              >
-                Launch Recipe Rescue Engine →
-              </Link>
             </div>
           </div>
         </div>

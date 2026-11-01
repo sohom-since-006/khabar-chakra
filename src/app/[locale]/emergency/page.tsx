@@ -16,7 +16,7 @@ export default function EmergencyRedirectPage() {
   return (
     <div className="min-h-[50vh] flex items-center justify-center p-6 text-center">
       <div className="space-y-3">
-        <div className="text-3xl animate-bounce">⚡</div>
+        <div className="text-3xl animate-pulse-glow">⚡</div>
         <h1 className="text-lg font-bold text-[var(--kc-ink)]">
           Redirecting to &ldquo;Use This First&rdquo; Priority Shelf...
         </h1>

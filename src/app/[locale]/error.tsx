@@ -20,25 +20,25 @@ export default function ErrorBoundary({
 
   return (
     <main className="min-h-[75vh] flex items-center justify-center px-4 sm:px-6 lg:px-8 py-16">
-      <div className="almanac-card bg-[var(--kc-card)] border border-[var(--kc-chilli)]/60 p-8 sm:p-12 max-w-xl w-full text-center shadow-xl rounded-2xl relative overflow-hidden transition-all">
+      <div className="glass-card bg-[var(--kc-card)] border border-red-200/80 dark:border-red-900/60 p-8 sm:p-12 max-w-xl w-full text-center shadow-xl rounded-3xl relative overflow-hidden transition-all">
         {/* Decorative subtle botanical background glow */}
-        <div className="absolute -top-12 -right-12 w-32 h-32 bg-[var(--kc-basil)]/10 rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-[var(--kc-mango)]/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -top-12 -right-12 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
 
         {/* Icon & Badge */}
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full border-2 border-[var(--kc-chilli)] bg-red-50 dark:bg-red-950/40 flex items-center justify-center text-[var(--kc-chilli)] shadow-inner">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full border border-red-300 dark:border-red-900 bg-red-50 dark:bg-red-950/40 flex items-center justify-center text-[#D6381F] shadow-inner">
           <KhabarIcon name="warning" size={28} />
         </div>
 
-        <span className="text-[11px] font-mono font-bold tracking-widest text-[var(--kc-chilli)] uppercase block">
+        <span className="text-[11px] font-mono font-bold tracking-widest text-[#D6381F] uppercase block">
           DOMESTIC LEDGER · TEMPORARY INTERRUPT
         </span>
 
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--kc-ink)] mt-2 mb-3 tracking-tight font-montserrat">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--kc-ink)] mt-2 mb-3 tracking-tight font-heading">
           A Slight Hiccup in the Kitchen
         </h1>
 
-        <p className="text-sm text-[var(--kc-muted)] mb-6 font-sans leading-relaxed max-w-md mx-auto">
+        <p className="text-sm text-[var(--kc-muted)] mb-6 font-heading leading-relaxed max-w-md mx-auto">
           An unexpected interruption occurred while syncing your pantry inventory. Rest assured, your
           freshness tracking and zero-waste savings records remain intact.
         </p>

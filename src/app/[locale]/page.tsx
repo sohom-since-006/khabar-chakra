@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence, type Variants } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { AppSidebar } from '@/components/layout/AppSidebar';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
 import { useUserSession } from '@/hooks/useUserSession';
@@ -27,14 +26,14 @@ const containerVariants: Variants = {
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 12 },
+  hidden: { opacity: 0, y: 14 },
   show: {
     opacity: 1,
     y: 0,
     transition: {
       type: 'spring',
-      stiffness: 360,
-      damping: 26,
+      stiffness: 320,
+      damping: 24,
     },
   },
 };
@@ -42,13 +41,12 @@ const itemVariants: Variants = {
 const cardHoverProps = {
   whileHover: {
     y: -4,
-    transition: { type: 'spring' as const, stiffness: 400, damping: 25 },
+    transition: { type: 'spring' as const, stiffness: 350, damping: 22 },
   },
   whileTap: { scale: 0.985 },
 };
 
 export default function LandingPage({ params }: LandingPageProps) {
-  const router = useRouter();
   const [locale, setLocale] = useState('en');
   const { user, displayName, isLoggedIn } = useUserSession();
   const [shelfStats, setShelfStats] = useState({
@@ -127,27 +125,30 @@ export default function LandingPage({ params }: LandingPageProps) {
         variants={containerVariants}
         initial="hidden"
         animate="show"
-        className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 max-w-full overflow-hidden transition-colors"
+        className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 max-w-full overflow-hidden transition-colors"
       >
         {/* Top Hero Welcome Banner */}
         <motion.section
           variants={itemVariants}
-          className="relative rounded-2xl bg-[var(--kc-card)] border border-[var(--kc-card-border)] shadow-sm dark:shadow-[0_0_25px_rgba(34,178,130,0.08)] overflow-hidden flex flex-col md:flex-row items-center justify-between min-h-[140px] p-4 sm:p-6 lg:p-8 group transition-all"
+          className="relative rounded-3xl glass-card border border-black/[0.06] dark:border-white/[0.08] shadow-[0_12px_40px_rgba(0,0,0,0.04)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col md:flex-row items-center justify-between min-h-[150px] p-5 sm:p-7 lg:p-9 group transition-all"
         >
-          <div className="z-10 space-y-2 max-w-xl">
+          {/* Subtle Ambient Radial Glow */}
+          <div className="absolute top-0 right-1/4 w-80 h-80 bg-emerald-500/10 dark:bg-emerald-400/5 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 space-y-2 max-w-xl">
             <div className="leading-tight">
-              <span className="font-cursive-sacramento text-2xl sm:text-4xl text-[var(--kc-basil)] font-bold block">
+              <span className="font-cursive-sacramento text-3xl sm:text-4xl text-emerald-700 dark:text-emerald-400 font-bold block">
                 Welcome back,
               </span>
-              <h1 className="font-montserrat text-2xl sm:text-4xl md:text-5xl font-black text-[var(--kc-ink)] tracking-tight block -mt-1">
+              <h1 className="font-heading text-2xl sm:text-4xl md:text-5xl font-black text-[var(--kc-ink)] tracking-tight block -mt-1">
                 {userGreeting}!
               </h1>
             </div>
-            <p className="text-[10px] sm:text-xs font-bold font-mono tracking-widest text-[var(--kc-muted)] uppercase">
-              SMART TRACKING · ZERO WASTE · HOUSEHOLD SAVINGS
+            <p className="text-[11px] sm:text-xs font-mono font-bold tracking-widest text-[var(--kc-muted)] uppercase">
+              SMART TRACKING · ZERO FOOD WASTE · HOUSEHOLD SAVINGS
             </p>
-            <div className="pt-0.5 sm:pt-1">
-              <span className="font-cursive-vibes text-xl sm:text-2xl md:text-3xl text-[var(--kc-basil)] italic block">
+            <div className="pt-1">
+              <span className="font-cursive-vibes text-xl sm:text-2xl md:text-3xl text-emerald-800 dark:text-emerald-300 italic block">
                 &ldquo;Track freshness. Cook creatively. Eliminate waste.&rdquo; ♡
               </span>
             </div>
@@ -157,7 +158,7 @@ export default function LandingPage({ params }: LandingPageProps) {
           <motion.div
             whileHover={{ scale: 1.02 }}
             transition={{ type: 'spring' as const, stiffness: 300, damping: 20 }}
-            className="relative w-full md:w-80 h-36 sm:h-44 md:h-48 shrink-0 mt-3 md:mt-0 rounded-xl overflow-hidden shadow-sm border border-[var(--kc-card-border)] cursor-pointer"
+            className="relative w-full md:w-80 h-36 sm:h-44 md:h-48 shrink-0 mt-4 md:mt-0 rounded-2xl overflow-hidden shadow-md border border-black/[0.08] dark:border-white/[0.1] cursor-pointer"
           >
             <Image
               src="/images/fresh_produce_bowl.jpg"
@@ -166,7 +167,7 @@ export default function LandingPage({ params }: LandingPageProps) {
               className="object-cover group-hover:scale-105 transition-transform duration-700"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[var(--kc-card)] via-transparent to-transparent md:block hidden opacity-30" />
+            <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-black/20 via-transparent to-transparent opacity-60" />
           </motion.div>
         </motion.section>
 
@@ -175,32 +176,34 @@ export default function LandingPage({ params }: LandingPageProps) {
           {/* Left: Forest Green Proclamation Banner (7 cols) */}
           <motion.section
             variants={itemVariants}
-            className="lg:col-span-7 rounded-2xl bg-gradient-to-br from-[#0B3728] via-[#0D382B] to-[#08261C] dark:from-[#061C14] dark:via-[#09291D] dark:to-[#04140E] p-5 sm:p-7 lg:p-8 text-white shadow-md relative overflow-hidden flex flex-col justify-between border border-[#144737] dark:border-[#1C4D3A]"
+            className="lg:col-span-7 rounded-3xl bg-gradient-to-br from-[#061F16] via-[#0A2E21] to-[#04160F] p-6 sm:p-8 lg:p-9 text-white shadow-xl relative overflow-hidden flex flex-col justify-between border border-emerald-800/40"
           >
-            <div className="relative z-10 space-y-2.5 sm:space-y-3">
-              <div className="flex items-center gap-2 text-xs font-mono text-[#7BD4A8] tracking-widest uppercase">
-                <KhabarIcon name="plant-based" size={15} />
+            <div className="absolute -top-16 -right-16 w-64 h-64 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="relative z-10 space-y-3 sm:space-y-4">
+              <div className="flex items-center gap-2 text-xs font-mono text-emerald-300 tracking-widest uppercase">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span>KITCHEN INTELLIGENCE · PROCLAMATION NO. 01</span>
               </div>
 
-              <h2 className="font-cursive-vibes text-2xl sm:text-4xl md:text-5xl text-[#FFD56B] leading-tight font-bold">
+              <h2 className="font-cursive-vibes text-3xl sm:text-4xl md:text-5xl text-[#FFD56B] leading-tight font-bold">
                 Never let good food go to waste.
               </h2>
 
-              <p className="text-xs sm:text-sm text-[#D3E8DE] leading-relaxed max-w-lg font-montserrat font-normal">
+              <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed max-w-lg font-heading font-normal">
                 Track pantry and fridge freshness before the expiration clock runs out.
                 Parse grocery receipts instantly via OCR, organize your shelves by urgency,
                 and turn expiring ingredients into delicious home recipes while saving thousands in domestic groceries.
               </p>
             </div>
 
-            <div className="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-5 sm:pt-6">
+            <div className="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-6 sm:pt-8">
               {isLoggedIn ? (
                 <>
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
                     <Link
                       href={`/${locale}/inventory/add`}
-                      className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#FFC93C] text-[#0A281E] font-bold text-xs sm:text-sm hover:bg-[#FFD56B] transition-colors shadow-sm w-full sm:w-auto min-h-[44px]"
+                      className="flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#FFC93C] to-[#FFD56B] text-[#0A281E] font-heading font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all w-full sm:w-auto min-h-[44px]"
                     >
                       <KhabarIcon name="scan" size={16} />
                       <span>Scan Food or Receipt (OCR) →</span>
@@ -210,7 +213,7 @@ export default function LandingPage({ params }: LandingPageProps) {
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
                     <Link
                       href={`/${locale}/inventory`}
-                      className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-[#217056] text-[#E0F3EB] font-semibold text-xs sm:text-sm hover:bg-[#144737] transition-colors w-full sm:w-auto min-h-[44px]"
+                      className="flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-emerald-500/40 text-emerald-100 font-heading font-semibold text-xs sm:text-sm hover:bg-emerald-800/30 transition-all w-full sm:w-auto min-h-[44px]"
                     >
                       <KhabarIcon name="expiring" size={16} />
                       <span>Open &ldquo;Use This First&rdquo; Shelf</span>
@@ -222,7 +225,7 @@ export default function LandingPage({ params }: LandingPageProps) {
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
                     <Link
                       href={`/${locale}/login`}
-                      className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#FFC93C] text-[#0A281E] font-bold text-xs sm:text-sm hover:bg-[#FFD56B] transition-colors shadow-sm w-full sm:w-auto min-h-[44px]"
+                      className="flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#FFC93C] to-[#FFD56B] text-[#0A281E] font-heading font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all w-full sm:w-auto min-h-[44px]"
                     >
                       <span>Continue with Google / Login →</span>
                     </Link>
@@ -231,7 +234,7 @@ export default function LandingPage({ params }: LandingPageProps) {
                   <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
                     <Link
                       href={`/${locale}/signup`}
-                      className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border border-[#217056] text-[#E0F3EB] font-semibold text-xs sm:text-sm hover:bg-[#144737] transition-colors w-full sm:w-auto min-h-[44px]"
+                      className="flex items-center justify-center gap-2 px-6 py-3 rounded-full border border-emerald-500/40 text-emerald-100 font-heading font-semibold text-xs sm:text-sm hover:bg-emerald-800/30 transition-all w-full sm:w-auto min-h-[44px]"
                     >
                       <span>Create Free Kitchen Account</span>
                     </Link>
@@ -241,7 +244,7 @@ export default function LandingPage({ params }: LandingPageProps) {
             </div>
 
             {/* Background subtle art / photo thumbnail accent */}
-            <div className="absolute -bottom-6 -right-6 w-44 sm:w-52 h-44 sm:h-52 opacity-25 rounded-full overflow-hidden pointer-events-none">
+            <div className="absolute -bottom-6 -right-6 w-44 sm:w-52 h-44 sm:h-52 opacity-20 rounded-full overflow-hidden pointer-events-none">
               <Image
                 src="/images/vegetables_basket.jpg"
                 alt="Fresh Food Happy Homes"
@@ -251,30 +254,30 @@ export default function LandingPage({ params }: LandingPageProps) {
             </div>
           </motion.section>
 
-          {/* Right: Real Household Kitchen Status Radar (Zero Mock Graphs or Fake Indexes) */}
+          {/* Right: Real Household Kitchen Status Radar */}
           <motion.section
             variants={itemVariants}
-            className="lg:col-span-5 rounded-2xl bg-[var(--kc-card)] border border-[var(--kc-card-border)] p-5 sm:p-6 shadow-sm flex flex-col justify-between space-y-4 sm:space-y-5 transition-colors"
+            className="lg:col-span-5 rounded-3xl glass-card border border-black/[0.06] dark:border-white/[0.08] p-5 sm:p-7 shadow-sm flex flex-col justify-between space-y-4 sm:space-y-5 transition-colors"
           >
-            <div className="flex items-center justify-between pb-3 border-b border-[var(--kc-hairline)]">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">🌿</span>
+            <div className="flex items-center justify-between pb-3.5 border-b border-black/[0.06] dark:border-white/[0.08]">
+              <div className="flex items-center gap-2.5">
+                <span className="text-xl">🌿</span>
                 <h3 className="font-cursive-sacramento text-2xl sm:text-3xl font-bold text-[var(--kc-ink)]">
                   Kitchen Shelf Radar
                 </h3>
               </div>
-              <span className="text-[10px] font-mono text-[var(--kc-basil)] bg-[var(--kc-mint)] px-2.5 py-1 rounded-full flex items-center gap-1.5 font-bold">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#10B981] animate-pulse" />
+              <span className="text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 px-3 py-1 rounded-full flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 Live Household Sync
               </span>
             </div>
 
-            {/* Clean Real Stats Grid (Zero mock circular graphs, zero fake indexes) */}
-            <div className="grid grid-cols-2 gap-2.5 sm:gap-3 py-1">
-              <div className="p-3 sm:p-3.5 rounded-xl bg-neutral-50 dark:bg-[#132A20] border border-[var(--kc-hairline)] flex flex-col justify-between">
-                <div className="flex items-center justify-between mb-1">
+            {/* Clean Real Stats Grid */}
+            <div className="grid grid-cols-2 gap-3 py-1">
+              <div className="p-4 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.06] flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-1.5">
                   <span className="text-[10px] font-mono text-[var(--kc-muted)] uppercase tracking-wider">Active Items</span>
-                  <KhabarIcon name="fridge" size={15} className="text-[var(--kc-basil)]" />
+                  <KhabarIcon name="fridge" size={15} className="text-emerald-700 dark:text-emerald-400" />
                 </div>
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-2xl sm:text-3xl font-bold font-mono text-[var(--kc-ink)]">{shelfStats.activeCount}</span>
@@ -282,8 +285,8 @@ export default function LandingPage({ params }: LandingPageProps) {
                 </div>
               </div>
 
-              <div className="p-3 sm:p-3.5 rounded-xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/60 flex flex-col justify-between">
-                <div className="flex items-center justify-between mb-1">
+              <div className="p-4 rounded-2xl bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/70 dark:border-amber-900/40 flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-1.5">
                   <span className="text-[10px] font-mono text-amber-700 dark:text-amber-400 uppercase tracking-wider">Urgent (&lt;48h)</span>
                   <KhabarIcon name="expiring" size={15} className="text-[#D6381F]" />
                 </div>
@@ -293,8 +296,8 @@ export default function LandingPage({ params }: LandingPageProps) {
                 </div>
               </div>
 
-              <div className="p-3 sm:p-3.5 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-900/60 flex flex-col justify-between">
-                <div className="flex items-center justify-between mb-1">
+              <div className="p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200/70 dark:border-emerald-900/40 flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-1.5">
                   <span className="text-[10px] font-mono text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Fresh &amp; Safe</span>
                   <KhabarIcon name="plant-based" size={15} className="text-emerald-600 dark:text-emerald-400" />
                 </div>
@@ -304,28 +307,28 @@ export default function LandingPage({ params }: LandingPageProps) {
                 </div>
               </div>
 
-              <div className="p-3 sm:p-3.5 rounded-xl bg-blue-50/70 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-900/60 flex flex-col justify-between">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-[10px] font-mono text-blue-700 dark:text-blue-400 uppercase tracking-wider">Meals Rescued</span>
-                  <KhabarIcon name="meal" size={15} className="text-blue-600 dark:text-blue-400" />
+              <div className="p-4 rounded-2xl bg-sky-50/70 dark:bg-sky-950/20 border border-sky-200/70 dark:border-sky-900/40 flex flex-col justify-between">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-[10px] font-mono text-sky-700 dark:text-sky-400 uppercase tracking-wider">Meals Rescued</span>
+                  <KhabarIcon name="meal" size={15} className="text-sky-600 dark:text-sky-400" />
                 </div>
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl sm:text-3xl font-bold font-mono text-blue-800 dark:text-blue-300">{shelfStats.savedCount}</span>
-                  <span className="text-[10px] font-mono text-blue-700 dark:text-blue-400">consumed</span>
+                  <span className="text-2xl sm:text-3xl font-bold font-mono text-sky-800 dark:text-sky-300">{shelfStats.savedCount}</span>
+                  <span className="text-[10px] font-mono text-sky-700 dark:text-sky-400">consumed</span>
                 </div>
               </div>
             </div>
 
             {/* Contextual Status Ribbon & Fast Action */}
-            <div className="pt-3 border-t border-[var(--kc-hairline)] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+            <div className="pt-3.5 border-t border-black/[0.06] dark:border-white/[0.08] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <div className="flex items-center gap-2 text-xs">
                 {shelfStats.urgentCount > 0 ? (
-                  <span className="font-semibold text-amber-700 dark:text-amber-400 flex items-center gap-1.5 text-xs">
+                  <span className="font-heading font-semibold text-amber-700 dark:text-amber-400 flex items-center gap-1.5 text-xs">
                     <span className="w-2 h-2 rounded-full bg-[#D6381F] animate-ping shrink-0" />
                     <span>{shelfStats.urgentCount} item(s) require priority cooking</span>
                   </span>
                 ) : (
-                  <span className="font-semibold text-[var(--kc-basil)] flex items-center gap-1.5 text-xs">
+                  <span className="font-heading font-semibold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5 text-xs">
                     <span>✨</span>
                     <span>All kitchen items are fresh &amp; stable</span>
                   </span>
@@ -334,7 +337,7 @@ export default function LandingPage({ params }: LandingPageProps) {
 
               <Link
                 href={`/${locale}/inventory`}
-                className="px-3.5 py-2 text-xs font-bold rounded-xl bg-[var(--kc-basil)] hover:bg-[var(--kc-basil-hover)] text-white text-center transition-colors shadow-sm min-h-[44px] flex items-center justify-center shrink-0"
+                className="px-4 py-2.5 text-xs font-heading font-bold rounded-full bg-emerald-800 hover:bg-emerald-900 text-white text-center transition-all shadow-sm min-h-[44px] flex items-center justify-center shrink-0"
               >
                 Open Priority Shelf →
               </Link>
@@ -351,22 +354,22 @@ export default function LandingPage({ params }: LandingPageProps) {
           <motion.div {...cardHoverProps}>
             <Link
               href={`/${locale}/inventory/add`}
-              className="p-5 rounded-2xl bg-[#EBF7EE] dark:bg-[#0D261B] border border-[#CCE7D4] dark:border-[#1E4D36] hover:border-[#96D2A8] transition-colors flex items-center justify-between group shadow-sm h-full"
+              className="p-5 sm:p-6 rounded-3xl glass-card border border-emerald-200/60 dark:border-emerald-900/40 hover:border-emerald-400/80 transition-all flex items-center justify-between group shadow-sm h-full"
             >
               <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#163B2C] shadow-sm flex items-center justify-center text-[#16583E] dark:text-[#2BD697] group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/50 dark:border-emerald-900/50 shadow-inner flex items-center justify-center text-emerald-800 dark:text-emerald-300 group-hover:scale-110 transition-transform">
                   <KhabarIcon name="scan" size={22} />
                 </div>
                 <div>
-                  <h4 className="font-cursive-sacramento text-2xl font-bold text-[#16583E] dark:text-[#2BD697] block leading-none">
-                    Scan & OCR
+                  <h4 className="font-cursive-sacramento text-2xl font-bold text-emerald-800 dark:text-emerald-300 block leading-none">
+                    Scan &amp; OCR
                   </h4>
-                  <p className="text-[11px] text-[#4F7565] dark:text-[#8BBDA6] mt-1 line-clamp-1 font-medium">
-                    Instant receipt & expiry intake.
+                  <p className="font-heading text-[11px] text-[var(--kc-muted)] mt-1 line-clamp-1 font-medium">
+                    Instant receipt &amp; expiry intake.
                   </p>
                 </div>
               </div>
-              <div className="w-8 h-8 rounded-full bg-[#1E7050] text-white flex items-center justify-center text-xs group-hover:translate-x-1 transition-transform shrink-0">
+              <div className="w-8 h-8 rounded-full bg-emerald-800 text-white flex items-center justify-center text-xs group-hover:translate-x-1 transition-transform shrink-0 shadow-sm">
                 →
               </div>
             </Link>
@@ -376,22 +379,22 @@ export default function LandingPage({ params }: LandingPageProps) {
           <motion.div {...cardHoverProps}>
             <Link
               href={`/${locale}/home`}
-              className="p-5 rounded-2xl bg-[#EBF3FC] dark:bg-[#0E2033] border border-[#CDE1F8] dark:border-[#1D3E61] hover:border-[#96C2F2] transition-colors flex items-center justify-between group shadow-sm h-full"
+              className="p-5 sm:p-6 rounded-3xl glass-card border border-sky-200/60 dark:border-sky-900/40 hover:border-sky-400/80 transition-all flex items-center justify-between group shadow-sm h-full"
             >
               <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#17304C] shadow-sm flex items-center justify-center text-[#1E5698] dark:text-[#5B9EEA] group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 rounded-2xl bg-sky-50 dark:bg-sky-950/60 border border-sky-200/50 dark:border-sky-900/50 shadow-inner flex items-center justify-center text-sky-800 dark:text-sky-300 group-hover:scale-110 transition-transform">
                   <KhabarIcon name="fridge" size={22} />
                 </div>
                 <div>
-                  <h4 className="font-cursive-sacramento text-2xl font-bold text-[#1E5698] dark:text-[#5B9EEA] block leading-none">
+                  <h4 className="font-cursive-sacramento text-2xl font-bold text-sky-800 dark:text-sky-300 block leading-none">
                     My Inventory
                   </h4>
-                  <p className="text-[11px] text-[#557396] dark:text-[#8EABC9] mt-1 line-clamp-1 font-medium">
+                  <p className="font-heading text-[11px] text-[var(--kc-muted)] mt-1 line-clamp-1 font-medium">
                     Multi-zone freshness tracker.
                   </p>
                 </div>
               </div>
-              <div className="w-8 h-8 rounded-full bg-[#245FAC] text-white flex items-center justify-center text-xs group-hover:translate-x-1 transition-transform shrink-0">
+              <div className="w-8 h-8 rounded-full bg-sky-800 text-white flex items-center justify-center text-xs group-hover:translate-x-1 transition-transform shrink-0 shadow-sm">
                 →
               </div>
             </Link>
@@ -401,22 +404,22 @@ export default function LandingPage({ params }: LandingPageProps) {
           <motion.div {...cardHoverProps}>
             <Link
               href={`/${locale}/inventory`}
-              className="p-5 rounded-2xl bg-[#FDF1EC] dark:bg-[#301A14] border border-[#F8D6C9] dark:border-[#52291E] hover:border-[#F1AB94] transition-colors flex items-center justify-between group shadow-sm h-full"
+              className="p-5 sm:p-6 rounded-3xl glass-card border border-rose-200/60 dark:border-rose-900/40 hover:border-rose-400/80 transition-all flex items-center justify-between group shadow-sm h-full"
             >
               <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#42221A] shadow-sm flex items-center justify-center text-[#BA442B] dark:text-[#F3765A] group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200/50 dark:border-rose-900/50 shadow-inner flex items-center justify-center text-rose-800 dark:text-rose-300 group-hover:scale-110 transition-transform">
                   <KhabarIcon name="expiring" size={22} />
                 </div>
                 <div>
-                  <h4 className="font-cursive-sacramento text-2xl font-bold text-[#BA442B] dark:text-[#F3765A] block leading-none">
+                  <h4 className="font-cursive-sacramento text-2xl font-bold text-rose-800 dark:text-rose-300 block leading-none">
                     Use This First
                   </h4>
-                  <p className="text-[11px] text-[#8C5D53] dark:text-[#C5978E] mt-1 line-clamp-1 font-medium">
+                  <p className="font-heading text-[11px] text-[var(--kc-muted)] mt-1 line-clamp-1 font-medium">
                     Urgent 24–48h expiry shelf.
                   </p>
                 </div>
               </div>
-              <div className="w-8 h-8 rounded-full bg-[#D14F30] text-white flex items-center justify-center text-xs group-hover:translate-x-1 transition-transform shrink-0">
+              <div className="w-8 h-8 rounded-full bg-rose-800 text-white flex items-center justify-center text-xs group-hover:translate-x-1 transition-transform shrink-0 shadow-sm">
                 →
               </div>
             </Link>
@@ -426,22 +429,22 @@ export default function LandingPage({ params }: LandingPageProps) {
           <motion.div {...cardHoverProps}>
             <Link
               href={`/${locale}/shopping-list`}
-              className="p-5 rounded-2xl bg-[#FFFBEB] dark:bg-[#2B230C] border border-[#FDE68A] dark:border-[#534212] hover:border-[#FCD34D] transition-colors flex items-center justify-between group shadow-sm h-full"
+              className="p-5 sm:p-6 rounded-3xl glass-card border border-amber-200/60 dark:border-amber-900/40 hover:border-amber-400/80 transition-all flex items-center justify-between group shadow-sm h-full"
             >
               <div className="flex items-center gap-3.5">
-                <div className="w-12 h-12 rounded-2xl bg-white dark:bg-[#3F3312] shadow-sm flex items-center justify-center text-[#B45309] dark:text-[#FBBF24] group-hover:scale-110 transition-transform">
+                <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200/50 dark:border-amber-900/50 shadow-inner flex items-center justify-center text-amber-800 dark:text-amber-300 group-hover:scale-110 transition-transform">
                   <KhabarIcon name="shopping-list" size={22} />
                 </div>
                 <div>
-                  <h4 className="font-cursive-sacramento text-2xl font-bold text-[#B45309] dark:text-[#FBBF24] block leading-none">
+                  <h4 className="font-cursive-sacramento text-2xl font-bold text-amber-800 dark:text-amber-300 block leading-none">
                     Before You Buy
                   </h4>
-                  <p className="text-[11px] text-[#78350F] dark:text-[#D4A953] mt-1 line-clamp-1 font-medium">
+                  <p className="font-heading text-[11px] text-[var(--kc-muted)] mt-1 line-clamp-1 font-medium">
                     Prevents duplicate purchases.
                   </p>
                 </div>
               </div>
-              <div className="w-8 h-8 rounded-full bg-[#D97706] text-white flex items-center justify-center text-xs group-hover:translate-x-1 transition-transform shrink-0">
+              <div className="w-8 h-8 rounded-full bg-amber-700 text-white flex items-center justify-center text-xs group-hover:translate-x-1 transition-transform shrink-0 shadow-sm">
                 →
               </div>
             </Link>
@@ -451,23 +454,23 @@ export default function LandingPage({ params }: LandingPageProps) {
         {/* Live "Use This First" Smart Shelf Preview */}
         <motion.section
           variants={itemVariants}
-          className="p-6 rounded-2xl bg-[var(--kc-card)] border border-[var(--kc-card-border)] shadow-sm space-y-4 transition-colors"
+          className="p-6 sm:p-8 rounded-3xl glass-card border border-black/[0.06] dark:border-white/[0.08] shadow-sm space-y-4 transition-colors"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5">
               <span className="text-xl">⚡</span>
               <div>
-                <h3 className="text-lg font-bold text-[var(--kc-ink)]">
+                <h3 className="font-heading text-lg font-bold text-[var(--kc-ink)]">
                   &ldquo;Use This First&rdquo; Priority Shelf
                 </h3>
-                <p className="text-xs text-[var(--kc-muted)]">
+                <p className="font-heading text-xs text-[var(--kc-muted)]">
                   Items expiring soonest in your kitchen. Cook these first to keep your waste at ₹0.
                 </p>
               </div>
             </div>
             <Link
               href={`/${locale}/recipes`}
-              className="text-xs font-bold text-[var(--kc-basil)] hover:underline flex items-center gap-1 group"
+              className="text-xs font-heading font-bold text-emerald-700 dark:text-emerald-400 hover:underline flex items-center gap-1 group w-fit"
             >
               <span>Auto-Generate Recipe</span>
               <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -475,7 +478,7 @@ export default function LandingPage({ params }: LandingPageProps) {
           </div>
 
           {urgentItems.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 pt-2">
               {urgentItems.slice(0, 3).map((item) => {
                 const isCritical = item.hoursLeft <= 24;
                 const emoji =
@@ -489,10 +492,10 @@ export default function LandingPage({ params }: LandingPageProps) {
                   <motion.div
                     key={item.id}
                     whileHover={{ y: -3, scale: 1.01 }}
-                    className={`p-3.5 sm:p-4 rounded-xl border flex items-center justify-between gap-3 shadow-sm ${
+                    className={`p-4 rounded-2xl border flex items-center justify-between gap-3 shadow-sm ${
                       isCritical
-                        ? 'border-red-200 dark:border-red-900/60 bg-red-50/50 dark:bg-red-950/20'
-                        : 'border-amber-200 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20'
+                        ? 'border-red-200/80 dark:border-red-900/60 bg-red-50/50 dark:bg-red-950/20'
+                        : 'border-amber-200/80 dark:border-amber-900/60 bg-amber-50/50 dark:bg-amber-950/20'
                     }`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
@@ -500,7 +503,7 @@ export default function LandingPage({ params }: LandingPageProps) {
                         {emoji}
                       </div>
                       <div className="min-w-0">
-                        <h5 className="text-sm font-bold text-[var(--kc-ink)] truncate">{item.name}</h5>
+                        <h5 className="font-heading text-sm font-bold text-[var(--kc-ink)] truncate">{item.name}</h5>
                         <span className={`text-[11px] font-mono font-semibold flex items-center gap-1 ${
                           isCritical ? 'text-[#D6381F]' : 'text-amber-600 dark:text-amber-400'
                         }`}>
@@ -511,7 +514,7 @@ export default function LandingPage({ params }: LandingPageProps) {
                     </div>
                     <Link
                       href={`/${locale}/recipes?ingredient=${encodeURIComponent(item.name)}`}
-                      className={`px-3.5 py-1.5 rounded-lg text-white text-xs font-bold hover:opacity-90 shadow-sm shrink-0 min-h-[36px] flex items-center justify-center ${
+                      className={`px-4 py-2 rounded-full text-white text-xs font-heading font-bold hover:opacity-90 shadow-sm shrink-0 min-h-[36px] flex items-center justify-center ${
                         isCritical ? 'bg-[#D6381F]' : 'bg-[#F59E0B]'
                       }`}
                     >
@@ -522,22 +525,22 @@ export default function LandingPage({ params }: LandingPageProps) {
               })}
             </div>
           ) : !isLoggedIn ? (
-            <div className="p-6 sm:p-8 rounded-xl border border-dashed border-[var(--kc-card-border)] bg-neutral-50/50 dark:bg-[#0E2219]/40 text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-[var(--kc-mint)] text-[var(--kc-basil)] flex items-center justify-center mx-auto text-xl shadow-inner">
+            <div className="p-8 sm:p-10 rounded-2xl border border-dashed border-black/[0.1] dark:border-white/[0.1] bg-black/[0.01] dark:bg-white/[0.02] text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center mx-auto text-xl shadow-inner">
                 🔐
               </div>
               <div className="max-w-md mx-auto space-y-1">
-                <h4 className="text-base font-bold text-[var(--kc-ink)]">
+                <h4 className="font-heading text-base font-bold text-[var(--kc-ink)]">
                   Connect Your Kitchen Shelves
                 </h4>
-                <p className="text-xs text-[var(--kc-muted)] leading-relaxed">
+                <p className="font-heading text-xs text-[var(--kc-muted)] leading-relaxed">
                   Sign in with Google to track your domestic fridge and pantry, view items expiring within 48h, and turn potential waste into complete meals.
                 </p>
               </div>
               <div className="pt-2">
                 <Link
                   href={`/${locale}/login`}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--kc-basil)] text-white text-xs font-bold hover:bg-[var(--kc-basil-hover)] transition-all shadow-sm"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-emerald-800 text-white text-xs font-heading font-bold hover:bg-emerald-900 transition-all shadow-sm"
                 >
                   <span>Sign In with Google to Open Kitchen</span>
                   <span>→</span>
@@ -545,12 +548,12 @@ export default function LandingPage({ params }: LandingPageProps) {
               </div>
             </div>
           ) : (
-            <div className="p-6 sm:p-8 rounded-xl border border-dashed border-emerald-200 dark:border-emerald-900/40 bg-emerald-50/30 dark:bg-emerald-950/10 text-center space-y-2">
+            <div className="p-8 sm:p-10 rounded-2xl border border-dashed border-emerald-200 dark:border-emerald-900/40 bg-emerald-50/20 dark:bg-emerald-950/10 text-center space-y-2">
               <span className="text-2xl">✨</span>
-              <h4 className="text-base font-bold text-[var(--kc-ink)]">
+              <h4 className="font-heading text-base font-bold text-[var(--kc-ink)]">
                 All Kitchen Shelves Stable &amp; Fresh
               </h4>
-              <p className="text-xs text-[var(--kc-muted)] max-w-md mx-auto leading-relaxed">
+              <p className="font-heading text-xs text-[var(--kc-muted)] max-w-md mx-auto leading-relaxed">
                 {shelfStats.activeCount === 0
                   ? 'No kitchen items logged yet. Scan a grocery receipt or add ingredients to start tracking shelf-life urgency.'
                   : 'Zero ingredients are expiring within 48 hours. Your domestic food waste risk is currently at ₹0.'}
@@ -558,7 +561,7 @@ export default function LandingPage({ params }: LandingPageProps) {
               <div className="pt-2">
                 <Link
                   href={`/${locale}/inventory/add`}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[var(--kc-basil)] text-white text-xs font-bold hover:bg-[var(--kc-basil-hover)] transition-colors"
+                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-emerald-800 text-white text-xs font-heading font-bold hover:bg-emerald-900 transition-colors shadow-sm"
                 >
                   <span>+ Add Food Item</span>
                 </Link>

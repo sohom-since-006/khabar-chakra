@@ -732,21 +732,23 @@ export default function AddFoodPage() {
   });
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-      {/* Header */}
-      <div className="border-b border-[var(--kc-card-border)] pb-6 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
+      {/* Header Banner */}
+      <div className="glass-card rounded-3xl p-6 sm:p-8 border border-black/[0.06] dark:border-white/[0.08] shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-5 transition-all">
         <div>
-          <span className="font-annotation text-[var(--kc-basil)] text-xl">Inventory Intelligence · Ingestion Desk</span>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[var(--kc-ink)] mt-1">
+          <span className="font-cursive-sacramento text-2xl sm:text-3xl text-emerald-700 dark:text-emerald-400 font-bold block">
+            Inventory Intelligence · Ingestion Desk
+          </span>
+          <h1 className="font-heading text-2xl sm:text-4xl font-extrabold tracking-tight text-[var(--kc-ink)] mt-0.5">
             Log Food into Kitchen Shelf
           </h1>
-          <p className="text-xs sm:text-sm text-[var(--kc-muted)] mt-1">
+          <p className="font-heading text-xs sm:text-sm text-[var(--kc-muted)] mt-1.5">
             Track shelf life, estimated calories, preparation mode, and health advisories.
           </p>
         </div>
         <Link
           href="/en/home"
-          className="text-xs font-mono font-semibold text-[var(--kc-basil)] hover:underline flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[var(--kc-card-border)] bg-[var(--kc-card)] w-fit"
+          className="text-xs font-heading font-semibold text-emerald-800 dark:text-emerald-300 hover:opacity-90 flex items-center gap-2 px-5 py-2.5 rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.02] dark:bg-white/[0.02] w-fit shadow-sm"
         >
           <KhabarIcon name="fridge" size={14} />
           <span>Return to Shelf</span>
@@ -754,14 +756,14 @@ export default function AddFoodPage() {
       </div>
 
       {/* Input Mode Selector */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-8 bg-[var(--kc-card)] p-1.5 rounded-xl border border-[var(--kc-card-border)]" role="tablist">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 glass-card p-2 rounded-2xl border border-black/[0.06] dark:border-white/[0.08]" role="tablist">
         <button
           type="button"
           onClick={() => setMode('manual')}
-          className={`py-2.5 px-2 text-xs font-mono uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+          className={`py-3 px-3 text-xs font-heading uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer ${
             mode === 'manual'
-              ? 'bg-[var(--kc-basil)] text-white font-bold shadow-sm'
-              : 'text-[var(--kc-ink)] hover:bg-[var(--kc-bg)]'
+              ? 'bg-emerald-800 text-white font-bold shadow-md'
+              : 'text-[var(--kc-ink)] hover:bg-black/[0.03] dark:hover:bg-white/[0.04]'
           }`}
         >
           <span>✍️</span>
@@ -770,10 +772,10 @@ export default function AddFoodPage() {
         <button
           type="button"
           onClick={() => setMode('barcode')}
-          className={`py-2.5 px-2 text-xs font-mono uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+          className={`py-3 px-3 text-xs font-heading uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer ${
             mode === 'barcode'
-              ? 'bg-[var(--kc-basil)] text-white font-bold shadow-sm'
-              : 'text-[var(--kc-ink)] hover:bg-[var(--kc-bg)]'
+              ? 'bg-emerald-800 text-white font-bold shadow-md'
+              : 'text-[var(--kc-ink)] hover:bg-black/[0.03] dark:hover:bg-white/[0.04]'
           }`}
         >
           <KhabarIcon name="scan" size={14} />
@@ -782,10 +784,10 @@ export default function AddFoodPage() {
         <button
           type="button"
           onClick={() => setMode('camera')}
-          className={`py-2.5 px-2 text-xs font-mono uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+          className={`py-3 px-3 text-xs font-heading uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer ${
             mode === 'camera'
-              ? 'bg-[var(--kc-basil)] text-white font-bold shadow-sm'
-              : 'text-[var(--kc-ink)] hover:bg-[var(--kc-bg)]'
+              ? 'bg-emerald-800 text-white font-bold shadow-md'
+              : 'text-[var(--kc-ink)] hover:bg-black/[0.03] dark:hover:bg-white/[0.04]'
           }`}
         >
           <KhabarIcon name="scan" size={14} />
@@ -794,10 +796,10 @@ export default function AddFoodPage() {
         <button
           type="button"
           onClick={() => setMode('receipt_ocr')}
-          className={`py-2.5 px-2 text-xs font-mono uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+          className={`py-3 px-3 text-xs font-heading uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer ${
             mode === 'receipt_ocr'
-              ? 'bg-[var(--kc-basil)] text-white font-bold shadow-sm'
-              : 'text-[var(--kc-ink)] hover:bg-[var(--kc-bg)]'
+              ? 'bg-emerald-800 text-white font-bold shadow-md'
+              : 'text-[var(--kc-ink)] hover:bg-black/[0.03] dark:hover:bg-white/[0.04]'
           }`}
         >
           <span>🧾</span>

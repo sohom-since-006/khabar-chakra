@@ -4,6 +4,9 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { KhabarIcon } from '@/components/ui/KhabarIcon';
 import { AppSidebar } from '@/components/layout/AppSidebar';
+import { InventoryItem } from '@/domain/types';
+import { calculateFreshness } from '@/domain/freshness';
+import { getCleanInventory } from '@/utils/inventoryStorage';
 
 interface ShelfItem {
   id: string;
@@ -15,10 +18,6 @@ interface ShelfItem {
   urgency: 'critical' | 'warning' | 'safe';
   diet: 'veg' | 'non_veg';
 }
-
-import { InventoryItem } from '@/domain/types';
-import { calculateFreshness } from '@/domain/freshness';
-import { getCleanInventory } from '@/utils/inventoryStorage';
 
 export default function UseThisFirstPage({
   params,
@@ -38,33 +37,33 @@ export default function UseThisFirstPage({
       const parsed: InventoryItem[] = getCleanInventory();
       const mapped: ShelfItem[] = parsed
         .filter((item) => item.status === 'active')
-          .map((item) => {
-            const freshness = calculateFreshness({
-              category: item.category,
-              storage: item.storage,
-              expiryDate: item.expiryDate,
-              isFlagged: item.isFlagged,
-            });
-
-            let urgency: 'critical' | 'warning' | 'safe' = 'safe';
-            if (freshness.hoursRemaining <= 24) urgency = 'critical';
-            else if (freshness.hoursRemaining <= 48) urgency = 'warning';
-
-            const storageName =
-              item.storage === 'fridge' ? 'Fridge' : item.storage === 'freezer' ? 'Freezer' : 'Pantry';
-
-            return {
-              id: item.id,
-              name: item.name,
-              category: item.category.replace(/_/g, ' '),
-              storage: storageName as 'Fridge' | 'Pantry' | 'Freezer',
-              quantity: `${item.quantityValue} ${item.quantityUnit}`,
-              hoursRemaining: freshness.hoursRemaining,
-              urgency,
-              diet: item.dietType === 'non_veg' ? 'non_veg' : 'veg',
-            };
+        .map((item) => {
+          const freshness = calculateFreshness({
+            category: item.category,
+            storage: item.storage,
+            expiryDate: item.expiryDate,
+            isFlagged: item.isFlagged,
           });
-        setItems(mapped);
+
+          let urgency: 'critical' | 'warning' | 'safe' = 'safe';
+          if (freshness.hoursRemaining <= 24) urgency = 'critical';
+          else if (freshness.hoursRemaining <= 48) urgency = 'warning';
+
+          const storageName =
+            item.storage === 'fridge' ? 'Fridge' : item.storage === 'freezer' ? 'Freezer' : 'Pantry';
+
+          return {
+            id: item.id,
+            name: item.name,
+            category: item.category.replace(/_/g, ' '),
+            storage: storageName as 'Fridge' | 'Pantry' | 'Freezer',
+            quantity: `${item.quantityValue} ${item.quantityUnit}`,
+            hoursRemaining: freshness.hoursRemaining,
+            urgency,
+            diet: item.dietType === 'non_veg' ? 'non_veg' : 'veg',
+          };
+        });
+      setItems(mapped);
     } catch (_err) {
       // storage quota fallback
     } finally {
@@ -86,17 +85,17 @@ export default function UseThisFirstPage({
     <div className="max-w-[1440px] mx-auto flex w-full">
       <AppSidebar locale={locale} />
 
-      <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 max-w-full overflow-hidden">
-        {/* Header Title */}
-        <div className="p-6 rounded-2xl bg-[var(--kc-card)] border border-[var(--kc-card-border)] shadow-sm space-y-2">
-          <div className="flex items-center gap-2 text-xs font-mono font-bold tracking-wider text-[var(--kc-chilli)] uppercase">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 max-w-full overflow-hidden">
+        {/* Header Title Banner */}
+        <div className="p-6 sm:p-8 rounded-3xl glass-card border border-black/[0.06] dark:border-white/[0.08] shadow-sm space-y-2">
+          <div className="flex items-center gap-2 text-xs font-mono font-bold tracking-wider text-[#D6381F] uppercase">
             <KhabarIcon name="expiring" size={16} />
             <span>URGENCY TRIAGE · USE THIS FIRST SHELF</span>
           </div>
-          <h1 className="font-montserrat text-2xl sm:text-4xl font-extrabold text-[var(--kc-ink)]">
+          <h1 className="font-heading text-2xl sm:text-4xl font-extrabold text-[var(--kc-ink)] tracking-tight">
             &ldquo;Use This First&rdquo; Priority Shelf
           </h1>
-          <p className="text-xs sm:text-sm text-[var(--kc-muted)] max-w-2xl leading-relaxed">
+          <p className="font-heading text-xs sm:text-sm text-[var(--kc-muted)] max-w-2xl leading-relaxed">
             Your kitchen&apos;s automated triage queue. Ingredients here are expiring within
             the next 24 to 48 hours. Cook with them today to guarantee zero food waste in your household.
           </p>
@@ -109,10 +108,10 @@ export default function UseThisFirstPage({
               key={zone}
               type="button"
               onClick={() => setActiveZone(zone)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+              className={`px-5 py-2 rounded-full text-xs font-heading font-bold transition-all cursor-pointer ${
                 activeZone === zone
-                  ? 'bg-[var(--kc-basil)] text-white shadow-sm'
-                  : 'bg-[var(--kc-card)] text-[var(--kc-muted)] border border-[var(--kc-hairline)] hover:text-[var(--kc-ink)]'
+                  ? 'bg-emerald-800 text-white shadow-md'
+                  : 'glass-card text-[var(--kc-muted)] border border-black/[0.06] dark:border-white/[0.08] hover:text-[var(--kc-ink)]'
               }`}
             >
               {zone === 'all' ? 'All Storage Zones' : zone}
@@ -122,15 +121,15 @@ export default function UseThisFirstPage({
 
         {/* Section 1: Critical (🔴 < 24 Hours) */}
         {criticalItems.length > 0 && (
-          <section className="p-6 rounded-2xl bg-red-50/60 dark:bg-red-950/20 border border-red-200 dark:border-red-900/60 shadow-sm space-y-4">
+          <section className="p-6 sm:p-7 rounded-3xl bg-red-50/50 dark:bg-red-950/20 border border-red-200/80 dark:border-red-900/50 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <span className="w-3 h-3 rounded-full bg-[#D6381F] animate-ping" />
-                <h2 className="text-base sm:text-lg font-bold text-red-900 dark:text-red-300 font-montserrat">
+                <h2 className="text-base sm:text-lg font-bold text-red-900 dark:text-red-300 font-heading">
                   🔴 Immediate Attention (Expiring in &lt; 24h)
                 </h2>
               </div>
-              <span className="text-xs font-bold font-mono text-[#D6381F] bg-red-100 dark:bg-red-900/40 px-2.5 py-1 rounded-full">
+              <span className="text-xs font-bold font-mono text-[#D6381F] bg-red-100 dark:bg-red-900/40 px-3 py-1 rounded-full">
                 {criticalItems.length} Urgent Items
               </span>
             </div>
@@ -139,11 +138,11 @@ export default function UseThisFirstPage({
               {criticalItems.map((item) => (
                 <div
                   key={item.id}
-                  className="p-4 rounded-xl bg-white dark:bg-[#1A1414] border border-red-200 dark:border-red-900/50 shadow-sm flex items-center justify-between"
+                  className="p-5 rounded-2xl glass-card border border-red-200/70 dark:border-red-900/40 shadow-sm flex items-center justify-between gap-3"
                 >
-                  <div className="space-y-1">
-                    <h4 className="text-sm font-bold text-[var(--kc-ink)]">{item.name}</h4>
-                    <p className="text-xs text-[var(--kc-muted)]">
+                  <div className="space-y-1 min-w-0">
+                    <h4 className="text-sm font-bold text-[var(--kc-ink)] font-heading truncate">{item.name}</h4>
+                    <p className="text-xs text-[var(--kc-muted)] font-heading">
                       {item.quantity} · {item.storage} · {item.category}
                     </p>
                     <span className="inline-block text-[11px] font-mono font-bold text-[#D6381F]">
@@ -153,7 +152,7 @@ export default function UseThisFirstPage({
 
                   <Link
                     href={`/${locale}/recipes?ingredient=${encodeURIComponent(item.name)}`}
-                    className="px-3.5 py-2 rounded-xl bg-[#D6381F] text-white text-xs font-bold hover:opacity-90 shadow-sm flex items-center gap-1 shrink-0"
+                    className="px-4 py-2 rounded-full bg-[#D6381F] text-white text-xs font-heading font-bold hover:opacity-90 shadow-sm flex items-center gap-1 shrink-0 min-h-[38px]"
                   >
                     <span>Cook Meal</span>
                     <span>→</span>
@@ -166,15 +165,15 @@ export default function UseThisFirstPage({
 
         {/* Section 2: Warning (🟡 24–48 Hours) */}
         {warningItems.length > 0 && (
-          <section className="p-6 rounded-2xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/60 shadow-sm space-y-4">
+          <section className="p-6 sm:p-7 rounded-3xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/50 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <span className="w-3 h-3 rounded-full bg-[#F59E0B]" />
-                <h2 className="text-base sm:text-lg font-bold text-amber-900 dark:text-amber-300 font-montserrat">
+                <h2 className="text-base sm:text-lg font-bold text-amber-900 dark:text-amber-300 font-heading">
                   🟡 Consume Soon (24–48 Hours)
                 </h2>
               </div>
-              <span className="text-xs font-bold font-mono text-amber-800 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-2.5 py-1 rounded-full">
+              <span className="text-xs font-bold font-mono text-amber-800 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-3 py-1 rounded-full">
                 {warningItems.length} Items
               </span>
             </div>
@@ -183,11 +182,11 @@ export default function UseThisFirstPage({
               {warningItems.map((item) => (
                 <div
                   key={item.id}
-                  className="p-4 rounded-xl bg-white dark:bg-[#1A1810] border border-amber-200 dark:border-amber-900/50 shadow-sm flex items-center justify-between"
+                  className="p-5 rounded-2xl glass-card border border-amber-200/70 dark:border-amber-900/40 shadow-sm flex items-center justify-between gap-3"
                 >
-                  <div className="space-y-1">
-                    <h4 className="text-sm font-bold text-[var(--kc-ink)]">{item.name}</h4>
-                    <p className="text-xs text-[var(--kc-muted)]">
+                  <div className="space-y-1 min-w-0">
+                    <h4 className="text-sm font-bold text-[var(--kc-ink)] font-heading truncate">{item.name}</h4>
+                    <p className="text-xs text-[var(--kc-muted)] font-heading">
                       {item.quantity} · {item.storage} · {item.category}
                     </p>
                     <span className="inline-block text-[11px] font-mono font-bold text-amber-700 dark:text-amber-400">
@@ -197,7 +196,7 @@ export default function UseThisFirstPage({
 
                   <Link
                     href={`/${locale}/recipes?ingredient=${encodeURIComponent(item.name)}`}
-                    className="px-3.5 py-2 rounded-xl bg-[#F59E0B] text-white text-xs font-bold hover:opacity-90 shadow-sm flex items-center gap-1 shrink-0"
+                    className="px-4 py-2 rounded-full bg-[#F59E0B] text-white text-xs font-heading font-bold hover:opacity-90 shadow-sm flex items-center gap-1 shrink-0 min-h-[38px]"
                   >
                     <span>Cook Meal</span>
                     <span>→</span>
@@ -210,15 +209,15 @@ export default function UseThisFirstPage({
 
         {/* Section 3: Plentiful & Safe Stock */}
         {safeItems.length > 0 && (
-          <section className="p-6 rounded-2xl bg-[var(--kc-card)] border border-[var(--kc-card-border)] shadow-sm space-y-4">
+          <section className="p-6 sm:p-7 rounded-3xl glass-card border border-black/[0.06] dark:border-white/[0.08] shadow-sm space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <span className="w-3 h-3 rounded-full bg-[#10B981]" />
-                <h2 className="text-base sm:text-lg font-bold text-[var(--kc-ink)] font-montserrat">
+                <span className="w-3 h-3 rounded-full bg-emerald-500" />
+                <h2 className="text-base sm:text-lg font-bold text-[var(--kc-ink)] font-heading">
                   🟢 Plentiful Shelf Life (&gt; 48 Hours)
                 </h2>
               </div>
-              <span className="text-xs font-bold font-mono text-[var(--kc-basil)] bg-[var(--kc-mint)] px-2.5 py-1 rounded-full">
+              <span className="text-xs font-bold font-mono text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 rounded-full">
                 Safe Stock
               </span>
             </div>
@@ -227,15 +226,15 @@ export default function UseThisFirstPage({
               {safeItems.map((item) => (
                 <div
                   key={item.id}
-                  className="p-4 rounded-xl bg-neutral-50 dark:bg-[#12261C] border border-[var(--kc-hairline)] flex items-center justify-between"
+                  className="p-5 rounded-2xl glass-card border border-black/[0.05] dark:border-white/[0.06] flex items-center justify-between"
                 >
                   <div>
-                    <h4 className="text-sm font-bold text-[var(--kc-ink)]">{item.name}</h4>
-                    <p className="text-xs text-[var(--kc-muted)]">
+                    <h4 className="text-sm font-bold text-[var(--kc-ink)] font-heading">{item.name}</h4>
+                    <p className="text-xs text-[var(--kc-muted)] font-heading">
                       {item.quantity} · {item.storage} · {item.category}
                     </p>
                   </div>
-                  <span className="text-xs font-bold text-[var(--kc-basil)]">Fresh</span>
+                  <span className="text-xs font-bold font-heading text-emerald-700 dark:text-emerald-400">Fresh</span>
                 </div>
               ))}
             </div>
@@ -244,15 +243,15 @@ export default function UseThisFirstPage({
 
         {/* Zero-Waste All-Clear Empty State */}
         {isLoaded && filteredItems.length === 0 && (
-          <div className="p-8 sm:p-14 rounded-2xl bg-[var(--kc-card)] border border-[var(--kc-card-border)] text-center shadow-sm space-y-4">
-            <div className="w-16 h-16 rounded-2xl bg-[var(--kc-mint)] text-[var(--kc-basil)] flex items-center justify-center mx-auto text-3xl shadow-inner">
+          <div className="p-8 sm:p-14 rounded-3xl glass-card border border-black/[0.06] dark:border-white/[0.08] text-center shadow-sm space-y-4">
+            <div className="w-16 h-16 rounded-3xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center mx-auto text-3xl shadow-inner border border-emerald-200/50 dark:border-emerald-900/50">
               ⚡
             </div>
             <div className="max-w-md mx-auto space-y-2">
-              <h3 className="text-xl sm:text-2xl font-bold text-[var(--kc-ink)] font-montserrat">
+              <h3 className="text-xl sm:text-2xl font-bold text-[var(--kc-ink)] font-heading">
                 All Clear! Zero Food Waste Urgency
               </h3>
-              <p className="text-xs sm:text-sm text-[var(--kc-muted)] leading-relaxed">
+              <p className="text-xs sm:text-sm text-[var(--kc-muted)] font-heading leading-relaxed">
                 {items.length === 0
                   ? 'Your kitchen inventory is currently empty. Scan a grocery receipt or log ingredients to activate automated shelf-life urgency triage.'
                   : `No ingredients in ${activeZone === 'all' ? 'any storage zone' : activeZone} are expiring in the next 48 hours.`}
@@ -261,14 +260,14 @@ export default function UseThisFirstPage({
             <div className="flex flex-col sm:flex-row justify-center items-center gap-3 pt-2">
               <Link
                 href={`/${locale}/inventory/add`}
-                className="w-full sm:w-auto px-5 py-3 text-xs font-bold uppercase tracking-wider rounded-xl bg-[var(--kc-basil)] text-white hover:bg-[var(--kc-basil-hover)] transition-all shadow-sm flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3 text-xs font-heading font-bold rounded-full bg-emerald-800 text-white hover:bg-emerald-900 transition-all shadow-sm flex items-center justify-center gap-2"
               >
                 <KhabarIcon name="scan" size={16} />
                 <span>Scan Food or Receipt (OCR)</span>
               </Link>
               <Link
                 href={`/${locale}/recipes`}
-                className="w-full sm:w-auto px-5 py-3 text-xs font-bold uppercase tracking-wider rounded-xl border border-[var(--kc-card-border)] bg-[var(--kc-bg)] text-[var(--kc-ink)] hover:bg-[var(--kc-card)] transition-colors flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-6 py-3 text-xs font-heading font-bold rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.02] dark:bg-white/[0.02] text-[var(--kc-ink)] hover:bg-black/[0.05] transition-colors flex items-center justify-center gap-2"
               >
                 <KhabarIcon name="cook" size={16} />
                 <span>Explore Recipe Rescue</span>
