@@ -32,6 +32,11 @@ export default function LoginPage({ params }: LoginPageProps) {
   const [googleLoading, setGoogleLoading] = useState(false);
 
   React.useEffect(() => {
+    const code = searchParams.get('code');
+    if (code) {
+      window.location.href = `/${locale}/auth/callback?code=${encodeURIComponent(code)}${nextParam ? `&next=${encodeURIComponent(nextParam)}` : ''}`;
+      return;
+    }
     const err = searchParams.get('error');
     if (err === 'auth_failed') {
       setErrorMsg('Authentication could not be completed. Please try again or sign in with email.');
@@ -41,7 +46,7 @@ export default function LoginPage({ params }: LoginPageProps) {
       const supabase = createClient();
       supabase.auth.signOut({ scope: 'local' }).catch(() => {});
     }
-  }, [searchParams]);
+  }, [searchParams, locale, nextParam]);
 
   // Google OAuth Login
   const handleGoogleLogin = async () => {
@@ -50,9 +55,12 @@ export default function LoginPage({ params }: LoginPageProps) {
 
     try {
       const supabase = createClient();
-      const origin = typeof window !== 'undefined' ? window.location.origin : '';
+      let origin = typeof window !== 'undefined' ? window.location.origin : '';
+      if (!origin || (origin.includes('localhost') && process.env.NODE_ENV === 'production')) {
+        origin = 'https://khabar-chakra.vercel.app';
+      }
       const redirectTarget = nextParam.startsWith('/') ? nextParam : `/${locale}/home`;
-      const redirectTo = `${origin}/${locale}/auth/callback?next=${encodeURIComponent(redirectTarget)}`;
+      const redirectTo = `${origin.replace(/\/$/, '')}/${locale}/auth/callback?next=${encodeURIComponent(redirectTarget)}`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',

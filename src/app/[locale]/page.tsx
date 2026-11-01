@@ -66,7 +66,15 @@ export default function LandingPage({ params }: LandingPageProps) {
   }>>([]);
 
   useEffect(() => {
-    params.then((p) => setLocale(p.locale));
+    params.then((p) => {
+      setLocale(p.locale);
+      if (typeof window !== 'undefined') {
+        const sp = new URLSearchParams(window.location.search);
+        if (sp.has('code')) {
+          window.location.href = `/${p.locale}/auth/callback${window.location.search}`;
+        }
+      }
+    });
   }, [params]);
 
   useEffect(() => {

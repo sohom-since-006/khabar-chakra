@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
+import { createSafeUrl } from '@/utils/siteUrl';
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
@@ -15,12 +16,12 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
       if (next && next.startsWith('/') && !next.startsWith('//')) {
-        return NextResponse.redirect(new URL(next, requestUrl.origin));
+        return NextResponse.redirect(createSafeUrl(next, request));
       }
-      return NextResponse.redirect(new URL(`/${locale}/home`, requestUrl.origin));
+      return NextResponse.redirect(createSafeUrl(`/${locale}/home`, request));
     }
   }
 
   // Return to login with error indicator if exchange fails
-  return NextResponse.redirect(new URL(`/${locale}/login?error=auth_failed`, requestUrl.origin));
+  return NextResponse.redirect(createSafeUrl(`/${locale}/login?error=auth_failed`, request));
 }

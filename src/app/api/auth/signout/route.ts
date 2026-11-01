@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
+import { createSafeUrl } from '@/utils/siteUrl';
 
 async function handleSignOut(request: NextRequest) {
-  const requestUrl = new URL(request.url);
   const localeCookie = request.cookies.get('NEXT_LOCALE')?.value;
   const locale = ['en', 'bn', 'hi'].includes(localeCookie || '') ? localeCookie : 'en';
 
@@ -13,7 +13,7 @@ async function handleSignOut(request: NextRequest) {
     console.error('Signout route error:', err);
   }
 
-  const response = NextResponse.redirect(new URL(`/${locale}/login?logout=true`, requestUrl.origin), {
+  const response = NextResponse.redirect(createSafeUrl(`/${locale}/login?logout=true`, request), {
     status: 303,
   });
 

@@ -50,6 +50,12 @@ export default function SignupPage({ params }: SignupPageProps) {
     const supabase = createClient();
 
     try {
+      let origin = typeof window !== 'undefined' ? window.location.origin : '';
+      if (!origin || (origin.includes('localhost') && process.env.NODE_ENV === 'production')) {
+        origin = 'https://khabar-chakra.vercel.app';
+      }
+      const emailRedirectTo = `${origin.replace(/\/$/, '')}/${locale}/welcome`;
+
       const { error } = await supabase.auth.signUp({
         email,
         password,
@@ -59,7 +65,7 @@ export default function SignupPage({ params }: SignupPageProps) {
             account_type: accountType,
             age_18_confirmed_at: new Date().toISOString(),
           },
-          emailRedirectTo: `${window.location.origin}/${locale}/welcome`,
+          emailRedirectTo,
         },
       });
 

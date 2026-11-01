@@ -25,8 +25,12 @@ export default function ForgotPasswordPage({ params }: ForgotPasswordPageProps) 
 
     const supabase = createClient();
     try {
+      let origin = typeof window !== 'undefined' ? window.location.origin : '';
+      if (!origin || (origin.includes('localhost') && process.env.NODE_ENV === 'production')) {
+        origin = 'https://khabar-chakra.vercel.app';
+      }
       await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/${locale}/reset-password`,
+        redirectTo: `${origin.replace(/\/$/, '')}/${locale}/reset-password`,
       });
       setSent(true);
     } catch {

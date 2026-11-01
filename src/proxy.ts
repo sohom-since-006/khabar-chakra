@@ -1,6 +1,7 @@
 import createIntlMiddleware from 'next-intl/middleware';
 import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/utils/supabase/middleware";
+import { createSafeUrl } from "@/utils/siteUrl";
 
 const handleI18n = createIntlMiddleware({
   locales: ['en', 'bn', 'hi'],
@@ -9,10 +10,10 @@ const handleI18n = createIntlMiddleware({
 });
 
 const isAuthRoute = (path: string) => {
+  if (path.startsWith('/auth/callback')) return false;
   return (
     path.startsWith('/login') ||
     path.startsWith('/signup') ||
-    path.startsWith('/auth') ||
     path.startsWith('/forgot-password') ||
     path.startsWith('/reset-password') ||
     path.startsWith('/verify-email')
@@ -87,7 +88,7 @@ export async function proxy(request: NextRequest) {
 
   // 4. Protect private kitchen and personal routes
   if (!user && isProtectedRoute(subPath)) {
-    const loginUrl = new URL(`/${locale}/login`, request.url);
+    const loginUrl = createSafeUrl(`/${locale}/login`, request);
     loginUrl.searchParams.set('next', pathname);
     const redirectResponse = NextResponse.redirect(loginUrl);
     if (sessionResponse) {
@@ -100,7 +101,7 @@ export async function proxy(request: NextRequest) {
 
   // 5. If already authenticated and visiting auth pages, redirect straight to kitchen home
   if (user && isAuthRoute(subPath)) {
-    const homeUrl = new URL(`/${locale}/home`, request.url);
+    const homeUrl = createSafeUrl(`/${locale}/home`, request);
     const redirectResponse = NextResponse.redirect(homeUrl);
     if (sessionResponse) {
       sessionResponse.cookies.getAll().forEach((cookie) => {
